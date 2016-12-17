@@ -1,0 +1,30 @@
+<?php
+  /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
+  class wConfig extends wMain
+  { public $conf = null;
+      // Database settings
+      // Open first: http://yoursite.com/index.php/setup
+      public $dbtype = 'mysql';
+      public $dbhost = 'localhost';
+      public $dbname = 'dbgui2';  // Database name
+      public $dbuser = 'root';
+      public $dbpass = '';       // Password
+      public $dbcharset = 'utf8';
+
+      
+      // System settings
+      public $title = 'Forms';
+      public $author = 'Fedotov V.V.';
+      public $description = 'Forms';
+      public $root_prefix = ''; // Site subdirectory
+      public $lang = 'EN';
+      public $sef = true; 
+      protected $template = 'templates/template_auth.php';
+      
+      // Custom settings
+      public $email_templates = array('signup','evnamegl','vipreserv');
+      public $md_conf = 1;
+      public $pg_rows = 15;
+
+  }
+?>

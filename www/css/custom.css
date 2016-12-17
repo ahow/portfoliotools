@@ -1,0 +1,155 @@
+
+/* navbar fixed top */
+body {
+  min-height: 600px;
+  padding-top: 70px;
+}
+
+
+div.w-view { margin-bottom: 60px; }
+.w-view nav ul { margin-top: 0px;  }
+
+.w-link { background-color: #EFF4FF; }
+
+.table-striped>tbody>tr:nth-of-type(odd)>td.w-link {
+background-color: #E2EDFF;
+}
+
+div.w-panel { 
+    margin-right: 0;
+    margin-left: 0;
+    background-color: #FAFAFA;
+    border: solid #EEE 1px;
+    border-radius: 7px 7px 0 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding: 7px;
+}
+
+span.w-label { color: rgb(167, 167, 167); padding-left:6pt; font-size: 14pt }
+
+.w-view table>tbody>tr { cursor: pointer }
+.w-view table>tbody>tr:hover { background-color: #337ab7; color: white; }
+.w-view table>tbody>tr:hover .w-link { background-color: #337ab7; color: white; }
+
+.w-form div.modal-body>div.row { margin-bottom: 4px; }
+
+.modal.large > div {
+    width: 80%;
+}
+
+.modal.middle > div {
+    width: 60%;
+}
+
+
+@media only screen and (max-width: 1024px) {
+    .modal.large > div {
+        width: 96%;
+    }
+    
+    .modal.middle > div {
+        width: 96%;
+    }
+}
+
+.w-alert-error { display:none; width:100%; position: fixed; left: 0; 
+top: 0; min-height: 100px; z-index: 2000; line-height: 150% }
+
+.w-alert-ok { display:none; width:100%; position: fixed; top: 50px; left: 0; 
+ min-height: 50px; z-index: 2001; line-height: 150%; opacity: 0.7 }
+
+
+/* Sign form styles */
+.entry:not(:first-of-type)
+{
+margin-top: 10px;
+}
+.glyphicon
+{
+font-size: 12px;
+}
+h2.subscribetitle {
+font-family: "Arial Black", Gadget, sans-serif;
+font-weight: 500;
+font-size: 3em;
+text-align: center;
+text-transform: uppercase;
+font-style: italic;
+}
+
+h2.uppertitle {
+font-family: "Arial Black", Gadget, sans-serif;
+font-weight: 500;
+font-size: 3em;
+text-transform: uppercase;
+font-style: italic;
+}
+
+h4.eventformtitle {
+font-family: "Arial Black", Gadget, sans-serif;
+font-weight: 500;
+font-size: 2em;
+}
+h4.alert-title {
+font-family: "Arial Black", Gadget, sans-serif;
+font-weight: 500;
+font-size: 1.5em;
+font-style: italic;
+}
+h5.subscribetext {
+font-family: Arial, Helvetica, sans-serif;
+font-size: 1.3em;
+text-align: center;
+}
+p.alert-message {
+font-family: Arial, Helvetica, sans-serif;
+font-size: 1.1em;
+text-align: left;
+}
+.btn-font {
+font-family: "Arial Black", Gadget, sans-serif;
+font-weight: 500;
+font-size: 1.5em;
+text-transform: uppercase;
+font-style: italic;
+}
+
+table.selectable tr.active td { background-color: #337ab7; color: white; }
+table.selectable tr { cursor: pointer; }
+
+.redline-error { color:#D00000; padding:4px;
+    font-weight: bold;
+}
+
+.disabled-input {    
+   background-color: white;
+   z-index:1000;
+   opacity: 0.4;
+   pointer-events: none;
+}
+
+div.w-tabpane {
+    border-left: solid #ddd 1px;
+    border-right: solid #ddd 1px;
+    border-bottom: solid #ddd 1px;
+    border-radius: 0 0px 4px 4px;
+}
+
+div.row.divider {
+  padding: 5px;
+  padding-left: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  background-color: #FCFCFC;
+  border: solid rgb(244, 236, 236) 1px;
+  border-right: none;
+}
+
+.btn-toolbar>.btn {
+    margin-bottom: 5px;
+}
+
+.a-right { text-align:right }
+

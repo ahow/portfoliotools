@@ -1,0 +1,9 @@
+DROP TABLE sales_divdetails;
+DROP TABLE sales_companies;
+DROP TABLE sales_sic;
+DROP TABLE sales_industry_groups;
+DROP TABLE sales_metrics_data;
+DROP TABLE sales_metrics_columns;
+DROP TABLE sales_metrics;
+DROP TABLE sales_portfolio_data;
+DROP TABLE sales_portfolio;
