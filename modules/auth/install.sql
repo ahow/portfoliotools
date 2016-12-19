@@ -45,6 +45,6 @@ CREATE TABLE mc_sessions
 ) ENGINE=InnoDB  CHARSET=utf8;
 
 insert into mc_groups values (1,'admin'),(2,'user'),(3,'tutor'),(4,'student');
-insert into mc_users values (1,'admin','','Администратор','','','21232f297a57a5a743894a0e4a801fc3');
+insert into mc_users values (1,'admin','','Администратор','','','$2y$10$EdileunVjDRYQxPBDCjM2exlKLsI8cX7m5i5V63nAs.WKCMrjOuzu');
 insert into mc_usergroups values (1,1);
 

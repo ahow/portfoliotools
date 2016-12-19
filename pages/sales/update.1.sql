@@ -81,4 +81,6 @@ CREATE FUNCTION CSV_DOUBLE(str VARCHAR(255), pos INT)
 RETURNS DOUBLE
 RETURN 1.0*REPLACE(SUBSTRING(SUBSTRING_INDEX(str, ';', pos),
        LENGTH(SUBSTRING_INDEX(str, ';', pos-1)) + 1), ';', '');
-       
+
+-- set default password to admin       
+update mc_users set pass='$2y$10$EdileunVjDRYQxPBDCjM2exlKLsI8cX7m5i5V63nAs.WKCMrjOuzu' where name='admin';

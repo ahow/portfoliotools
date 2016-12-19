@@ -61,16 +61,29 @@
      }
      
      function hashPassword($password)
-     { return md5($password);
+     {  return password_hash($password, PASSWORD_BCRYPT);
+     }
+     
+     function verifyPassword($password, $hash)
+     {  return password_verify($password, $hash);         
      }
      
      function checkUserPassword($user, $password, &$o)
      {  $db =  $this->cfg->db;        
         $upass = $this->hashPassword($password);
-        $sql = "select id, name, lastname, firstname, auth_module from mc_users where name=:name and pass=:pass";
-        $qr = $db->query($sql, array('name'=>$user, 'pass'=>$upass) );
+        $sql = "select id, name, lastname, firstname, pass, auth_module from mc_users where name=:name";
+        $qr = $db->query($sql, array('name'=>$user) );
         $o = $db->fetchSingle($qr);
-        return (!empty($o));
+        write_log("Check pass $password");
+        if (!empty($o))
+        {  write_log(print_r($o, true));
+           if ( $this->verifyPassword($password, $o->pass) )
+           {  unset($o->pass);
+              return true;
+           }
+        }
+        $o = null;
+        return false;
      }
 
     function startSession($uid)
@@ -84,7 +97,7 @@
       return true;
     }
 
-     // Модуль авторизации
+     // Authorization module
      function checkAuth()
      { $db =  $this->cfg->db;
        if ($db==null) return false;
@@ -104,7 +117,7 @@
            }
            
          } else
-         // проверка сессионного ключа
+         // session key checking
          if (isset($_COOKIE['_usid']))
          {  $usid = $_COOKIE['_usid'];
             // write_log('COKIE _usid '.$usid);
@@ -143,7 +156,7 @@
    }
 
 
-  // IP адрес в 16-ричное значение
+  // IP address to 16 char hex value
   function ip2hex($ip)
   { $a = explode('.',$ip);
     $r = '';
