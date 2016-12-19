@@ -74,10 +74,8 @@
         $sql = "select id, name, lastname, firstname, pass, auth_module from mc_users where name=:name";
         $qr = $db->query($sql, array('name'=>$user) );
         $o = $db->fetchSingle($qr);
-        write_log("Check pass $password");
         if (!empty($o))
-        {  write_log(print_r($o, true));
-           if ( $this->verifyPassword($password, $o->pass) )
+        {  if ( $this->verifyPassword($password, $o->pass) )
            {  unset($o->pass);
               return true;
            }
