@@ -83,7 +83,7 @@ $(function(){
     function marketRanking(val)
     { ajx('/pages/sales/Model/sic/row',{id:val},function(d){
             if (d.row!==false)
-            {  $('#sic_description').html(d.row.name+'<br>'+d.row.description);
+            {  $('#sic_description').html('<b>'+d.row.name+'</b><br>'+d.row.description);
                var year = $('#year').val();
                var region = $('#region').val();
                var params = {sic:val,year:year,region:region};

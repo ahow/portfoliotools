@@ -12,7 +12,7 @@
 
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#tabsearh">Search</a></li>
-  <li id="tbedit" class="disabled"><a data-toggle="tab" href="#tabedit">Edit</a></li>
+  <li id="tbedit" class="disabled"><a data-toggle="tab" href="#tabedit">Market ranking</a></li>
 </ul>
 
 <div class="tab-content"  style="padding-top: 15px;">
@@ -45,7 +45,7 @@
                 <div class="col-lg-2"><?=$f->input('minsize','number')?></div>
             </div>
             <div class="row">
-                <div class="col-lg-10"><?=$f->label('sic_description')?></div>
+                <div class="col-lg-10"><p id="sic_description"></p></div>
                 <div class="col-lg-2"><?=$f->input('year','number')?></div>
             </div>
             <div class="row" id="ranking">
