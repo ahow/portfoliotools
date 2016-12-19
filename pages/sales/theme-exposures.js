@@ -142,11 +142,11 @@ $(function(){
     
     function reloadChartData()
     {   var pf1 = $('#portfolio').val();
-        var pf2 = $('#comparasion').val();
+        var pf2 = $('#comparison').val();
         // if (pf2!=pf1 && pf2!=null)
         if (pf2!=null)
         {   $('#portfolio').attr('disabled', true)
-            $('#comparasion').attr('disabled', true)
+            $('#comparison').attr('disabled', true)
             ajx('/pages/sales/ComparePortfolio',{pf1:pf1, pf2:pf2},function(d){
                 // console.log(d) 
                 // chart.setData(d.header, d.data1.data, d.data2.data);
@@ -163,6 +163,9 @@ $(function(){
                     },
                     xAxis: {
                         categories: d.header
+                    },
+                    yAxis: {
+                        title: {text:'Exposure (positive or negative)'}
                     },
                     credits: {
                         enabled: false
@@ -195,7 +198,7 @@ $(function(){
     });
     
     
-    var compar = new mdSelect('#comparasion');
+    var compar = new mdSelect('#comparison');
     compar.select(function(r){
         // reloadChartData();
     });
