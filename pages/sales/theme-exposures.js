@@ -164,6 +164,9 @@ $(function(){
                     xAxis: {
                         categories: d.header
                     },
+                    yAxis: {
+                        title: {text:'Exposure (positive or negative)'}
+                    },
                     credits: {
                         enabled: false
                     },
