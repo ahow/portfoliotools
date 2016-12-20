@@ -54,8 +54,8 @@
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
        }
-       else if ($this->nav=='theme-metrics')
-       {   $this->cfg->addJs('/html.php/pages/sales','theme-metrics.js');
+       else if ($this->nav=='portfolio-metrics')
+       {   $this->cfg->addJs('/html.php/pages/sales','portfolio-metrics.js');
            $this->cfg->addJs('/html.php/pages/sales','stacked.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
