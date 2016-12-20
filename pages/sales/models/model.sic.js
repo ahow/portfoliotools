@@ -6,5 +6,6 @@
   "search":"name like :search or description like :search",
   "rows_number_limit": 8,
   "select_row": "select * from $table where id=:id",
-  "select_total": "select count(*) from $table $where"
+  "select_total": "select count(*) from $table $where",
+  "afterLoad":"afterLoadSIC"
 }
