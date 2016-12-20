@@ -105,6 +105,13 @@
        {  $qr = $db->query( $this->SQLVars($this->model->select), $params );
           $this->res->rows =  $qr->fetchAll(PDO::FETCH_OBJ);
        }
+       
+       if (isset($model->afterLoad))
+       {   $method = $model->afterLoad;            
+            if (!method_exists($this, $method))
+             return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
+            $this->$method();
+       }
               
        echo json_encode($this->res);
     }
@@ -188,7 +195,7 @@
         $this->res->k = $keys;
         $this->res->r = $row;
         
-        $db->updateObject($model->table,$row, $keys);
+        $db->updateObject($model->table, $row, $keys);
         
         $this->res->info = T('Saved');
         

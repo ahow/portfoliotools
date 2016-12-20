@@ -27,6 +27,25 @@
         $row->modified = date("Y-m-d H:i:s");
     }
     
+    // afterLoad trigger
+    function afterLoadSIC()
+    {   $db = $this->cfg->db;
+        $qr = $db->query('select headers from  sales_exposure');
+        $a = explode(';', $db->fetchSingleValue($qr));
+        $cols = array();
+        foreach ($a as $k=>$v) $cols[]="e$k";
+        $this->res->titles = array_merge($this->res->titles, $a);
+        $this->res->columns = array_merge($this->res->columns, $cols);
+        foreach($this->res->rows as $r)
+        {  $d = explode(';', $r->exposure);
+           foreach ($cols as $k=>$v) 
+           {   $nv = $d[$k];
+               if (1*$nv>0) $nv='+'.$nv;
+               $r->$v = $nv;
+           }
+        }
+    }
+    
     function ajxForm1()
     {   $db = $this->cfg->db;
         $params = (object)$_POST;
