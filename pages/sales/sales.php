@@ -63,10 +63,11 @@
        else
        {   $this->cfg->addJs('/html.php/pages/sales','inittable.js');
        }
-       // if ($this->nav=='form1') $this->cfg->addJs('/html.php/pages/sales','form1.js');
-       //$this->cfg->addJs('/html.php/pages/sales',$seg[1].'.js');
-      // $user = $this->cfg->user->user;
-       if (empty($user)) header('Location: http://ya.ru/');
+     }
+     
+     function afterInit()
+     {  $user = $this->cfg->user->user;
+        if (empty($user)) header('Location: '.mkURL('/login'));
      }
      
      function display()
