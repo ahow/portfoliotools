@@ -88,6 +88,7 @@ function drawStackedChart(id, data)
     
     
     options.yAxis.max = yMax;
+    options.yAxis.title = {text:data.metric};
     
     var chart = new Highcharts.Chart(options,
     //add function for custom renderer
