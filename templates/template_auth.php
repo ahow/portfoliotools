@@ -8,7 +8,9 @@
   
   if (isset($this->user->user))
   {  $authMenu = $this->newMod('authMenu','user_menu.js');
-     $pMenu = $this->newMod('pMenu','main_data.js');
+     $dataMenu = $this->newMod('pMenu','data_menu.js');
+     $endmarketsMenu = $this->newMod('pMenu','endmarkets_menu.js');
+     $pfmeasuresMenu = $this->newMod('pMenu','pfmeasures_menu.js');
      $userMenu = $this->newMod('pMenu','user_menu.js');
      // $pRightMenu = $this->newMod('pMenu','main_r_data.js');
 ?>
@@ -60,12 +62,28 @@
         <div id="navbar" class="navbar-collapse collapse">
             
           <ul class="nav navbar-nav">
+              
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Sales<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Data menu<span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                     <?php $pMenu->display() ?>
+                     <?php $dataMenu->display() ?>
                   </ul>
               </li>
+              
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">End markets<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <?php $endmarketsMenu->display() ?>
+                  </ul>
+              </li>
+
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Portfolio measures<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <?php $pfmeasuresMenu->display() ?>
+                  </ul>
+              </li>
+              
               <?php $userMenu->display() ?>
           </ul>          
           <?php  $authMenu->display(); ?>
