@@ -1,7 +1,7 @@
 <?php
   /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
   class sales extends wPage
-  {  function sales($cfg, $path, $seg=null)
+  {  function __construct($cfg, $path, $seg=null)
      {  $this->cfg = $cfg;
         $this->includePageLocales(__DIR__);
         $cfg->title = 'Sales';
@@ -63,13 +63,16 @@
        else
        {   $this->cfg->addJs('/html.php/pages/sales','inittable.js');
        }
-       // if ($this->nav=='form1') $this->cfg->addJs('/html.php/pages/sales','form1.js');
-       //$this->cfg->addJs('/html.php/pages/sales',$seg[1].'.js');
+     }
+     
+     function afterInit()
+     {  $user = $this->cfg->user->user;
+        if (empty($user)) header('Location: '.mkURL('/login'));
      }
      
      function display()
-     {  $user = $this->cfg->user->user;        
-        if ($this->cpage!='') include($this->cpage);
+     {  $user = $this->cfg->user->user;
+        if ($this->cpage!='') include($this->cpage);        
      }
   }
 ?>
