@@ -1,10 +1,43 @@
 var pager;
 
+function modelSICView(selector,d,onclick,ondblclick)
+{  var s = '';
+   var i;
+   
+   if (d.titles!=undefined)
+   {   var h = '<tr>';
+       for (i in d.titles)
+       { h+='<th>'+d.titles[i]+'</th>';               
+       }
+       h+='</tr>';
+       $(selector).find('thead').html(h);
+   }
+   for (i in d.rows)
+   {   var j;
+       var r = d.rows[i];
+       if (r.id!=undefined) s+='<tr data-id="'+i+'">'; else s+='<tr>';
+       for (j in d.columns) s+='<td>'+r[ d.columns[j] ]+'</td>';
+       s+='</tr>';
+   }
+   $(selector).find('tbody').html(s);
+   if (onclick!=null)  $(selector+' tbody tr').click(function(row){
+       $(row.target).parents('table:first').find('tr').removeClass('active');
+       var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
+       onclick(row, d.rows[id]);
+   });
+   
+   if (ondblclick!=undefined && ondblclick!=null)  $(selector+' tbody tr').dblclick(function(row){
+       $(row.target).parents('table:first').find('tr').removeClass('active');
+       var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
+       ondblclick(row, d.rows[id]);
+   });
+}
+
 $(function(){
 
   if ($('.model-list').length>0)
   { 
-       var model = new modelListController('.model-list');
+       var model = new modelListController('.model-list', modelSICView);
        model.load();
        model.click(function(e, row){
            // console.log(row);
