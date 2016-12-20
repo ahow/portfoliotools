@@ -38,11 +38,11 @@ $(function(){
      
     function reloadChartData()
     {   var pf1 = $('#portfolio').val();
-        var pf2 = $('#comparasion').val();
+        var pf2 = $('#comparison').val();
         var mt =  $('#metric').val();
         if (pf2!=null && mt!=null)
         {   $('#portfolio').attr('disabled', true)
-            $('#comparasion').attr('disabled', true)
+            $('#comparison').attr('disabled', true)
              ajx('/pages/sales/StackedChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
                 // console.log(d) 
                 // chart.setData(d.header, d.data1.data, d.data2.data);
@@ -84,7 +84,7 @@ $(function(){
                 Highcharts.chart('container', params);
                 
                 $('#portfolio').attr('disabled', false);
-                $('#comparasion').attr('disabled', false);
+                $('#comparison').attr('disabled', false);
                 
                 drawStackedChart('stacked', d)
             } );
@@ -105,7 +105,7 @@ $(function(){
         $('#description').val(r.description);
     });
     
-    var compar = new mdSelect('#comparasion');
+    var compar = new mdSelect('#comparison');
     compar.select(function(r){
         // reloadChartData();
     });

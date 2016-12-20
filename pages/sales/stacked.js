@@ -7,7 +7,7 @@ function drawStackedChart(id, data)
             type: 'column'
         },
         title: {
-            text: 'Metrict by company'
+            text: 'Metric by company'
         },
         xAxis: {
             title: {
@@ -88,6 +88,7 @@ function drawStackedChart(id, data)
     
     
     options.yAxis.max = yMax;
+    options.yAxis.title = {text:data.metric};
     
     var chart = new Highcharts.Chart(options,
     //add function for custom renderer

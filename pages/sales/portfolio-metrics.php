@@ -13,7 +13,7 @@
     </div>
     <div class="row">
         <div class="col-lg-5"><?=$f->modelSelect('portfolio','/pages/sales/Model/portfolio-lookup')?></div>
-        <div class="col-lg-5"><?=$f->modelSelect('comparasion','/pages/sales/Model/portfolio-lookup')?></div>
+        <div class="col-lg-5"><?=$f->modelSelect('comparison','/pages/sales/Model/portfolio-lookup')?></div>
         <div class="col-lg-2"><button style="margin-top:25px" class="btn btn-primary b-vchart">View Chart</button></div>
     </div>
     <div class="row">
