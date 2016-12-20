@@ -7,7 +7,7 @@ function drawStackedChart(id, data)
             type: 'column'
         },
         title: {
-            text: 'Metrict by company'
+            text: 'Metric by company'
         },
         xAxis: {
             title: {
