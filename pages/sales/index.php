@@ -10,6 +10,6 @@
 <p><a href="<?=mkURL('/sales/portfolio-list')?>"><?=T('portfolio-list')?></a></p>
 <p><a href="<?=mkURL('/sales/metric-list')?>"><?=T('metric-list')?></a></p>
 <p><a href="<?=mkURL('/sales/theme-exposures')?>"><?=T('theme-exposures')?></a></p>
-<p><a href="<?=mkURL('/sales/theme-metrics')?>"><?=T('theme-metrics')?></a></p>
+<p><a href="<?=mkURL('/sales/portfolio-metrics')?>"><?=T('portfolio-metrics')?></a></p>
 <p><a href="<?=mkURL('/sales/data-export')?>"><?=T('data-export')?></a></p>
 </div>
