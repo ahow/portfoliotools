@@ -6,7 +6,7 @@ function log_error( $num, $str, $file, $line, $context = null )
 {    log_exception( new ErrorException( $str, 0, $num, $file, $line ) );
 }
 
-function log_exception( Exception $e )
+function log_exception($e)
 {
     echo '<div class="alert alert-danger">';
     echo $e->getMessage().' line: '.$e->getLine().' in '.$e->getFile();
