@@ -21,11 +21,17 @@
   </div>  
   <button type="submit" class="btn btn-default btn-info btn-lg "><?=T('Login') ?></button>
   <br><br>
-  <?=T('SIGN_IN_WITH') ?>: 
-  <a href="<?=mkURL('/oauth/google')?>">Google</a> 
-  <a href="<?=mkURL('/oauth/vkontakte')?>">VKontakte</a>
-  <a href="<?=mkURL('/oauth/yandex')?>">Yandex</a>
-  <a href="<?=mkURL('/oauth/twitter')?>">Twitter</a>
+  <?php
+    $cfile = substr(__DIR__,0,-5).'oauth/config.js';
+    $refs = '';
+    if (file_exists($cfile))
+    {  $cfg = json_decode(file_get_contents($cfile));       
+       foreach($cfg as $r)
+       { if ($r->enabled) $refs.='<a href="'.mkURL('/oauth/'.$r->name).'">'.$r->title.'</a> ';
+       }
+    }
+    if ($refs!='')  echo T('SIGN_IN_WITH').': '.$refs;    
+  ?>  
 </form>
 <?php
   }

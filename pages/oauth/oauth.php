@@ -1,6 +1,6 @@
 <?php
   class oauth extends wPage
-  {  function oauth($cfg, $path, $seg=null)
+  {  function __construct($cfg, $path, $seg=null)
      {  $cfg->title = 'OAUTH';
         //$this->path = $path.'/index.php';
         $this->cfg = $cfg;

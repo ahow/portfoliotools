@@ -22,9 +22,13 @@ require_once '../vendor/autoload.php';
 $storage = new Session();
 
 $servicesCredentials = array();
-$servicesCredentials['vkontakte'] = array(
-'key'=>'key',
-'secret'=>'your_sercret');
+include(__DIR__.'/readconfig.php');
+
+if (!isset($servicesCredentials['vkontakte']))
+{   echo T('ERR_LOST_CONFIG_OF_OAUTH_MODULE');
+    $this->oauth = null;
+    return;
+}
 
 class URI
 { var $page = '';  

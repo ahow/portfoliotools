@@ -16,23 +16,24 @@ use OAuth\Common\Storage\Session;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\ServiceFactory;
 
-/**
- * Bootstrap the example
- */
 require_once '../vendor/autoload.php';
 
 // Session storage
 $storage = new Session();
 
 $servicesCredentials = array();
-$servicesCredentials['yandex'] = array(
-'key'=>'your_key',
-'secret'=>'your_secret');
+include(__DIR__.'/readconfig.php');
+
+if (!isset($servicesCredentials['yandex']))
+{   echo T('ERR_LOST_CONFIG_OF_OAUTH_MODULE');
+    $this->oauth = null;
+    return;
+}
 
 class URI
 { var $page = '';  
     
-  function URI($_page)
+  function __construct($_page)
   { $this->page = $_page;
   }
   
