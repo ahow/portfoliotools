@@ -237,7 +237,8 @@ function modelFormController(selector)
        
        function bind()
        {   model = $(selector).attr('data-model');
-           insert_redirect = $(selector).attr('data-if-inserted-redirect');
+           insert_redirect = $(selector).attr('data-if-inserted-redirect');           
+           if (insert_redirect==undefined) insert_redirect='';
            $(selector).find('.model-insert').click(function(){
             insert();
            });
@@ -251,5 +252,6 @@ function modelFormController(selector)
       bind();
        
       return {load:load, total:total, bind:bind, click:click, loaded:loaded,
+           insert:insert, update:update,
            getData:getData, setData:setData, loadrow:loadrow, updated:updated};
 }

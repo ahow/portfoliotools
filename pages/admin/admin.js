@@ -163,7 +163,7 @@ function userlistView()
        });
        
        $('button.b-useradd').click(function(){
-          if (vld.validate()) console.log(userForm.getData(true));
+          if (vld.validate()) userForm.insert();
        });
        
        $('#btsearch').click(function(){
