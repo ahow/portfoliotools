@@ -214,14 +214,15 @@ function modelFormController(selector)
        
        function click(fu){ onclick = fu;}
        
-       function insert()
+       function insert(fu)
        {  var r = getData(true);           
           ajx(model+'/insert', r, function(d){
                  if (!d.error) 
-                 {   if (insert_redirect!='') window.location = insert_redirect;
-                     else setOk(d.info);
+                 {   if (fu!=undefined) fu(d);
+                     if (insert_redirect!='') window.location = insert_redirect;
+                     setOk(d.info);
                  }
-          }); 
+          });
        }
        
        function update()

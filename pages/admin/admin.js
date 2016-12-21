@@ -163,7 +163,13 @@ function userlistView()
        });
        
        $('button.b-useradd').click(function(){
-          if (vld.validate()) userForm.insert();
+          if (vld.validate()) userForm.insert(function(d){
+             if (!d.error) 
+             {
+                $('#useradd-form').modal('hide');
+                users.load();
+             }
+          });
        });
        
        $('#btsearch').click(function(){
