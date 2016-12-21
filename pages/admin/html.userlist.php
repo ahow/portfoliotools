@@ -55,6 +55,9 @@
             <div class="row">
                 <div class="col-lg-12"><?=$f->input('phone')?></div>
             </div>           
+            <div class="row">
+                <div class="col-lg-12"><?=$f->input('pass','password')?></div>
+            </div> 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

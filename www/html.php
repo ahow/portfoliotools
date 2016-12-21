@@ -11,7 +11,7 @@
      
      function authGroup($group)
      { if ($this->cfg->inGroup($group)) return true;
-       $this->error("Вы не авторизованы для группы $group", 3004);
+       $this->error(T('ERR_NOT_AUTHORIZED_FOR_GROUP').": $group", 3004);
        return false;
      }
      
