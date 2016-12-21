@@ -2,6 +2,9 @@
   $this->db =  $this->newMod('db');     // Database connection
   $this->user =  $this->newMod('auth'); // Authorization
   
+  // Goto LOGIN if not logged
+  if ($this->page->path!='../pages/login/index.php' && empty($this->user->user)) header('Location: '.mkURL('/login'));
+  
   // After init modules
   if (method_exists($this->page,'afterInit')) $this->page->afterInit();
 
