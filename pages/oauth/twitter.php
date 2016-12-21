@@ -16,9 +16,6 @@ use OAuth\Common\Storage\Session;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\ServiceFactory;
 
-/**
- * Bootstrap the example
- */
 require_once '../vendor/autoload.php';
 
 // We need to use a persistent storage to save the token, because oauth1 requires the token secret received before'
@@ -26,20 +23,24 @@ require_once '../vendor/autoload.php';
 $storage = new Session();
 
 $servicesCredentials = array();
-$servicesCredentials['twitter'] = array(
-'key'=>'keyhsdhgfs',
-'secret'=>'seeecreeet');
+
+include(__DIR__.'/readconfig.php');
+
+if (!isset($servicesCredentials['twitter']))
+{   echo T('ERR_LOST_CONFIG_OF_OAUTH_MODULE');
+    $this->oauth = null;
+    return;
+}
 
 class URI
 { var $page = '';  
     
-  function URI($_page)
+  function __construct($_page)
   { $this->page = $_page;
   }
   
   function getAbsoluteUri()    
-  { return $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].mkURL($this->page);
-    
+  {  return $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].mkURL($this->page);
   }
   function getRelativeUri()
   { return mkURL($this->page);
