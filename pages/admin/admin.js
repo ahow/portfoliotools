@@ -133,12 +133,17 @@ function userlistView()
     var users = new tableList('#users-table','users',['name','firstname','lastname','email']);
     var usergroups = new groupsList('#user-groups','usergroups');
     
+    // 
+    
     function init()
     {
         users.load();
         users.total(function(t){
            $('span.records-total').html(t); 
        });
+       
+       var userForm = new modelFormController('#useradd-form');
+       var vld = new formValidator('#useradd-form');
         
         users.click(function(row){
            $('#editform').addClass('disabled-input');
@@ -150,6 +155,21 @@ function userlistView()
        
        $('#btgrsave').click(function(){
            usergroups.save();
+          // userForm.save();
+       });
+       
+       $('#btadduser').click(function(){
+           $('#useradd-form').modal();
+       });
+       
+       $('button.b-useradd').click(function(){
+          if (vld.validate()) userForm.insert(function(d){
+             if (!d.error) 
+             {
+                $('#useradd-form').modal('hide');
+                users.load();
+             }
+          });
        });
        
        $('#btsearch').click(function(){
@@ -162,6 +182,7 @@ function userlistView()
        $('#tsearch').keyup(function(d){ 
            if (d.keyCode==13)  $('#btsearch').trigger('click');
        });
+       
 
     } 
     

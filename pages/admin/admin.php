@@ -5,7 +5,9 @@
      {  $cfg->title = 'ADMIN_PANEL';
         $this->path = $path.'/index.php';
         $this->cfg = $cfg;
-        $this->cfg->addJs('/js', 'admin.js');
+        $this->cfg->addJs('/js','formvalidator.js');
+        $this->cfg->addJs('/js','models.js');
+        $this->cfg->addJs('/html.php/pages/admin','admin.js');
      }
      
      function display()

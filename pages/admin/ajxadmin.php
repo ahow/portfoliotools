@@ -1,7 +1,17 @@
 <?php  
  /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
-    class ajxadmin extends wAjax
-    {  function ajxAll()
+ include('../lib/ajaxmodel.php');
+  
+    class ajxadmin extends wAjaxModel
+    {  
+      
+     function ajxModel()
+     {  $this->includePageLocales(__DIR__);
+        if (!$this->authGroup('admin')) return $this->error(T("ERR_NOT_ADMIN"), true);
+        $this->processModel(__DIR__);
+      }
+      
+      function ajxAll()
        {  if (!$this->authGroup('admin')) return;
           $db = $this->cfg->db;
           $qr = $db->query('select id,name,lastname,firstname,email,phone from mc_users order by lastname, firstname');
@@ -151,6 +161,11 @@
           }
           echo json_encode($this->res);
        }
-              
+       
+       function beforeInsertUser(&$row)
+       {  $auth = $this->cfg->user;
+          $row->pass = $auth->hashPassword($row->pass);
+       }
+
     }
 ?>

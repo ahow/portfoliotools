@@ -1,9 +1,11 @@
 <?php
-  include('../lib/mime.php');
-  $id = get('id');
-  output_headers('Portfolio-'.$id.'.csv');
-  //if ($this->inGroup('admin'))
-  //{  
+
+include('../lib/mime.php');
+$id = get('id');
+ 
+if ($this->inGroup('admin') || $this->inGroup('editor'))
+{
+      output_headers('Portfolio-'.$id.'.csv');
       $db = $this->db;
       $h = array('ISIN');
       $qr=$db->query('select portfolio from sales_portfolio where id=:id', array('id'=>$id) );
@@ -16,5 +18,5 @@
       { fputcsv($fp, $r, ',');
       }
       fclose($fp);
-   //} else echo 'Access denied. Please login.';
+} else  header("HTTP/1.0 404 Not Found");
 ?>

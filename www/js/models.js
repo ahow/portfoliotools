@@ -162,10 +162,11 @@ function modelFormController(selector)
            }
        }
        
-       function getData()
+       function getData(is_insert)
        {   var r = {};
            var ctrls = $(selector).find('[data-control-type]');
            var values = 0;
+           if (is_insert==undefined) is_insert = false;
            for (var i=0; i<ctrls.length; i++)
            { var ctrl = ctrls[i];
              var id = ctrl.getAttribute('id'), val=null;             
@@ -178,16 +179,16 @@ function modelFormController(selector)
                if (is_key)
                {  r[id] = value;
                }
-               else if (old_value!=null && value!=old_value) 
+               else if ((old_value!=null || is_insert) && value!=old_value) 
                { r[id] = value;
-                 ctrl.setAttribute('data-old-value', value);
+                 if (!is_insert) ctrl.setAttribute('data-old-value', value);
                  values++;
-               }               
+               }  
              }
            }
            if (values==0) return {};           
            return r;
-        }
+       }
         
        function load(id)
        {   if ($.type(id)!=='object')
@@ -213,14 +214,15 @@ function modelFormController(selector)
        
        function click(fu){ onclick = fu;}
        
-       function insert()
-       {  var r = getData();           
+       function insert(fu)
+       {  var r = getData(true);           
           ajx(model+'/insert', r, function(d){
                  if (!d.error) 
-                 {   if (insert_redirect!='') window.location = insert_redirect;
-                     else setOk(d.info);
+                 {   if (fu!=undefined) fu(d);
+                     if (insert_redirect!='') window.location = insert_redirect;
+                     setOk(d.info);
                  }
-          }); 
+          });
        }
        
        function update()
@@ -236,7 +238,8 @@ function modelFormController(selector)
        
        function bind()
        {   model = $(selector).attr('data-model');
-           insert_redirect = $(selector).attr('data-if-inserted-redirect');
+           insert_redirect = $(selector).attr('data-if-inserted-redirect');           
+           if (insert_redirect==undefined) insert_redirect='';
            $(selector).find('.model-insert').click(function(){
             insert();
            });
@@ -250,5 +253,6 @@ function modelFormController(selector)
       bind();
        
       return {load:load, total:total, bind:bind, click:click, loaded:loaded,
+           insert:insert, update:update,
            getData:getData, setData:setData, loadrow:loadrow, updated:updated};
 }
