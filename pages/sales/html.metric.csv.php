@@ -1,6 +1,9 @@
 <?php
   include('../lib/mime.php');
   $id = get('id');
+  
+if ($this->inGroup('admin') || $this->inGroup('editor'))
+{ 
   output_headers('Metric-'.$id.'.csv');
   //if ($this->inGroup('admin'))
   //{  
@@ -44,5 +47,6 @@
           fputcsv($fp, $a, ',');
           fclose($fp);
        }
-   //} else echo 'Access denied. Please login.';
+} else  header("HTTP/1.0 404 Not Found");
+
 ?>

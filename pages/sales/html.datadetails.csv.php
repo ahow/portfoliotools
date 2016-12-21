@@ -1,5 +1,9 @@
 <?php
-  include('../lib/mime.php');
+
+include('../lib/mime.php');
+  
+if ($this->inGroup('admin') || $this->inGroup('editor'))
+{ 
   output_headers('DivisionDetails-'.date('Y-md-His').'.csv');
   //if ($this->inGroup('admin'))
   //{  
@@ -72,5 +76,6 @@
       
      fclose($fp);
      
-   //} else echo 'Access denied. Please login.';
+} else  header("HTTP/1.0 404 Not Found");
+
 ?>

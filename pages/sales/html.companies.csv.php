@@ -1,8 +1,7 @@
 <?php
-  include('../lib/mime.php');
-  output_headers('CompanyList-'.date('Y-md-His').'.csv');
-  //if ($this->inGroup('admin'))
-  //{  
+  include('../lib/mime.php');  
+  if ($this->inGroup('admin') || $this->inGroup('editor'))
+  {   output_headers('CompanyList-'.date('Y-md-His').'.csv');
       $db = $this->db;
       $h = array('CID','NAME','INDUSTRY GROUP','INDUSTRY','SECTOR','SUBSECTOR','COUNTRY','ISIN','REGION');
       $qr=$db->query('select c.cid, c.name, c.industry_group, c.industry, c.sector, c.subsector, c.country, c.isin, c.region
@@ -13,5 +12,5 @@
       { fputcsv($fp, $r, ',');
       }
       fclose($fp);
-   //} else echo 'Access denied. Please login.';
+  } else  header("HTTP/1.0 404 Not Found");
 ?>
