@@ -65,13 +65,22 @@
         <div id="navbar" class="navbar-collapse collapse">
             
           <ul class="nav navbar-nav">
-              
+             <?php
+              $cf = $this;
+             if ($cf->inGroup('admin'))
+             {
+             ?>
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Data menu<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $dataMenu->display() ?>
                   </ul>
               </li>
+             <?php 
+             }
+             if ($cf->inGroup('admin') || $cf->inGroup('editor'))
+             {
+             ?>
               
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">End markets<span class="caret"></span></a>
@@ -79,7 +88,11 @@
                      <?php $endmarketsMenu->display() ?>
                   </ul>
               </li>
-
+             <?php 
+             }
+             if ($cf->inGroup('admin') || $cf->inGroup('editor')  || $cf->inGroup('user'))
+             {
+             ?>   
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Portfolio measures<span class="caret"></span></a>
                   <ul class="dropdown-menu">
@@ -87,7 +100,9 @@
                   </ul>
               </li>
               
-              <?php $userMenu->display() ?>
+              <?php 
+             }
+                $userMenu->display() ?>
           </ul>          
           <?php  $authMenu->display(); ?>
         </div><!--/.nav-collapse -->
