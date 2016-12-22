@@ -2,7 +2,7 @@ $(function(){
     
     function toFloat(v, decimals)
     { var n = 1.0*v;            
-      if (isNaN(v) || v==null || (''+v).toLowerCase()=='null')
+      if (isNaN(n) || v==null || (''+v).toLowerCase()=='null')
       {   return '-';
       }
       return n.toFixed(decimals);
