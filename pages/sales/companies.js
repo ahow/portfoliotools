@@ -297,7 +297,7 @@ $(function(){
    $("a[href='#tabsearh']").on('show.bs.tab', function(e) {
       if (is_comp_edited)
       {   is_comp_edited = false;
-          model.refresh();          
+          model.refresh();
       }      
    });
       

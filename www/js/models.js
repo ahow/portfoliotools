@@ -41,12 +41,16 @@ function modelListController(selector, customView)
    var model = '';
    var ondraw = null;
    var last_params; // last parametrs
+   var last_id = null;
   
    function load(id)
    {   // console.log(id,last_params);
        if ($.type(id)!=='object')
        {   var pf = '';
-           if (id!=undefined) pf+='/'+id;
+           if (id!=undefined && id!=null)
+           { pf+='/'+id;
+             last_id=id;
+           }
            else last_params={};
            ajx(model+'/load'+pf, last_params, draw);
        } else  
@@ -54,6 +58,8 @@ function modelListController(selector, customView)
          ajx(model+'/load', id, draw);
        }
    }
+   
+   function refresh(){ load(last_id); }
    
    function total(fu){ ontotal = fu;}
    
@@ -75,7 +81,7 @@ function modelListController(selector, customView)
    if (customView==undefined) ondraw = modelTableView;
    else  ondraw = customView;
    
-   return {load:load, total:total, click:click, dblclick:dblclick, loaded:loaded};
+   return {load:load, total:total, click:click, dblclick:dblclick, loaded:loaded, refresh:refresh};
 }
 
 function modelPagination(selector)
