@@ -7,6 +7,14 @@ function companieEditForm(selector)
     var data =  null;
     var cid = null; // companie ID    
     
+    function toFloat(v, decimals)
+    { var n = 1.0*v;            
+      if (isNaN(n) || v==null)
+      {   return '-';
+      }
+      return n.toFixed(decimals);
+    }
+    
     function draw(d)
     {
         var i;
@@ -79,7 +87,7 @@ function companieEditForm(selector)
                 {  // if (divs[i].years[y]!=undefined && base!=0.0 && base_me==divs[i].years[y].me)
                     if (divs[i].years[y]!=undefined && base!=0.0)
                         //  s+='<td class="a-right">'+((divs[i].years[y].sales/base)*100).toFixed(2)+'</td>';
-                        s+='<td class="a-right">'+((divs[i].years[y].sales/ytotal[y])*100).toFixed(0)+'</td>';
+                        s+='<td class="a-right">'+toFloat((divs[i].years[y].sales/ytotal[y])*100,0)+'</td>';
                     else
                         s+='<td class="a-right">-</td>';
                 }
@@ -175,6 +183,40 @@ function companieEditForm(selector)
     return {click:click, draw:draw, getrow:getrow, load:load, getCID:getCID}
 }
 
+function modelCompaniesView(selector,d,onclick,ondblclick)
+{  var s = '';
+   var i;
+   
+   if (d.titles!=undefined)
+   {   var h = '<tr>';
+       for (i in d.titles)
+       { h+='<th>'+d.titles[i]+'</th>';               
+       }
+       h+='</tr>';
+       $(selector).find('thead').html(h);
+   }
+   for (i in d.rows)
+   {   var j;
+       var r = d.rows[i];
+       var cl = '';
+       if (r.reviewed==1) cl=' class="w-reviewed"';
+       if (r.id!=undefined) s+='<tr data-id="'+i+'"'+cl+'>'; else s+='<tr>';
+       for (j in d.columns) s+='<td>'+r[ d.columns[j] ]+'</td>';
+       s+='</tr>';
+   }
+   $(selector).find('tbody').html(s);
+   if (onclick!=null)  $(selector+' tbody tr').click(function(row){
+       $(row.target).parents('table:first').find('tr').removeClass('active');
+       var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
+       onclick(row, d.rows[id]);
+   });
+   
+   if (ondblclick!=undefined && ondblclick!=null)  $(selector+' tbody tr').dblclick(function(row){
+       $(row.target).parents('table:first').find('tr').removeClass('active');
+       var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
+       ondblclick(row, d.rows[id]);
+   });
+}
 
 var compData;
 
@@ -182,8 +224,9 @@ $(function(){
 
    // --------------- Search tab  --------------------
    var pager;
+   var is_comp_edited = false;
 
-   var model = new modelListController('.model-list');
+   var model = new modelListController('.model-list', modelCompaniesView);
    model.load();
    
    var selected_row = null;
@@ -191,7 +234,7 @@ $(function(){
    var editF = new companieEditForm('#form1');
    compData = new modelFormController('#company-data');
    
-  var views = new htviewCached();
+   var views = new htviewCached();
 
    model.click(function(e, row){        
         selected_row = row;
@@ -245,25 +288,20 @@ $(function(){
         if (!$.isEmptyObject(r))
         {   ajx('/pages/sales/Model/companies/update', r, function(d){                   
                    if (!d.error) setOk(d.info); 
+                   is_comp_edited = true;
             });
         }
    });
-   /*
-   $('#reviewed').click(function(e){
-        var cid = editF.getCID();
-        if (cid!=null)        
-        {   var v = 0;
-            if (e.target.checked) v=1;
-            ajx('/pages/sales/Model/companies/update', {cid:cid, reviewed:v}, function(d){                   
-                   if (!d.error) setOk(d.info); 
-            });
-        }
+   
+    // ------- First tab opened -----------------------
+   $("a[href='#tabsearh']").on('show.bs.tab', function(e) {
+      if (is_comp_edited)
+      {   is_comp_edited = false;
+          model.refresh();
+      }      
    });
-   */
-   
-   // search SIC 
-
-   
+      
+    // search SIC 
     views.view('/pages/sales/search','#search_sic', function(){        
         dialog = new searchDialog('#search_sic', "/pages/sales/Model/sic-search",'Search SIC');
         dialog.select(function(sr, target){
