@@ -1,5 +1,13 @@
 $(function(){
     
+    function toFloat(v, decimals)
+    { var n = 1.0*v;            
+      if (isNaN(v) || v==null || (''+v).toLowerCase()=='null')
+      {   return '-';
+      }
+      return n.toFixed(decimals);
+    }
+    
     function drawSummary(d)
     {  var selector='#summary';
        var s = '<table class="table table-striped">';
@@ -8,13 +16,13 @@ $(function(){
         for (var i=0; i<d.rows.length; i++)
         {   var r = d.rows[i];
             if (r!=undefined)
-            {   s+='<tr><td>'+r.subsector+'</td><td>'+r.tsales+'</td><td>'
-                +((100.0*r.top3sum)/(1.0*r.tsales)).toFixed(0)+'</td><td>'
-                +((100.0*r.top5sum)/(1.0*r.tsales)).toFixed(0)+'</td><td>'
-                +(1.0*r.stability).toFixed(2)+'</td><td>'+(1.0*r.asales_growth).toFixed(2)+'</td><td>'
-                +(1.0*r.aroic).toFixed(2)+'</td><td>'+(1.0*r.ape).toFixed(2)+'</td><td>'
-                +(1.0*r.aevebitda).toFixed(2)+'</td><td>'+(1.0*r.apayout).toFixed(2)+'</td><td>'
-                +(1.0*r.previewed).toFixed(0)+'</td></tr>';
+            {   s+='<tr><td>'+r.subsector+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
+                +toFloat((100.0*r.top3sum)/(1.0*r.tsales), 0)+'</td><td>'
+                +toFloat((100.0*r.top5sum)/(1.0*r.tsales), 0)+'</td><td>'
+                +toFloat(r.stability,1)+'</td><td>'+toFloat(r.asales_growth,1)+'</td><td>'
+                +toFloat(r.aroic,1)+'</td><td>'+toFloat(r.ape,1)+'</td><td>'
+                +toFloat(r.aevebitda,1)+'</td><td>'+toFloat(r.apayout,1)+'</td><td>'
+                +toFloat(r.previewed,0)+'</td></tr>';
             }
         }
         s+='</table>';
@@ -29,13 +37,13 @@ $(function(){
         for (var i=0; i<d.rows.length; i++)
         {   var r = d.rows[i];
             if (r!=undefined)
-            {   s+='<tr><td>'+r.sic+'</td><td>'+r.name+'</td><td>'+(1.0*r.tsales).toFixed(1)+'</td><td>'
-                +((100.0*r.top3sum)/(1.0*r.tsales)).toFixed(0)+'</td><td>'
-                +((100.0*r.top5sum)/(1.0*r.tsales)).toFixed(0)+'</td><td>'
-                +(1.0*r.stability).toFixed(1)+'</td><td>'+(1.0*r.asales_growth).toFixed(1)+'</td><td>'
-                +(1.0*r.aroic).toFixed(1)+'</td><td>'+(1.0*r.ape).toFixed(1)+'</td><td>'
-                +(1.0*r.aevebitda).toFixed(1)+'</td><td>'+(1.0*r.apayout).toFixed(1)+'</td><td>'
-                +(1.0*r.previewed).toFixed(0)+'</td></tr>';
+            {   s+='<tr><td>'+r.sic+'</td><td>'+r.name+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
+                +toFloat((100.0*r.top3sum)/(1.0*r.tsales), 0)+'</td><td>'
+                +toFloat((100.0*r.top5sum)/(1.0*r.tsales), 0)+'</td><td>'
+                +toFloat(r.stability, 1)+'</td><td>'+toFloat(r.asales_growth,1)+'</td><td>'
+                +toFloat(r.aroic,1)+'</td><td>'+toFloat(r.ape,1)+'</td><td>'
+                +toFloat(r.aevebitda,1)+'</td><td>'+toFloat(r.apayout,1)+'</td><td>'
+                +toFloat(r.previewed,0)+'</td></tr>';
             }
         }
         s+='</table>';
