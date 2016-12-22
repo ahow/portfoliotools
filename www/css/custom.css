@@ -152,4 +152,6 @@ div.row.divider {
 }
 
 .a-right { text-align:right }
+.w-reviewed td { color:#52647A; font-weight:bold; }
+table.selectable tr.w-reviewed.active td { color:#C9E2FF; }
 
