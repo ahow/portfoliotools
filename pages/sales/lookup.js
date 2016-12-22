@@ -67,7 +67,7 @@ function searchDialog(selector, datamodel, title)
    });
       
    // enable pager
-   pager = new modelPagination(selector+' .model-list .model-pager');
+   var pager = new modelPagination(selector+' .model-list .model-pager');
    
    model.total(function(total, rows_lim){
        pager.setTotal(total, rows_lim);

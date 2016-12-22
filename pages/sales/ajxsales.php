@@ -267,7 +267,9 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
  whereas the other measures would be weighted average values. 
          */
         while ($r = $db->fetchSingle($qr))
-        {  $pr = $r->pofsale = ($r->dsales / $ctotal[$r->cid]) * 100.0;
+        {  $ctot = $ctotal[$r->cid];
+           if ($ctot==0) $pr = NULL; else
+           $pr = $r->pofsale = ($r->dsales / $ctot) * 100.0;           
            $fin->ape+= $pr * $r->pe;
            $fin->asales_growth += $pr * $r->sales_growth;
            $fin->aroic += $pr * $r->roic;
@@ -281,7 +283,7 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
            if ($r->reviewed) $reviewed++;
            $rownum++;
         }
-        if ($rownum==0)
+        if ($rownum==0 || $proc_sum==0)
         {  $fin->ape = NULL;
             $fin->asales_growth = NULL;
             $fin->aroic = NULL;
