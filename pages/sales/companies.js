@@ -7,6 +7,14 @@ function companieEditForm(selector)
     var data =  null;
     var cid = null; // companie ID    
     
+    function toFloat(v, decimals)
+    { var n = 1.0*v;            
+      if (isNaN(n) || v==null)
+      {   return '-';
+      }
+      return n.toFixed(decimals);
+    }
+    
     function draw(d)
     {
         var i;
@@ -79,7 +87,7 @@ function companieEditForm(selector)
                 {  // if (divs[i].years[y]!=undefined && base!=0.0 && base_me==divs[i].years[y].me)
                     if (divs[i].years[y]!=undefined && base!=0.0)
                         //  s+='<td class="a-right">'+((divs[i].years[y].sales/base)*100).toFixed(2)+'</td>';
-                        s+='<td class="a-right">'+((divs[i].years[y].sales/ytotal[y])*100).toFixed(0)+'</td>';
+                        s+='<td class="a-right">'+toFloat((divs[i].years[y].sales/ytotal[y])*100,0)+'</td>';
                     else
                         s+='<td class="a-right">-</td>';
                 }
