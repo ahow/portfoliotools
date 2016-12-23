@@ -43,7 +43,7 @@
                 <div class="col-lg-4"><?=$f->input('division')?></div>
             </div>
             <div class="row">
-                <div class="col-lg-4"><?=$f->input('major_group')?></div>
+                <div class="col-lg-4"><?=$f->modelSelect('major_group','/pages/sales/Model/ig_major_group')?></div>
                 <div class="col-lg-4"><?=$f->input('sic')?></div>
                 <div class="col-lg-4"><?=$f->modelSelect('fregion','/pages/sales/Model/regions')?></div>
             </div>

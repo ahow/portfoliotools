@@ -225,7 +225,12 @@ var compData, filterData;
 function mkFilter(s)
 { var r = {};
   var flt = {fregion:"region=:fregion", sic:"sic=:sic",
-      industry_group:'industry_group=:industry_group', subsector:'subsector=:subsector'};
+      industry_group:'industry_group=:industry_group',
+      subsector:'subsector=:subsector',
+      major_group:'cid in (select d.cid from sales_divdetails d\
+      where d.sic in (select s.id from sales_sic s \
+      where s.industry_group_id in (select g.id from\
+      sales_industry_groups g where g.major_group=:major_group)))'};
   var d = filterData.getData(true);  
   var a = [];
   for (k in d) 
@@ -279,8 +284,9 @@ $(function(){
    $('.model-list .model-search button.b-clean').click(function(){
         $('.model-list .model-search input').val('');
         $('.model-list #fregion').val('');
-        $('.model-list #industry_group').val('');        
-        $('.model-list #subsector').val('');   
+        $('.model-list #industry_group').val('');
+        $('.model-list #major_group').val('');
+        $('.model-list #subsector').val('');
         model.load();
    });
    

@@ -7,5 +7,12 @@
   "rows_number_limit": 10,
   "beforeUpdate":"beforeUpdateCompany",
   "select_row": "select * from $table where cid=:cid",
-  "select_total": "select count(*) from $table $where"
+  "select_total": "select count(*) from $table $where",
+  "filter_parts":{
+      "fregion":"region=:fregion",
+      "sic":"sic=:sic",
+      "industry_group":"industry_group=:industry_group",
+      "subsector":"subsector=:subsector",
+      "major_group":"cid in (select d.cid from sales_divdetails d where d.sic in (select s.id from sales_sic s where s.industry_group_id in (select g.id from sales_industry_groups g where g.major_group=:major_group)))"
+  }
 }
