@@ -37,6 +37,16 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-4"><?=$f->input('subsector')?></div>
+                <div class="col-lg-4"><?=$f->input('industry_group')?></div>
+                <div class="col-lg-4"><?=$f->input('division')?></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4"><?=$f->input('major_group')?></div>
+                <div class="col-lg-4"><?=$f->input('sic')?></div>
+                <div class="col-lg-4"><?=$f->modelSelect('fregion','/pages/sales/Model/regions')?></div>
+            </div>
             <table class="table table-striped selectable">
                 <thead></thead>
                 <tbody></tbody>
