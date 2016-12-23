@@ -248,14 +248,20 @@ $(function(){
    
    
    // Search
-   $('.model-list .model-search button').click(function(){
+   $('.model-list .model-search button.b-search').click(function(){
        var s = $('.model-list .model-search input').val().trim();
        if (s!='') model.load({search:'%'+s+'%'});
        else model.load();
    });
 
+   $('.model-list .model-search button.b-clean').click(function(){
+        $('.model-list .model-search input').val('');
+        $('.model-list #fregion').val('');
+        model.load();
+   });
+   
    $('.model-list .model-search input').keyup(function(d){ 
-       if (d.keyCode==13)  $('.model-list .model-search button').trigger('click');
+       if (d.keyCode==13)  $('.model-list .model-search button.b-search').trigger('click');
    });
    
    // enable pager
@@ -336,5 +342,20 @@ $(function(){
     });
     
    var lkregions = new lookupInput('#region','/pages/sales/Model/regions/load'); 
+   
+    // Region options init
+    $('.bs-model-select').each(function(i,e){
+        var sel = $(e);
+        var model = sel.attr('data-model')+'/load';
+        ajx(model,{},function(d){
+            var s = '<option value=""></option>';
+            for (var i=0; i<d.rows.length; i++)
+            {   var r = d.rows[i];
+                s+='<option value="'+r.id+'">'+r.name+'</option>';
+            }
+            sel.find('select').html(s);
+        });
+
+    });
     
 });
