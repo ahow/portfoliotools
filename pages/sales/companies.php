@@ -20,14 +20,22 @@
     <div id="tabsearh" class="tab-pane fade in active">
         
         <div class="model-list" data-model="/pages/sales/Model/companies">
-            <div class="input-group model-search">
-                <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" title="Search" placeholder="<?=T('Search')?>">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">
-                        <span class="glyphicon glyphicon-search"></span>&nbsp;
-                        <?=T('Search')?>
-                    </button> 
-                </span>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="input-group model-search">
+                        <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" title="Search" placeholder="<?=T('Search')?>">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default b-search" type="button">
+                                <span class="glyphicon glyphicon-search"></span>&nbsp;
+                                <?=T('Search')?>
+                            </button> 
+                            <button class="btn btn-default b-clean" type="button">
+                                <span class="glyphicon glyphicon glyphicon-remove"></span>&nbsp;
+                                <?=T('Clean')?>
+                            </button> 
+                        </span>
+                    </div>
+                </div>
             </div>
             <table class="table table-striped selectable">
                 <thead></thead>

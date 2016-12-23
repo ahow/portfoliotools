@@ -248,14 +248,19 @@ $(function(){
    
    
    // Search
-   $('.model-list .model-search button').click(function(){
+   $('.model-list .model-search button.b-search').click(function(){
        var s = $('.model-list .model-search input').val().trim();
        if (s!='') model.load({search:'%'+s+'%'});
        else model.load();
    });
 
+   $('.model-list .model-search button.b-clean').click(function(){
+        $('.model-list .model-search input').val('');
+        model.load();
+   });
+   
    $('.model-list .model-search input').keyup(function(d){ 
-       if (d.keyCode==13)  $('.model-list .model-search button').trigger('click');
+       if (d.keyCode==13)  $('.model-list .model-search button.b-search').trigger('click');
    });
    
    // enable pager
