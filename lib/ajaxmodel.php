@@ -85,8 +85,8 @@
        if (isset($params->filter_parts) )
        {   $fp = filter_var($params->filter_parts, FILTER_SANITIZE_STRING);
            $fp = str_replace(';',' ',$fp); // to remove SQL injections
+           if (trim($fp)!='') $this->where_parts[] = "($fp)";
            unset($params->filter_parts);
-           $this->where_parts[] = "($fp)";
        }
 
        $this->modelTotal($params);
