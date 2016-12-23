@@ -22,6 +22,7 @@ function lookupInput(selector, model, opt)
             return d;
     }
    
+   $(selector).attr('data-control-type','lkvalue');   
    $(selector).typeahead(opt);
    
    function select(fu){ onselect=fu; }
