@@ -222,27 +222,6 @@ function modelCompaniesView(selector,d,onclick,ondblclick)
 
 var compData, filterData;
 
-function mkFilter(s)
-{ var r = {};
-  var flt = {fregion:"region=:fregion", sic:"sic=:sic",
-      industry_group:'industry_group=:industry_group',
-      subsector:'subsector=:subsector',
-      major_group:'cid in (select d.cid from sales_divdetails d\
-      where d.sic in (select s.id from sales_sic s \
-      where s.industry_group_id in (select g.id from\
-      sales_industry_groups g where g.major_group=:major_group)))'};
-  var d = filterData.getData(true);  
-  var a = [];
-  for (k in d) 
-  { if (flt[k]!=undefined)
-    {  a.push(flt[k]);  
-       r[k]=d[k];
-    }
-  }
-  r.filter_parts = a.join(' '+s+' ');
-  return r;
-}
-
 $(function(){
 
    // --------------- Search tab  --------------------
@@ -274,8 +253,8 @@ $(function(){
    // Search
    $('.model-list .model-search button.b-search').click(function(){
        var s = $('.model-list .model-search input').val().trim();
-       var p = mkFilter('and');
-       if (s!='' || p.filter!='')       
+       var p = filterData.getData(true);
+       if (s!='' || p.filter!='')
        {   if (s!='') p.search = '%'+s+'%';
            model.load(p);
        } else model.load();
