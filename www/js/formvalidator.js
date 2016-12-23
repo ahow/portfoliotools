@@ -26,6 +26,19 @@ gl_formvalidator.controls.data = function(selector)
      return {getData:getData, setData:setData}
 }
 
+gl_formvalidator.controls.lkvalue = function(selector)
+{    function setData(value)
+     {  $(selector).attr('data-id', value );
+        $(selector).val( value );
+     }
+     
+     function getData()
+     {  return $(selector).attr('data-id');
+     }
+     
+     return {getData:getData, setData:setData}
+}
+
 gl_formvalidator.controls.checkbox = function(selector)
 {    function setData(value)
      {   if (value==1) value=true;

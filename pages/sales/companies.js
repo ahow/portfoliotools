@@ -167,8 +167,10 @@ function companieEditForm(selector)
         ajx('/pages/sales/Form1',{ cid:cid, year:$('#form1 #year').val() }, draw );
     }
     
-    $(selector+' #year').val(new Date().getFullYear()-1);
-    
+    var cyear = new Date().getFullYear()-1;
+    // remove control from updates
+    $(selector+' #year').val(cyear).attr('data-control-type',null);
+        
     $(selector+' #year').change( function(){        
         if (cid!=null)
         {  var year_timer = setTimeout(function(){
@@ -289,7 +291,7 @@ $(function(){
    });
    
    // ---------------- Direct Update -----------------
-   $('#company-data [data-control-type]').blur(function(){
+   $('#company-data [data-control-type]').blur(function(e){
         var r = compData.getData();
         if (!$.isEmptyObject(r))
         {   ajx('/pages/sales/Model/companies/update', r, function(d){                   
@@ -337,7 +339,7 @@ $(function(){
         });
         
         $('#id button').click(function(){
-            dialog.open();            
+            dialog.open();
         });
     });
     
