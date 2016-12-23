@@ -177,11 +177,12 @@ function modelFormController(selector)
            { var ctrl = ctrls[i];
              var id = ctrl.getAttribute('id'), val=null;             
              var c_type = ctrl.getAttribute('data-control-type');
-             var old_value = ctrl.getAttribute('data-old-value');
+             var old_value = ctrl.getAttribute('data-old-value');             
              var is_key = (ctrl.getAttribute('data-key')=='true');
              if (gl_formvalidator!=undefined && gl_formvalidator.controls[c_type]!=undefined && id!=null)
              { var getter = new gl_formvalidator.controls[c_type]('#'+id);
-               var value = getter.getData();                                           
+               var value = getter.getData();
+               if (value=='') value=null;
                if (is_key)
                {  r[id] = value;
                }
