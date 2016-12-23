@@ -225,16 +225,15 @@ var compData, filterData;
 function mkFilter(s)
 { var r = {};
   var flt = {fregion:"region=:fregion", sic:"sic=:sic", industry_group:'industry_group=:industry_group'};
-  var d = filterData.getData(true);
-  r.prm = {};
+  var d = filterData.getData(true);  
   var a = [];
   for (k in d) 
   { if (flt[k]!=undefined)
     {  a.push(flt[k]);  
-       r.prm[k]=d[k];
+       r[k]=d[k];
     }
   }
-  r.filter = a.join(' '+s+' ');
+  r.filter_parts = a.join(' '+s+' ');
   return r;
 }
 
