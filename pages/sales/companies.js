@@ -224,7 +224,8 @@ var compData, filterData;
 
 function mkFilter(s)
 { var r = {};
-  var flt = {fregion:"region=:fregion", sic:"sic=:sic", industry_group:'industry_group=:industry_group'};
+  var flt = {fregion:"region=:fregion", sic:"sic=:sic",
+      industry_group:'industry_group=:industry_group', subsector:'subsector=:subsector'};
   var d = filterData.getData(true);  
   var a = [];
   for (k in d) 
@@ -278,6 +279,8 @@ $(function(){
    $('.model-list .model-search button.b-clean').click(function(){
         $('.model-list .model-search input').val('');
         $('.model-list #fregion').val('');
+        $('.model-list #industry_group').val('');        
+        $('.model-list #subsector').val('');   
         model.load();
    });
    
