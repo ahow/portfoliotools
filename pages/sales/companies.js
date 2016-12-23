@@ -220,7 +220,22 @@ function modelCompaniesView(selector,d,onclick,ondblclick)
    });
 }
 
-var compData;
+var compData, filterData;
+
+function mkFilter(s)
+{ var r = {};
+  var flt = {fregion:"region=:fregion", sic:"sic=:sic", industry_group:'industry_group=:industry_group'};
+  var d = filterData.getData(true);  
+  var a = [];
+  for (k in d) 
+  { if (flt[k]!=undefined)
+    {  a.push(flt[k]);  
+       r[k]=d[k];
+    }
+  }
+  r.filter_parts = a.join(' '+s+' ');
+  return r;
+}
 
 $(function(){
 
@@ -235,6 +250,7 @@ $(function(){
 
    var editF = new companieEditForm('#form1');
    compData = new modelFormController('#company-data');
+   filterData = new modelFormController('#tabsearh');
    
    var views = new htviewCached();
 
@@ -252,8 +268,11 @@ $(function(){
    // Search
    $('.model-list .model-search button.b-search').click(function(){
        var s = $('.model-list .model-search input').val().trim();
-       if (s!='') model.load({search:'%'+s+'%'});
-       else model.load();
+       var p = mkFilter('and');
+       if (s!='' || p.filter!='')       
+       {   if (s!='') p.search = '%'+s+'%';
+           model.load(p);
+       } else model.load();
    });
 
    $('.model-list .model-search button.b-clean').click(function(){

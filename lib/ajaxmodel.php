@@ -81,6 +81,13 @@
        if (isset($params->search) && isset($this->model->search) )
        {    $this->where_parts[] = '('.$this->model->search.')';
        }
+       
+       if (isset($params->filter_parts) )
+       {   $fp = filter_var($params->filter_parts, FILTER_SANITIZE_STRING);
+           $fp = str_replace(';',' ',$fp); // to remove SQL injections
+           unset($params->filter_parts);
+           $this->where_parts[] = "($fp)";
+       }
 
        $this->modelTotal($params);
        
