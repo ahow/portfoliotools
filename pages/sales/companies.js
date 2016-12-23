@@ -222,22 +222,6 @@ function modelCompaniesView(selector,d,onclick,ondblclick)
 
 var compData, filterData;
 
-function mkFilter(s)
-{ var r = {};
-  var flt = {fregion:"region=:fregion", sic:"sic=:sic",
-      industry_group:'industry_group=:industry_group', subsector:'subsector=:subsector'};
-  var d = filterData.getData(true);  
-  var a = [];
-  for (k in d) 
-  { if (flt[k]!=undefined)
-    {  a.push(flt[k]);  
-       r[k]=d[k];
-    }
-  }
-  r.filter_parts = a.join(' '+s+' ');
-  return r;
-}
-
 $(function(){
 
    // --------------- Search tab  --------------------
@@ -269,8 +253,8 @@ $(function(){
    // Search
    $('.model-list .model-search button.b-search').click(function(){
        var s = $('.model-list .model-search input').val().trim();
-       var p = mkFilter('and');
-       if (s!='' || p.filter!='')       
+       var p = filterData.getData(true);
+       if (s!='' || p.filter!='')
        {   if (s!='') p.search = '%'+s+'%';
            model.load(p);
        } else model.load();
@@ -279,8 +263,9 @@ $(function(){
    $('.model-list .model-search button.b-clean').click(function(){
         $('.model-list .model-search input').val('');
         $('.model-list #fregion').val('');
-        $('.model-list #industry_group').val('');        
-        $('.model-list #subsector').val('');   
+        $('.model-list #industry_group').val('');
+        $('.model-list #major_group').val('');
+        $('.model-list #subsector').val('');
         model.load();
    });
    

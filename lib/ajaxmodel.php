@@ -82,11 +82,11 @@
        {    $this->where_parts[] = '('.$this->model->search.')';
        }
        
-       if (isset($params->filter_parts) )
-       {   $fp = filter_var($params->filter_parts, FILTER_SANITIZE_STRING);
-           $fp = str_replace(';',' ',$fp); // to remove SQL injections
-           if (trim($fp)!='') $this->where_parts[] = "($fp)";
-           unset($params->filter_parts);
+       if (isset($this->model->filter_parts))
+       {   $fp = $this->model->filter_parts;
+           foreach ((array)$params as $k=>$v)
+           { if (isset($fp->$k)) $this->where_parts[] = $fp->$k;
+           }
        }
 
        $this->modelTotal($params);
