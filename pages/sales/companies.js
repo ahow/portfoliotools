@@ -228,7 +228,7 @@ $(function(){
    var pager =  null;
    var is_comp_edited = false;
 
-   var model = new modelListController('.model-list', modelCompaniesView);
+   var model = new modelListController('#tabsearch .model-list', modelCompaniesView);
    model.load();
    
    var selected_row = null;
@@ -251,7 +251,7 @@ $(function(){
    
    
    // Search
-   $('.model-list .model-search button.b-search').click(function(){
+   $('#tabsearch .model-list .model-search button.b-search').click(function(){
        var s = $('.model-list .model-search input').val().trim();
        var p = filterData.getData(true);
        if (s!='' || p.filter!='')
@@ -260,24 +260,24 @@ $(function(){
        } else model.load();
    });
 
-   $('.model-list .model-search button.b-clean').click(function(){
-        $('.model-list .model-search input').val('');
-        $('.model-list #fregion').val('');
-        $('.model-list #industry_group').val('');
-        $('.model-list #major_group').val('');
-        $('.model-list #subsector').val('');
-        $('.model-list #division').val('');
-        $('.model-list #sic').val('');
-        $('.model-list #sic_code').attr('data-value','');
+   $('#tabsearch  .model-list .model-search button.b-clean').click(function(){
+        $('#tabsearch .model-list .model-search input').val('');
+        $('#tabsearch .model-list #fregion').val('');
+        $('#tabsearch .model-list #industry_group').val('');
+        $('#tabsearch .model-list #major_group').val('');
+        $('#tabsearch .model-list #subsector').val('');
+        $('#tabsearch .model-list #division').val('');
+        $('#tabsearch .model-list #sic').val('');
+        $('#tabsearch .model-list #sic_code').attr('data-value','');
         model.load();
    });
    
-   $('.model-list .model-search input').keyup(function(d){ 
+   $('#tabsearch  .model-list .model-search input').keyup(function(d){ 
        if (d.keyCode==13)  $('.model-list .model-search button.b-search').trigger('click');
    });
    
    // enable pager
-   pager = new modelPagination('.model-list .model-pager');
+   pager = new modelPagination('#tabsearch .model-list .model-pager');
    
    model.total(function(total, rows_lim){
        pager.setTotal(total, rows_lim);
