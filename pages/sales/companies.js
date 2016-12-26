@@ -225,7 +225,7 @@ var compData, filterData;
 $(function(){
 
    // --------------- Search tab  --------------------
-   var pager;
+   var pager =  null;
    var is_comp_edited = false;
 
    var model = new modelListController('.model-list', modelCompaniesView);
@@ -235,7 +235,7 @@ $(function(){
 
    var editF = new companieEditForm('#form1');
    compData = new modelFormController('#company-data');
-   filterData = new modelFormController('#tabsearh');
+   filterData = new modelFormController('#tabsearch');
    
    var views = new htviewCached();
 
@@ -312,7 +312,7 @@ $(function(){
    });
    
     // ------- First tab opened -----------------------
-   $("a[href='#tabsearh']").on('show.bs.tab', function(e) {
+   $("a[href='#tabsearch']").on('show.bs.tab', function(e) {
       if (is_comp_edited)
       {   is_comp_edited = false;
           model.refresh();

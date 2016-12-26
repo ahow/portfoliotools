@@ -11,13 +11,13 @@
 ?>
 
 <ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#tabsearh">Search</a></li>
+  <li class="active"><a data-toggle="tab" href="#tabsearch">Search</a></li>
   <li id="tbedit" class="disabled"><a data-toggle="tab" href="#tabedit">Edit</a></li>
 </ul>
 
 <div class="tab-content"  style="padding-top: 15px;">
     
-    <div id="tabsearh" class="tab-pane fade in active">
+    <div id="tabsearch" class="tab-pane fade in active">
         
         <div class="model-list" data-model="/pages/sales/Model/companies">
             <div class="row">
