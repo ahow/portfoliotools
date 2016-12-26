@@ -266,6 +266,9 @@ $(function(){
         $('.model-list #industry_group').val('');
         $('.model-list #major_group').val('');
         $('.model-list #subsector').val('');
+        $('.model-list #division').val('');
+        $('.model-list #sic').val('');
+        $('.model-list #sic_code').attr('data-value','');
         model.load();
    });
    
@@ -315,7 +318,22 @@ $(function(){
           model.refresh();
       }      
    });
-      
+
+   var dsic;
+   
+   views.view('/pages/sales/search','#search_sic2', function(){        
+        dsic = new searchDialog('#search_sic2', "/pages/sales/Model/sic-search",'Search SIC');
+        dsic.select(function(sr, target){
+            console.log(sr);
+            $('.model-list #sic').val(sr.name);
+            $('.model-list #sic_code').attr('data-value',sr.id);
+        });
+        
+        $('#sic_code button').click(function(){
+            dsic.open();
+        });
+   });
+         
     // search SIC 
     views.view('/pages/sales/search','#search_sic', function(){        
         dialog = new searchDialog('#search_sic', "/pages/sales/Model/sic-search",'Search SIC');

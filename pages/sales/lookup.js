@@ -34,6 +34,8 @@ function searchDialog(selector, datamodel, title)
 {  var selected = null;
    var onselect = null;
    var openTarget = null;
+   var pager = null;
+   
    $(selector+' div.model-list').attr('data-model', datamodel);
    $(selector+' .modal-title').html(title);
     
@@ -68,7 +70,7 @@ function searchDialog(selector, datamodel, title)
    });
       
    // enable pager
-   var pager = new modelPagination(selector+' .model-list .model-pager');
+   pager = new modelPagination(selector+' .model-list .model-pager');
    
    model.total(function(total, rows_lim){
        pager.setTotal(total, rows_lim);

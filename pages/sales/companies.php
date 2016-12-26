@@ -44,7 +44,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-4"><?=$f->modelSelect('major_group','/pages/sales/Model/ig_major_group')?></div>
-                <div class="col-lg-4"><?=$f->input('sic')?></div>
+                <div class="col-lg-4"><?=$f->search3dot('sic_code','sic')?></div>
                 <div class="col-lg-4"><?=$f->modelSelect('fregion','/pages/sales/Model/regions')?></div>
             </div>
             <table class="table table-striped selectable">
@@ -86,3 +86,4 @@
 
 </div>
 <div id="search_sic"></div>
+<div id="search_sic2"></div>
