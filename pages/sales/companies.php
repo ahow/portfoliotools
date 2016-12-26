@@ -11,13 +11,13 @@
 ?>
 
 <ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#tabsearh">Search</a></li>
+  <li class="active"><a data-toggle="tab" href="#tabsearch">Search</a></li>
   <li id="tbedit" class="disabled"><a data-toggle="tab" href="#tabedit">Edit</a></li>
 </ul>
 
 <div class="tab-content"  style="padding-top: 15px;">
     
-    <div id="tabsearh" class="tab-pane fade in active">
+    <div id="tabsearch" class="tab-pane fade in active">
         
         <div class="model-list" data-model="/pages/sales/Model/companies">
             <div class="row">
@@ -40,11 +40,11 @@
             <div class="row">
                 <div class="col-lg-4"><?=$f->modelSelect('subsector','/pages/sales/Model/company_subsector')?></div>
                 <div class="col-lg-4"><?=$f->modelSelect('industry_group','/pages/sales/Model/company_ig')?></div>
-                <div class="col-lg-4"><?=$f->input('division')?></div>
+                <div class="col-lg-4"><?=$f->modelSelect('division','/pages/sales/Model/company_division')?></div>
             </div>
             <div class="row">
                 <div class="col-lg-4"><?=$f->modelSelect('major_group','/pages/sales/Model/ig_major_group')?></div>
-                <div class="col-lg-4"><?=$f->input('sic')?></div>
+                <div class="col-lg-4"><?=$f->search3dot('sic_code','sic')?></div>
                 <div class="col-lg-4"><?=$f->modelSelect('fregion','/pages/sales/Model/regions')?></div>
             </div>
             <table class="table table-striped selectable">
@@ -86,3 +86,4 @@
 
 </div>
 <div id="search_sic"></div>
+<div id="search_sic2"></div>

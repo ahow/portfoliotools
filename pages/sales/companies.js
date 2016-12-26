@@ -225,17 +225,17 @@ var compData, filterData;
 $(function(){
 
    // --------------- Search tab  --------------------
-   var pager;
+   var pager =  null;
    var is_comp_edited = false;
 
-   var model = new modelListController('.model-list', modelCompaniesView);
+   var model = new modelListController('#tabsearch .model-list', modelCompaniesView);
    model.load();
    
    var selected_row = null;
 
    var editF = new companieEditForm('#form1');
    compData = new modelFormController('#company-data');
-   filterData = new modelFormController('#tabsearh');
+   filterData = new modelFormController('#tabsearch');
    
    var views = new htviewCached();
 
@@ -251,30 +251,34 @@ $(function(){
    
    
    // Search
-   $('.model-list .model-search button.b-search').click(function(){
+   $('#tabsearch .model-list .model-search button.b-search').click(function(){
        var s = $('.model-list .model-search input').val().trim();
        var p = filterData.getData(true);
+       if (p.sic!=undefined) delete p.sic; //remove unused data
        if (s!='' || p.filter!='')
        {   if (s!='') p.search = '%'+s+'%';
            model.load(p);
        } else model.load();
    });
 
-   $('.model-list .model-search button.b-clean').click(function(){
-        $('.model-list .model-search input').val('');
-        $('.model-list #fregion').val('');
-        $('.model-list #industry_group').val('');
-        $('.model-list #major_group').val('');
-        $('.model-list #subsector').val('');
+   $('#tabsearch  .model-list .model-search button.b-clean').click(function(){
+        $('#tabsearch .model-list .model-search input').val('');
+        $('#tabsearch .model-list #fregion').val('');
+        $('#tabsearch .model-list #industry_group').val('');
+        $('#tabsearch .model-list #major_group').val('');
+        $('#tabsearch .model-list #subsector').val('');
+        $('#tabsearch .model-list #division').val('');
+        $('#tabsearch .model-list #sic').val('');
+        $('#tabsearch .model-list #sic_code').attr('data-value','');
         model.load();
    });
    
-   $('.model-list .model-search input').keyup(function(d){ 
+   $('#tabsearch  .model-list .model-search input').keyup(function(d){ 
        if (d.keyCode==13)  $('.model-list .model-search button.b-search').trigger('click');
    });
    
    // enable pager
-   pager = new modelPagination('.model-list .model-pager');
+   pager = new modelPagination('#tabsearch .model-list .model-pager');
    
    model.total(function(total, rows_lim){
        pager.setTotal(total, rows_lim);
@@ -309,13 +313,28 @@ $(function(){
    });
    
     // ------- First tab opened -----------------------
-   $("a[href='#tabsearh']").on('show.bs.tab', function(e) {
+   $("a[href='#tabsearch']").on('show.bs.tab', function(e) {
       if (is_comp_edited)
       {   is_comp_edited = false;
           model.refresh();
       }      
    });
-      
+
+   var dsic;
+   
+   views.view('/pages/sales/search','#search_sic2', function(){        
+        dsic = new searchDialog('#search_sic2', "/pages/sales/Model/sic-search",'Search SIC');
+        dsic.select(function(sr, target){
+            console.log(sr);
+            $('.model-list #sic').val(sr.name);
+            $('.model-list #sic_code').attr('data-value',sr.id);
+        });
+        
+        $('#sic_code button').click(function(){
+            dsic.open();
+        });
+   });
+         
     // search SIC 
     views.view('/pages/sales/search','#search_sic', function(){        
         dialog = new searchDialog('#search_sic', "/pages/sales/Model/sic-search",'Search SIC');
