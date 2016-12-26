@@ -40,7 +40,7 @@
             <div class="row">
                 <div class="col-lg-4"><?=$f->modelSelect('subsector','/pages/sales/Model/company_subsector')?></div>
                 <div class="col-lg-4"><?=$f->modelSelect('industry_group','/pages/sales/Model/company_ig')?></div>
-                <div class="col-lg-4"><?=$f->input('division')?></div>
+                <div class="col-lg-4"><?=$f->modelSelect('division','/pages/sales/Model/company_division')?></div>
             </div>
             <div class="row">
                 <div class="col-lg-4"><?=$f->modelSelect('major_group','/pages/sales/Model/ig_major_group')?></div>
