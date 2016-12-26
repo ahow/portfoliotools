@@ -14,6 +14,7 @@
       "industry_group":"industry_group=:industry_group",
       "subsector":"subsector=:subsector",
       "major_group":"cid in (select d.cid from sales_divdetails d where d.sic in (select s.id from sales_sic s where s.industry_group_id in (select g.id from sales_industry_groups g where g.major_group=:major_group)))",
-      "division":"cid in (select d.cid from sales_divdetails d where d.sic in (select s.id from sales_sic s where s.industry_group_id in (select g.id from sales_industry_groups g where g.division=:division)))"
+      "division":"cid in (select d.cid from sales_divdetails d where d.sic in (select s.id from sales_sic s where s.industry_group_id in (select g.id from sales_industry_groups g where g.division=:division)))",
+      "sic_code":"cid in (select d.cid from sales_divdetails d where d.sic=:sic_code)"
   }
 }

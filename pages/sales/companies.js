@@ -254,6 +254,7 @@ $(function(){
    $('#tabsearch .model-list .model-search button.b-search').click(function(){
        var s = $('.model-list .model-search input').val().trim();
        var p = filterData.getData(true);
+       if (p.sic!=undefined) delete p.sic; //remove unused data
        if (s!='' || p.filter!='')
        {   if (s!='') p.search = '%'+s+'%';
            model.load(p);
