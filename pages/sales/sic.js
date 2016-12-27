@@ -81,13 +81,14 @@ $(function(){
     
     function drawRanking(selector, d, totals)
     {  var s = '<table class="table table-striped">';
+       var link = "<?php echo mkURL('/sales/companies'); ?>";
         total = 0.0;
         s+='<tr><th style="width:50%">Company</th><th style="width:8%">% of sales</th><th style="width:26%">&nbsp;</th><th style="width:8%">-1Yr</th><th style="width:8%">-2Yr</th></tr>';
         for (var i=0; i<d.rows.length; i++)
         {   var r = d.rows[i];
             if (r!=undefined)
             {  var pbar = '<div class="progress"><div class="progress-bar progress-bar-success" aria-valuemin="0" aria-valuemax="100" style="width:'+r.psale+'%"></div></div>';                
-                s+='<tr><td>'+r.name+'</td><td>'+r.psale+'</td><td>'+pbar+'</td><td>'+r.psaleY1+'</td><td>'+r.psaleY2+'</td></tr>';
+                s+='<tr><td><a href="'+link+'/'+r.cid+'">'+r.name+'</a></td><td>'+r.psale+'</td><td>'+pbar+'</td><td>'+r.psaleY1+'</td><td>'+r.psaleY2+'</td></tr>';
                total+=1.0*r.psale;
             }
         }

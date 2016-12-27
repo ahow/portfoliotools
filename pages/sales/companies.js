@@ -249,7 +249,6 @@ $(function(){
         // console.log(row);
    });
    
-   
    // Search
    $('#tabsearch .model-list .model-search button.b-search').click(function(){
        var s = $('.model-list .model-search input').val().trim();
@@ -288,7 +287,13 @@ $(function(){
        model.load(n);
    });
    
-
+   var href = window.location.href.split('/sales/companies/');
+   // Get companie ID from URL
+   if (href[1]!=undefined)
+   {   editF.load({id:href[1]});
+       compData.loadrow({cid:href[1]});
+       $('#tbedit a').tab('show');
+   }
 
    // --------------- Edit tab  --------------------
    // when tab selected  
