@@ -1,7 +1,8 @@
 /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
 
 var ctrlKey = false;
-$('body').keydown(function(e){ ctrlKey = e.ctrlKey }); // ctrlKey state
+$('body').keydown(function(e){ ctrlKey = e.ctrlKey }).keyup(function(){ctrlKey=false;}); // ctrlKey state
+
 
 function modelTableView(selector,d,onclick,ondblclick)
 {  var s = '';
@@ -24,13 +25,13 @@ function modelTableView(selector,d,onclick,ondblclick)
    }
    $(selector).find('tbody').html(s);
    if (onclick!=null)  $(selector+' tbody tr').click(function(row){
-       $(row.target).parents('table:first').find('tr').removeClass('active');
+       if (!ctrlKey) $(row.target).parents('table:first').find('tr').removeClass('active');
        var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
        onclick(row, d.rows[id]);
    });
    
    if (ondblclick!=undefined && ondblclick!=null)  $(selector+' tbody tr').dblclick(function(row){
-      if (!ctrlKey) $(row.target).parents('table:first').find('tr').removeClass('active');
+       $(row.target).parents('table:first').find('tr').removeClass('active');
        var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
        ondblclick(row, d.rows[id]);
    });
