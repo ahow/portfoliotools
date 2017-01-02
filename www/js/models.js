@@ -1,5 +1,8 @@
 /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
 
+var ctrlKey = false;
+$('body').keydown(function(e){ ctrlKey = e.ctrlKey }); // ctrlKey state
+
 function modelTableView(selector,d,onclick,ondblclick)
 {  var s = '';
    var i;
@@ -27,7 +30,7 @@ function modelTableView(selector,d,onclick,ondblclick)
    });
    
    if (ondblclick!=undefined && ondblclick!=null)  $(selector+' tbody tr').dblclick(function(row){
-       $(row.target).parents('table:first').find('tr').removeClass('active');
+      if (!ctrlKey) $(row.target).parents('table:first').find('tr').removeClass('active');
        var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
        ondblclick(row, d.rows[id]);
    });
