@@ -21,6 +21,7 @@
 <p><a href="<?=mkURL('/sales/sic')?>"><?=T('SIC')?></a></p>
 <p><a href="<?=mkURL('/sales/companies')?>"><?=T('companies')?></a></p>
 <p><a href="<?=mkURL('/sales/market-summary')?>"><?=T('market-summary')?></a></p>
+<p><a href="<?=mkURL('/sales/industry-analysis')?>"><?=T('industry-analysis')?></a></p>
 <?php
   }
   if ($cf->inGroup('admin') || $cf->inGroup('editor')  || $cf->inGroup('user') )
