@@ -785,11 +785,11 @@ group by 1");
         $this->res->names[] = $db->fetchSingleValue($qr);
         $this->res->xdata[] = array('y'=>0, 'h'=>$this->res->pf1->actual);
         
-        $this->res->names[] = 'Stock selection';
-        $this->res->xdata[] = array('y'=>$this->res->stock_selection_y, 'h'=>$this->res->stock_selection_h);
-
         $this->res->names[] = 'Sector allocation';
         $this->res->xdata[] = array('y'=>$this->res->sector_allocation_y, 'h'=>$this->res->sector_allocation_h);
+
+        $this->res->names[] = 'Stock selection';
+        $this->res->xdata[] = array('y'=>$this->res->stock_selection_y, 'h'=>$this->res->stock_selection_h);
         
         $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf2));
         $this->res->names[] = $db->fetchSingleValue($qr);

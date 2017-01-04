@@ -50,8 +50,6 @@ function drawSectorAllocChart(id, data)
         if (yMax<h) yMax=h;
     }
     
-    console.log(yMax);
-    
     options.yAxis.max = yMax;
     options.yAxis.title = {text:data.metric};
     
