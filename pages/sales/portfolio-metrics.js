@@ -55,43 +55,70 @@ $(function(){
                    ser[i].data[1] = 1.0*d.p2.data[i];
                 }
                 var params = {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Metric by portfolio'
-                },
-                xAxis: {
-                    categories: [d.name1, d.name2]
-                },
-                yAxis: {
-                    min: 0,
+                    chart: {
+                        type: 'column'
+                    },
                     title: {
-                        text: d.metric
-                    }
-                },
-                tooltip: {
-                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
-                    shared: true
-                },
-                plotOptions: {
-                    column: {
-                        stacking: 'value'
-                    }
-                },
-                series: ser
-                };
-                // console.log(JSON.stringify(params));
-                Highcharts.chart('container', params);
+                        text: 'Metric by portfolio'
+                    },
+                    xAxis: {
+                        categories: [d.name1, d.name2]
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: d.metric
+                        }
+                    },
+                    tooltip: {
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+                        shared: true
+                    },
+                    plotOptions: {
+                        column: {
+                            stacking: 'value'
+                        }
+                    },
+                    series: ser
+                    };
+                    // console.log(JSON.stringify(params));
+                    Highcharts.chart('container', params);
+                    
+                    $('#portfolio').attr('disabled', false);
+                    $('#comparison').attr('disabled', false);
+                    
+                    drawStackedChart('stacked', d)
+                } );
                 
-                $('#portfolio').attr('disabled', false);
-                $('#comparison').attr('disabled', false);
-                
-                drawStackedChart('stacked', d)
-            } );
-            
-            ajx('/pages/sales/SectorAllocChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){                
-                drawSectorAllocChart('container2', d);                
+                ajx('/pages/sales/SectorAllocChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
+                    
+                var params =  {
+                        chart: { type: 'waterfall' },
+                        title: { text: 'Sector vs stock effects' },
+                        xAxis: { type: 'category' },
+                        yAxis: { title: { text: 'Metric' } },
+                        legend: { enabled: false },
+                        tooltip: { pointFormat: '<b>{point.y:,.2f}</b>' },
+                        series: [{data:d.xdata, 
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.y, 2, '.');
+                            },
+                            style: {
+                                fontWeight: 'bold'
+                            }
+                        },
+                        pointPadding: 0}
+                        ]
+                     };
+                     params.series[0].data[0].color = Highcharts.getOptions().colors[0];
+                     params.series[0].data[1].color = Highcharts.getOptions().colors[2];
+                     params.series[0].data[2].color = Highcharts.getOptions().colors[3];
+                     params.series[0].data[3].color = Highcharts.getOptions().colors[1];                     
+                    // console.log(JSON.stringify(params));
+                     Highcharts.chart('container2', params);
+                    // drawSectorAllocChart('container2', d);
             });
         }
     }
