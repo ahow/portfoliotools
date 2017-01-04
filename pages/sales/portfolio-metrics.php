@@ -20,14 +20,16 @@
         <div class="col-lg-12"><?=$f->textarea('description')?></div>
     </div>
     <div class="row" id="ranking">
-        <div class="col-lg-12">
+        <div class="col-lg-6">
                 <!-- 
                 <canvas id="chart" width="1000" height="400">
                 </canvas>
                 -->
-                <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                <div id="container" style="min-width: 210px; height: 400px; margin: 0 auto"></div>
         </div>
-        
+        <div class="col-lg-6">
+                <div id="container2" style="min-width: 210px; height: 400px; margin: 0 auto"></div>
+        </div>        
     </div>
     <div class="row" id="ranking">
         <div class="col-lg-12">

@@ -669,6 +669,111 @@ order by p.isin, m.col");
         echo json_encode($this->res); 
     }
     
+    function ajxSectorAllocChart()
+    {   
+        
+        function average($a)
+        { $s = 0;
+          if (count($a)==0) return NULL;
+          foreach($a as $v) $s+=$v;
+          return $s/count($a);
+        }
+        
+        function sum($a)
+        { if (count($a)==0) return NULL;
+          $s = 0;
+          foreach($a as $v) $s+=$v;
+          return $s;
+        }
+            
+        function TRIMMEAN($aArgs, $percent) 
+        {
+            if ((is_numeric($percent)) && (!is_string($percent))) 
+            {   if (($percent < 0) || ($percent > 1)) return false;       
+                $mArgs = array();
+                foreach ($aArgs as $arg) {
+                  // Is it a numeric value?
+                  if ((is_numeric($arg)) && (!is_string($arg))) {
+                    $mArgs [] = $arg;
+                  }
+                }
+                $discard = floor(count($mArgs) * $percent / 2);
+                sort($mArgs);
+                for ($i = 0; $i < $discard; ++$i) {
+                  array_pop($mArgs);
+                  array_shift($mArgs);
+                }
+                return average($mArgs);
+          }
+          return PHPExcel_Calculation_Functions::VALUE();
+        }
+        // -- Sector Alloc code
+        $db = $this->cfg->db; 
+        $params = (object)$_POST;         
+        $db->query("set @mt=:mt;", array('mt'=>$params->mt)); 
+        $db->query("set @pf=:pf;", array('pf'=>$params->pf1)); 
+        
+        $qr = $db->query("select d.col, d.val, c.sector
+from sales_metrics_data d
+join sales_companies c on d.isin = c.isin
+where metric_id=@mt");
+
+        $a = array();        
+        
+        // fill data for the trimmean calculations
+        while ($r=$db->fetchSingle($qr))
+        {   $sector = $r->sector;
+            $col = $r->col;
+            if (!isset($a[$sector])) $a[$sector] = array();
+            if (!isset($a[$sector][$col])) $a[$sector][$col] = array();
+            $a[$sector][$col][] = 1.0*$r->val;
+        }
+        
+        // param $a - source data of sector values from metrics
+        function calcTotals($db, $a)
+        {  // select data for portfolio 1
+            $qr = $db->query("select p.isin, p.val, c.sector, sum(d.val) as tmetric
+from sales_portfolio_data p
+join sales_companies c on p.isin = c.isin
+join sales_metrics_data d on p.isin=d.isin and d.metric_id=@mt
+where p.portfolio_id=@pf
+group by 1");
+         
+            $trimm = array();             
+            $res = new stdClass();
+            
+            $res->actual = 0;
+            $res->sector_av = 0;
+                        
+            while ($r=$db->fetchSingle($qr))
+            { $sector = $r->sector;
+              if (!isset($trimm[$sector]) && isset($a[$sector]))
+              {   $trimm[$sector]=array();
+                  foreach($a[$sector] as $k=>$v)
+                  {  // TRIMMEAN calculations
+                      $trimm[$sector][$k] = TRIMMEAN($v, 0.1);
+                  }
+              }        
+              if (isset($trimm[$sector])) $r->trimm_total = sum( $trimm[$sector] );
+              $res->actual+=(1.0*$r->tmetric*$r->val);
+              $res->sector_av+=(1.0*$r->trimm_total*$r->val);
+            }
+            return $res;
+        }
+        
+        $this->res->pf1 = calcTotals($db, $a);
+        
+        $db->query("set @pf=:pf;", array('pf'=>$params->pf2)); 
+        $this->res->pf2 = calcTotals($db, $a);
+        
+        $this->res->sector_allocation_h = $this->res->pf1->sector_av - $this->res->pf1->actual;
+        $this->res->sector_allocation_y = $this->res->pf2->actual - $this->res->sector_allocation_h;
+        $this->res->stock_selection_h =  $this->res->sector_allocation_y - $this->res->pf1->actual;
+        $this->res->stock_selection_y = $this->res->sector_allocation_y -  $this->res->stock_selection_h;
+        
+        echo json_encode($this->res); 
+    }
+    
  
  }
 
