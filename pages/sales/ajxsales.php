@@ -669,6 +669,33 @@ order by p.isin, m.col");
         echo json_encode($this->res); 
     }
     
+    function ajxSectorAllocChart()
+    {
+        $db = $this->cfg->db; 
+        $params = (object)$_POST;         
+        $db->query("set @mt=:mt;", array('mt'=>$params->mt)); 
+        $db->query("set @pf=:pf;", array('pf'=>$params->pf1)); 
+        
+        $qr = $db->query("select d.col, d.val, c.sector
+from sales_metrics_data d
+join sales_companies c on d.isin = c.isin
+where metric_id=@mt");
+
+        $a = array();
+        
+        while ($r=$db->fetchSingle($qr))
+        {   $sector = $r->sector;
+            $col = $r->col;
+            if (!isset($a[$sector])) $a[$sector] = array();
+            if (!isset($a[$sector][$col])) $a[$sector][$col] = array();
+            $a[$sector][$col][] = $r->val;
+        }
+        
+        $this->res->rows = $a;
+        
+        echo json_encode($this->res); 
+    }
+    
  
  }
 
