@@ -19,7 +19,7 @@ function drawSectorAllocChart(id, data)
             },
             min: 0,
             max: 100
-        },{opposite: true, min: 0, max: 100, title:{text: 'Metric' } }],
+        }],
         tooltip: {
             min: 0,
             max: 100,
@@ -53,8 +53,8 @@ function drawSectorAllocChart(id, data)
     }
     
     options.yAxis[0].max = yMax;
-    options.yAxis[1].max = yMax;
-    options.yAxis[0].title = {text:data.metric};
+    // options.yAxis[1].max = yMax;
+    // options.yAxis[0].title = {text:data.metric};
     
     var chart = new Highcharts.Chart(options,
     //add function for custom renderer
@@ -79,7 +79,7 @@ function drawSectorAllocChart(id, data)
         
         yscale = this.yAxis[0].height/this.yAxis[0].max;
 
-        var col_width = (this.xAxis[0].width-addMarginY)/points.length;
+        var col_width = (this.xAxis[0].width-addMarginX/2)/points.length;
         var bar_width = col_width*0.8;
         var bar_step = (col_width - bar_width)/2;
         
