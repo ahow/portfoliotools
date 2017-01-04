@@ -53,7 +53,6 @@ function drawSectorAllocChart(id, data)
     }
     
     options.yAxis[0].max = yMax;
-    // options.yAxis[1].max = yMax;
     // options.yAxis[0].title = {text:data.metric};
     
     var chart = new Highcharts.Chart(options,
