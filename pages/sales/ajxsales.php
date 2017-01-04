@@ -729,32 +729,47 @@ where metric_id=@mt");
             $a[$sector][$col][] = 1.0*$r->val;
         }
         
-        // select data for portfolio 1
-        $qr = $db->query("select p.isin, p.val, c.sector, sum(d.val) as tmetric
+        // param $a - source data of sector values from metrics
+        function calcTotals($db, $a)
+        {  // select data for portfolio 1
+            $qr = $db->query("select p.isin, p.val, c.sector, sum(d.val) as tmetric
 from sales_portfolio_data p
 join sales_companies c on p.isin = c.isin
 join sales_metrics_data d on p.isin=d.isin and d.metric_id=@mt
 where p.portfolio_id=@pf
 group by 1");
          
-        $trimm = array(); 
-        $rows = array();
+            $trimm = array();             
+            $res = new stdClass();
+            
+            $res->actual = 0;
+            $res->sector_av = 0;
+                        
+            while ($r=$db->fetchSingle($qr))
+            { $sector = $r->sector;
+              if (!isset($trimm[$sector]) && isset($a[$sector]))
+              {   $trimm[$sector]=array();
+                  foreach($a[$sector] as $k=>$v)
+                  {  // TRIMMEAN calculations
+                      $trimm[$sector][$k] = TRIMMEAN($v, 0.1);
+                  }
+              }        
+              if (isset($trimm[$sector])) $r->trimm_total = sum( $trimm[$sector] );
+              $res->actual+=(1.0*$r->tmetric*$r->val);
+              $res->sector_av+=(1.0*$r->trimm_total*$r->val);
+            }
+            return $res;
+        }
         
-        while ($r=$db->fetchSingle($qr))
-        { $sector = $r->sector;
-          if (!isset($trimm[$sector]) && isset($a[$sector]))
-          {   $trimm[$sector]=array();
-              foreach($a[$sector] as $k=>$v)
-              {  // TRIMMEAN calculations
-                  $trimm[$sector][$k] = TRIMMEAN($v, 0.1);
-              }
-          }        
-          if (isset($trimm[$sector])) $r->trimm_total = sum( $trimm[$sector] );
-          $rows[] = $r;
-        }        
-
+        $this->res->pf1 = calcTotals($db, $a);
         
-        $this->res->rows = $rows;
+        $db->query("set @pf=:pf;", array('pf'=>$params->pf2)); 
+        $this->res->pf2 = calcTotals($db, $a);
+        
+        $this->res->sector_allocation_h = $this->res->pf1->sector_av - $this->res->pf1->actual;
+        $this->res->sector_allocation_y = $this->res->pf2->actual - $this->res->sector_allocation_h;
+        $this->res->stock_selection_h =  $this->res->sector_allocation_y - $this->res->pf1->actual;
+        $this->res->stock_selection_y = $this->res->sector_allocation_y -  $this->res->stock_selection_h;
         
         echo json_encode($this->res); 
     }
