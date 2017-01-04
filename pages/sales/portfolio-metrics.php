@@ -29,8 +29,7 @@
         </div>
         <div class="col-lg-6">
                 <div id="container2" style="min-width: 210px; height: 400px; margin: 0 auto"></div>
-        </div>
-        
+        </div>        
     </div>
     <div class="row" id="ranking">
         <div class="col-lg-12">

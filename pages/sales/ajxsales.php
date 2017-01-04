@@ -670,7 +670,44 @@ order by p.isin, m.col");
     }
     
     function ajxSectorAllocChart()
-    {
+    {   
+        
+        function average($a)
+        { $s = 0;
+          if (count($a)==0) return NULL;
+          foreach($a as $v) $s+=$v;
+          return $s/count($a);
+        }
+        
+        function sum($a)
+        { if (count($a)==0) return NULL;
+          $s = 0;
+          foreach($a as $v) $s+=$v;
+          return $s;
+        }
+            
+        function TRIMMEAN($aArgs, $percent) 
+        {
+            if ((is_numeric($percent)) && (!is_string($percent))) 
+            {   if (($percent < 0) || ($percent > 1)) return false;       
+                $mArgs = array();
+                foreach ($aArgs as $arg) {
+                  // Is it a numeric value?
+                  if ((is_numeric($arg)) && (!is_string($arg))) {
+                    $mArgs [] = $arg;
+                  }
+                }
+                $discard = floor(count($mArgs) * $percent / 2);
+                sort($mArgs);
+                for ($i = 0; $i < $discard; ++$i) {
+                  array_pop($mArgs);
+                  array_shift($mArgs);
+                }
+                return average($mArgs);
+          }
+          return PHPExcel_Calculation_Functions::VALUE();
+        }
+        // -- Sector Alloc code
         $db = $this->cfg->db; 
         $params = (object)$_POST;         
         $db->query("set @mt=:mt;", array('mt'=>$params->mt)); 
@@ -681,17 +718,43 @@ from sales_metrics_data d
 join sales_companies c on d.isin = c.isin
 where metric_id=@mt");
 
-        $a = array();
+        $a = array();        
         
+        // fill data for the trimmean calculations
         while ($r=$db->fetchSingle($qr))
         {   $sector = $r->sector;
             $col = $r->col;
             if (!isset($a[$sector])) $a[$sector] = array();
             if (!isset($a[$sector][$col])) $a[$sector][$col] = array();
-            $a[$sector][$col][] = $r->val;
+            $a[$sector][$col][] = 1.0*$r->val;
         }
         
-        $this->res->rows = $a;
+        // select data for portfolio 1
+        $qr = $db->query("select p.isin, p.val, c.sector, sum(d.val) as tmetric
+from sales_portfolio_data p
+join sales_companies c on p.isin = c.isin
+join sales_metrics_data d on p.isin=d.isin and d.metric_id=@mt
+where p.portfolio_id=@pf
+group by 1");
+         
+        $trimm = array(); 
+        $rows = array();
+        
+        while ($r=$db->fetchSingle($qr))
+        { $sector = $r->sector;
+          if (!isset($trimm[$sector]) && isset($a[$sector]))
+          {   $trimm[$sector]=array();
+              foreach($a[$sector] as $k=>$v)
+              {  // TRIMMEAN calculations
+                  $trimm[$sector][$k] = TRIMMEAN($v, 0.1);
+              }
+          }        
+          if (isset($trimm[$sector])) $r->trimm_total = sum( $trimm[$sector] );
+          $rows[] = $r;
+        }        
+
+        
+        $this->res->rows = $rows;
         
         echo json_encode($this->res); 
     }

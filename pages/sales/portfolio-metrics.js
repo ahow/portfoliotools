@@ -44,7 +44,7 @@ $(function(){
         {   $('#portfolio').attr('disabled', true)
             $('#comparison').attr('disabled', true)
             
-            ajx('/pages/sales/SectorAllocChart',{pf1:pf1, mt:mt},function(d){
+            ajx('/pages/sales/SectorAllocChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
                 console.log(d);
             });
             
