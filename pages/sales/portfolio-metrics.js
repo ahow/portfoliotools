@@ -44,10 +44,6 @@ $(function(){
         {   $('#portfolio').attr('disabled', true)
             $('#comparison').attr('disabled', true)
             
-            ajx('/pages/sales/SectorAllocChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
-                console.log(d);
-            });
-            
              ajx('/pages/sales/StackedChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
                 // console.log(d) 
                 // chart.setData(d.header, d.data1.data, d.data2.data);
@@ -93,6 +89,10 @@ $(function(){
                 
                 drawStackedChart('stacked', d)
             } );
+            
+            ajx('/pages/sales/SectorAllocChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){                
+                drawSectorAllocChart('container2', d);                
+            });
         }
     }
     

@@ -766,10 +766,34 @@ group by 1");
         $db->query("set @pf=:pf;", array('pf'=>$params->pf2)); 
         $this->res->pf2 = calcTotals($db, $a);
         
-        $this->res->sector_allocation_h = $this->res->pf1->sector_av - $this->res->pf1->actual;
-        $this->res->sector_allocation_y = $this->res->pf2->actual - $this->res->sector_allocation_h;
-        $this->res->stock_selection_h =  $this->res->sector_allocation_y - $this->res->pf1->actual;
-        $this->res->stock_selection_y = $this->res->sector_allocation_y -  $this->res->stock_selection_h;
+        if ($this->res->pf1->actual < $this->res->pf2->actual)
+        {   $this->res->sector_allocation_h = $this->res->pf1->sector_av - $this->res->pf1->actual;
+            $this->res->sector_allocation_y = $this->res->pf2->actual - $this->res->sector_allocation_h;
+            $this->res->stock_selection_h =  $this->res->sector_allocation_y - $this->res->pf1->actual;
+            $this->res->stock_selection_y = $this->res->sector_allocation_y - $this->res->stock_selection_h;
+        } else
+        {  $this->res->sector_allocation_h = $this->res->pf2->sector_av - $this->res->pf2->actual;
+           $this->res->sector_allocation_y = $this->res->pf1->actual - $this->res->sector_allocation_h;
+           $this->res->stock_selection_h =  $this->res->sector_allocation_y - $this->res->pf2->actual;
+           $this->res->stock_selection_y = $this->res->sector_allocation_y - $this->res->stock_selection_h;
+        }
+        
+        $this->res->names = array();
+        $this->res->xdata = array();
+        
+        $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf1));        
+        $this->res->names[] = $db->fetchSingleValue($qr);
+        $this->res->xdata[] = array('y'=>0, 'h'=>$this->res->pf1->actual);
+        
+        $this->res->names[] = 'Stock selection';
+        $this->res->xdata[] = array('y'=>$this->res->stock_selection_y, 'h'=>$this->res->stock_selection_h);
+
+        $this->res->names[] = 'Sector allocation';
+        $this->res->xdata[] = array('y'=>$this->res->sector_allocation_y, 'h'=>$this->res->sector_allocation_h);
+        
+        $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf2));
+        $this->res->names[] = $db->fetchSingleValue($qr);
+        $this->res->xdata[] = array('y'=>0, 'h'=>$this->res->pf2->actual);
         
         echo json_encode($this->res); 
     }
