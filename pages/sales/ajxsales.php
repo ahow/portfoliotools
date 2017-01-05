@@ -818,6 +818,10 @@ group by 1");
         { $wh[] = 'subsector=:subsector';
           $wp['subsector'] = $params->id;
         }
+        if (isset($params->region) && $params->region!='Global')
+        { $wh[] = 'region=:region';
+          $wp['region'] = $params->region;
+        }
         if (count($flds==2))
         {    $flds[]='name';
              $sql = "select ".implode(',',$flds).' from sales_companies ';
