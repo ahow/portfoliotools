@@ -172,7 +172,7 @@
     function listSelect($name,$list)
     {  $label = T($name);
        $a = explode(';', $list);
-       $s = '<div class="form-group bs-model-select" data-model="'.$model.'">
+       $s = '<div class="form-group bs-list-select" data-model="'.$model.'">
   <label for="'.$name.'">'.$label.'</label>
   <select class="form-control" id="'.$name.'" data-control-type="basic">';
        foreach($a as $k=>$v)

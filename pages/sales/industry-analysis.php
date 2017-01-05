@@ -16,7 +16,8 @@
         <div class="col-lg-6"><?=$f->search3dot('subsec','subsector')?></div>
     </div>
     <div class="row">
-        <div class="col-lg-6"><?=$f->modelSelect('x-axis','/pages/sales/Model/regions')?></div>
+        <?php $list = 'Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed'; ?>
+        <div class="col-lg-6"><?=$f->listSelect('x-axis',$list)?></div>
         <div class="col-lg-6"><?=$f->modelSelect('y-axis','/pages/sales/Model/regions')?></div>
     </div>
     <div class="row" id="summary">
