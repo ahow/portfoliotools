@@ -800,6 +800,30 @@ group by 1");
         echo json_encode($this->res); 
     }
     
+    function ajxIndustryAnalysis()
+    {   $db = $this->cfg->db; 
+        $params = (object)$_POST;  
+        // Total sales;  % top 3;  % top 5;  Stability;  Sales growth;  ROIC;  PE;  EVBIDTA;  Payout;  % reviewed
+        $axis = array(null,'sales',null,null,null,'sales_growth', 'roic', 'pe','evebitda', 'payout', 'reviewed');
+        $flds = array();
+        if (isset($axis[$params->xaxis]) && $axis[$params->xaxis]!=null) 
+            $flds[]=$axis[$params->xaxis].' as x ';
+        if (isset($axis[$params->yaxis]) && $axis[$params->yaxis]!=null) 
+            $flds[]=$axis[$params->yaxis].' as y ';
+        if (count($flds==2))
+        {    $flds[]='name';
+             $sql = "select ".implode(',',$flds).' from sales_companies';
+             $qr = $db->query($sql);
+             $data = array();
+             while ($r=$db->fetchSingle($qr)) 
+             { $r->x *= 1.0;
+               $r->y *= 1.0;
+               $data[] = $r;
+             }
+             $this->res->xdata = $data;
+        }
+        echo json_encode($this->res); 
+    }
  
  }
 

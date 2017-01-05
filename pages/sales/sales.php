@@ -66,6 +66,7 @@
        {   $this->cfg->addJs('/html.php/pages/sales','lookup.js');
            $this->cfg->addJs('/html.php/pages/sales','industry-analysis.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
+           $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
        }       else
        {   $this->cfg->addJs('/html.php/pages/sales','inittable.js');

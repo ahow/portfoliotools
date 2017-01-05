@@ -14,12 +14,16 @@
     </div>
     <div class="row">
         <div class="col-lg-6"><?=$f->search3dot('subsec','subsector')?></div>
+        <div class="col-lg-4"></div>
+        <div class="col-lg-2"><button style="margin-top:25px" class="btn btn-primary b-vchart">View Chart</button></div>
     </div>
     <div class="row">
-        <div class="col-lg-6"><?=$f->modelSelect('x-axis','/pages/sales/Model/regions')?></div>
-        <div class="col-lg-6"><?=$f->modelSelect('y-axis','/pages/sales/Model/regions')?></div>
+        <?php $list = 'Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed'; ?>
+        <div class="col-lg-6"><?=$f->listSelect('x-axis',$list)?></div>
+        <div class="col-lg-6"><?=$f->listSelect('y-axis',$list)?></div>
     </div>
-    <div class="row" id="summary">
+    <div class="row">
+        <div id="container" style="min-width: 210px; height: 400px; margin: 0 auto"></div>
     </div>
 </div>
 <div id="search_sic"></div>
