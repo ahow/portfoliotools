@@ -30,15 +30,12 @@ $(function(){
                         zoomType: 'xy'
                     },
                     title: {
-                        text: 'Sales Versus ROIC'
-                    },
-                    subtitle: {
-                        text: 'Source: Andrew Howard'
+                        text: d.xtitle+' Versus '+d.ytitle
                     },
                     xAxis: {
                         title: {
                             enabled: true,
-                            text: 'Sales'
+                            text: d.xtitle
                         },
                         startOnTick: true,
                         endOnTick: true,
@@ -46,7 +43,7 @@ $(function(){
                     },
                     yAxis: {
                         title: {
-                            text: 'ROIC'
+                            text: d.ytitle
                         }
                     },
                     legend: {
@@ -79,7 +76,7 @@ $(function(){
                             },
                             tooltip: {
                                 headerFormat: '<b>{point.key}</b><br>',
-                                pointFormat: 'Sales:{point.x}, ROIC:{point.y}'
+                                pointFormat: d.xtitle+':{point.x}, '+d.ytitle+':{point.y}'
                             }
                         },
                         series:{  turboThreshold:150000 }
