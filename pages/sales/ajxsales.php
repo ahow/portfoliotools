@@ -826,6 +826,11 @@ group by 1");
         { $wh[] = 'region=:region';
           $wp['region'] = $params->region;
         }
+        if (isset($params->min_size) && 1*$params->min_size > 0)
+        {  $wh[] = 'sales>:minsize';
+           $wp['minsize'] = $params->min_size;
+        }
+        
         if (count($flds==2))
         {    $flds[]='name';
              $sql = "select ".implode(',',$flds).' from sales_companies ';
