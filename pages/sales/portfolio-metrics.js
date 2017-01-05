@@ -116,6 +116,9 @@ $(function(){
                      params.series[0].data[1].color = Highcharts.getOptions().colors[2];
                      params.series[0].data[2].color = Highcharts.getOptions().colors[3];
                      params.series[0].data[3].color = Highcharts.getOptions().colors[1];                     
+                     for (var i=0; i<params.series[0].data.length; i++)
+                        params.series[0].data[i].borderColor="#E5E5E5";
+
                     // console.log(JSON.stringify(params));
                      Highcharts.chart('container2', params);
                     // drawSectorAllocChart('container2', d);
