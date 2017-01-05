@@ -739,13 +739,22 @@ join sales_metrics_data d on p.isin=d.isin and d.metric_id=@mt
 where p.portfolio_id=@pf
 group by 1");
          
-            $trimm = array();             
+            $trimm = array();
             $res = new stdClass();
             
             $res->actual = 0;
             $res->sector_av = 0;
-                        
+            $total_weights = 0;
+            
+            $rows = array();
             while ($r=$db->fetchSingle($qr))
+            { $rows[] = $r;
+              $total_weights+=1.0*$r->val;
+            }
+            
+            $kk = 1.0/$total_weights;
+            
+            foreach($rows as $r)
             { $sector = $r->sector;
               if (!isset($trimm[$sector]) && isset($a[$sector]))
               {   $trimm[$sector]=array();
@@ -755,9 +764,11 @@ group by 1");
                   }
               }        
               if (isset($trimm[$sector])) $r->trimm_total = sum( $trimm[$sector] );
-              $res->actual+=(1.0*$r->tmetric*$r->val);
-              $res->sector_av+=(1.0*$r->trimm_total*$r->val);
+              $res->actual+=(1.0*$r->tmetric*$r->val*$kk);
+              $res->sector_av+=(1.0*$r->trimm_total*$r->val*$kk);
             }
+            $res->k = $kk;
+            $res->total = $total_weights;
             return $res;
         }
         
