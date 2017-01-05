@@ -818,6 +818,10 @@ group by 1");
         { $wh[] = 'subsector=:subsector';
           $wp['subsector'] = $params->id;
         }
+        if ($params->mode=='SIC' && isset($params->id))
+        { $wh[] = 'cid in (select d.cid from sales_divdetails d where d.sic=:sic)';
+          $wp['sic'] = $params->id;
+        }
         if (isset($params->region) && $params->region!='Global')
         { $wh[] = 'region=:region';
           $wp['region'] = $params->region;
