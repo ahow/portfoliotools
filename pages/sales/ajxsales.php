@@ -803,17 +803,26 @@ group by 1");
     function ajxIndustryAnalysis()
     {   $db = $this->cfg->db; 
         $params = (object)$_POST;  
-        // Total sales;  % top 3;  % top 5;  Stability;  Sales growth;  ROIC;  PE;  EVBIDTA;  Payout;  % reviewed
+        $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
         $axis = array(null,'sales',null,null,null,'sales_growth', 'roic', 'pe','evebitda', 'payout', 'reviewed');
         $flds = array();
+        
+        $wh = array();
+        $wp = array();
+        
         if (isset($axis[$params->xaxis]) && $axis[$params->xaxis]!=null) 
             $flds[]=$axis[$params->xaxis].' as x ';
         if (isset($axis[$params->yaxis]) && $axis[$params->yaxis]!=null) 
             $flds[]=$axis[$params->yaxis].' as y ';
+        if ($params->mode=='Subsector' && isset($params->id))
+        { $wh[] = 'subsector=:subsector';
+          $wp['subsector'] = $params->id;
+        }
         if (count($flds==2))
         {    $flds[]='name';
-             $sql = "select ".implode(',',$flds).' from sales_companies';
-             $qr = $db->query($sql);
+             $sql = "select ".implode(',',$flds).' from sales_companies ';
+             if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
+             $qr = $db->query($sql, $wp);
              $data = array();
              while ($r=$db->fetchSingle($qr)) 
              { $r->x *= 1.0;
@@ -821,6 +830,8 @@ group by 1");
                $data[] = $r;
              }
              $this->res->xdata = $data;
+             $this->res->xtitle = $titles[$params->xaxis];
+             $this->res->ytitle = $titles[$params->yaxis];
         }
         echo json_encode($this->res); 
     }
