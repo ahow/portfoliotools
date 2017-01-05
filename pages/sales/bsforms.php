@@ -169,6 +169,20 @@
        return $s;
     }
     
+    function listSelect($name,$list)
+    {  $label = T($name);
+       $a = explode(';', $list);
+       $s = '<div class="form-group bs-model-select" data-model="'.$model.'">
+  <label for="'.$name.'">'.$label.'</label>
+  <select class="form-control" id="'.$name.'" data-control-type="basic">';
+       foreach($a as $k=>$v)
+       { $s.='<option value="'.($k+1).'">'.$v.'</option>';
+       }
+       $s.='</select>
+</div>';
+       return $s;
+    }
+    
     function vwtabs($name)
     {     $qv = $name."_qv";
           $qw = $name."_qw";
