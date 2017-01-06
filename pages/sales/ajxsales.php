@@ -803,8 +803,8 @@ group by 1");
     function ajxCompaniesAnalysis()
     {   $db = $this->cfg->db; 
         $params = (object)$_POST;  
-        $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
-        $axis = array(null,'sales',null,null,null,'sales_growth', 'roic', 'pe','evebitda', 'payout', 'reviewed');
+        $titles = explode(';',';Total sales;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
+        $axis = array(null,'sales','sales_growth', 'roic', 'pe','evebitda', 'payout', 'reviewed');
         $flds = array();
         
         $wh = array();
