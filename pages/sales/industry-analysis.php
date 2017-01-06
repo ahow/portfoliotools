@@ -8,13 +8,9 @@
 ?>
 <div id="mranking">
     <div class="row">
-        <div class="col-lg-6"><?=$f->search3dot('sic_code','sic')?></div>
+        <div class="col-lg-4"><?=$f->listSelect('sic_subsector','SIC;Subsector')?></div>
         <div class="col-lg-4"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
         <div class="col-lg-2"><?=$f->input('minsize','number')?></div>
-    </div>
-    <div class="row">
-        <div class="col-lg-6"><?=$f->search3dot('subsec','subsector')?></div>
-        <div class="col-lg-4"></div>
         <div class="col-lg-2"><button style="margin-top:25px" class="btn btn-primary b-vchart">View Chart</button></div>
     </div>
     <div class="row">
