@@ -1,6 +1,6 @@
 $(function(){
    
-    var dsic, dsubsec, last_id = null, select_mode = '';
+    var dsic, dsubsec, last_id = null;
      
     function toFloat(v, decimals)
     { var n = 1.0*v;            
@@ -12,86 +12,83 @@ $(function(){
     
     function reloadChartData()
     {   var prm = {};
-        if (select_mode!='')
-        {   prm.mode = select_mode;
-            prm.id = last_id;
-            prm.region = $('#region').val();
-            prm.xaxis = $('#x-axis').val();
-            prm.yaxis = $('#y-axis').val();
+        prm.mode = $('#sic_subsector').val();
+        prm.region = $('#region').val();
+        prm.xaxis = $('#x-axis').val();
+        prm.yaxis = $('#y-axis').val();
+        
+        var minsize = $('#minsize').val();
+        if (minsize!='') prm.min_size = minsize;
+        
+        ajx('/pages/sales/IndustryAnalysis',prm,function(d){
             
-            var minsize = $('#minsize').val();
-            if (minsize!='') prm.min_size = minsize;
-            
-            ajx('/pages/sales/IndustryAnalysis',prm,function(d){
-                
-                var param = {
-                    chart: {
-                        type: 'scatter',            
-                        zoomType: 'xy'
-                    },
+            var param = {
+                chart: {
+                    type: 'scatter',            
+                    zoomType: 'xy'
+                },
+                title: {
+                    text: d.xtitle+' Versus '+d.ytitle
+                },
+                xAxis: {
                     title: {
-                        text: d.xtitle+' Versus '+d.ytitle
+                        enabled: true,
+                        text: d.xtitle
                     },
-                    xAxis: {
-                        title: {
-                            enabled: true,
-                            text: d.xtitle
-                        },
-                        startOnTick: true,
-                        endOnTick: true,
-                        showLastLabel: true
-                    },
-                    yAxis: {
-                        title: {
-                            text: d.ytitle
-                        }
-                    },
-                    legend: {
-                        layout: 'vertical',
-                        align: 'left',
-                        verticalAlign: 'top',
-                        x: 100,
-                        y: 70,
-                        floating: true,
-                        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
-                        borderWidth: 1
-                    },
-                    plotOptions: {
-                        scatter: {
-                            marker: {
-                                radius: 5,
-                                states: {
-                                    hover: {
-                                        enabled: true,
-                                        lineColor: 'rgb(100,100,100)'
-                                    }
-                                }
-                            },
+                    startOnTick: true,
+                    endOnTick: true,
+                    showLastLabel: true
+                },
+                yAxis: {
+                    title: {
+                        text: d.ytitle
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    x: 100,
+                    y: 70,
+                    floating: true,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+                    borderWidth: 1
+                },
+                plotOptions: {
+                    scatter: {
+                        marker: {
+                            radius: 5,
                             states: {
                                 hover: {
-                                    marker: {
-                                        enabled: false
-                                    }
+                                    enabled: true,
+                                    lineColor: 'rgb(100,100,100)'
                                 }
-                            },
-                            tooltip: {
-                                headerFormat: '<b>{point.key}</b><br>',
-                                pointFormat: d.xtitle+':{point.x}, '+d.ytitle+':{point.y}'
                             }
                         },
-                        series:{  turboThreshold:150000 }
+                        states: {
+                            hover: {
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{point.key}</b><br>',
+                            pointFormat: d.xtitle+':{point.x}, '+d.ytitle+':{point.y}'
+                        }
                     },
-                    series: [{
-                        name: 'Companies',
-                        color: 'rgba(03, 83, 223, .5)',
-                        data: d.xdata
-                    }]
-                };
-                 
-                Highcharts.chart('container', param);
-            });
+                    series:{  turboThreshold:150000 }
+                },
+                series: [{
+                    name: 'Companies',
+                    color: 'rgba(03, 83, 223, .5)',
+                    data: d.xdata
+                }]
+            };
+             
+            Highcharts.chart('container', param);
+        });
        
-        }
     }
 
 

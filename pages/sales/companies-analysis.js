@@ -22,7 +22,7 @@ $(function(){
             var minsize = $('#minsize').val();
             if (minsize!='') prm.min_size = minsize;
             
-            ajx('/pages/sales/IndustryAnalysis',prm,function(d){
+            ajx('/pages/sales/CompaniesAnalysis',prm,function(d){
                 
                 var param = {
                     chart: {
@@ -146,13 +146,13 @@ $(function(){
     views.view('/pages/sales/search','#search_subsec', function(){        
         dsubsec = new searchDialog('#search_subsec', "/pages/sales/Model/subsector",'Search Subsector');
         dsubsec.select(function(sr, target){
-            $('#subsec input').val(sr.subsector);            
+            $('#subsec input').val(sr.subsector);
             $('#sic_code input').val('');
             select_mode='Subsector';
-            last_id = sr.id;            
+            last_id = sr.id;
         });
         
-        $('#subsec button').click(function(){            
+        $('#subsec button').click(function(){
             dsubsec.open();            
         });
     });    
