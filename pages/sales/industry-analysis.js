@@ -158,7 +158,20 @@ $(function(){
     $('#region').click(function(){
        reloadChartData();
     });
+
+    $('#x-axis').click(function(){
+       reloadChartData();
+    });
+
+    $('#y-axis').click(function(){
+       reloadChartData();
+    });
+
+    $('#sic_subsector').click(function(){
+       reloadChartData();
+    });
     
+        
     $('#minsize').click(function(){
        reloadChartData();
     });
