@@ -16,7 +16,6 @@ $(function(){
         prm.region = $('#region').val();
         prm.xaxis = $('#x-axis').val();
         prm.yaxis = $('#y-axis').val();
-        
         var minsize = $('#minsize').val();
         if (minsize!='') prm.min_size = minsize;
         

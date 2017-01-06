@@ -99,7 +99,7 @@ order by 3 desc,4 desc";
        echo json_encode($this->res);
     }
     
-    function ajxMarketSummarySic()
+   function ajxMarketSummarySic()
    {   $params = (object)$_POST;
         $db = $this->cfg->db;
         $prm = new stdClass();
@@ -853,7 +853,7 @@ group by 1");
     {   $db = $this->cfg->db; 
         $params = (object)$_POST;  
         $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
-        $axis = array(null,'sales',null,null,null,'sales_growth', 'roic', 'pe','evebitda', 'payout', 'reviewed');
+        $axis = array(null,'sum(sales)',null,null,null,'sales_growth', 'avg(roic)', 'avg(pe)','avg(evebitda)', 'avg(payout)', 'sum(reviewed)/count(*)');
         $flds = array();
         
         $wh = array();
@@ -881,17 +881,20 @@ group by 1");
         }
         
         if (count($flds==2))
-        {    $flds[]='name';
-             $sql = "select ".implode(',',$flds).' from sales_companies ';
-             if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
-             $qr = $db->query($sql, $wp);
-             $data = array();
-             while ($r=$db->fetchSingle($qr)) 
-             { $r->x *= 1.0;
-               $r->y *= 1.0;
-               $data[] = $r;
+        {    if ($params->mode==2)
+             {   $flds[]='subsector as name';
+                 $sql = "select ".implode(',',$flds).' from sales_companies ';
+                 if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
+                 $sql.=' group by subsector ';
+                 $qr = $db->query($sql, $wp);
+                 $data = array();
+                 while ($r=$db->fetchSingle($qr)) 
+                 { $r->x *= 1.0;
+                   $r->y *= 1.0;
+                   $data[] = $r;
+                 }
+                 $this->res->xdata = $data;
              }
-             $this->res->xdata = $data;
              $this->res->xtitle = $titles[$params->xaxis];
              $this->res->ytitle = $titles[$params->yaxis];
         }
