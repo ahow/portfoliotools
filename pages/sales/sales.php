@@ -62,13 +62,20 @@
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
        }
+       else if ($this->nav=='companies-analysis')
+       {   $this->cfg->addJs('/html.php/pages/sales','lookup.js');
+           $this->cfg->addJs('/html.php/pages/sales','companies-analysis.js');
+           $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
+           $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
+           $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
+       }
        else if ($this->nav=='industry-analysis')
        {   $this->cfg->addJs('/html.php/pages/sales','lookup.js');
            $this->cfg->addJs('/html.php/pages/sales','industry-analysis.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
-       }       else
+       } else
        {   $this->cfg->addJs('/html.php/pages/sales','inittable.js');
        }
      }

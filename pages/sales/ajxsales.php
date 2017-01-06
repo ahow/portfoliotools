@@ -800,6 +800,55 @@ group by 1");
         echo json_encode($this->res); 
     }
     
+    function ajxCompaniesAnalysis()
+    {   $db = $this->cfg->db; 
+        $params = (object)$_POST;  
+        $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
+        $axis = array(null,'sales',null,null,null,'sales_growth', 'roic', 'pe','evebitda', 'payout', 'reviewed');
+        $flds = array();
+        
+        $wh = array();
+        $wp = array();
+        
+        if (isset($axis[$params->xaxis]) && $axis[$params->xaxis]!=null) 
+            $flds[]=$axis[$params->xaxis].' as x ';
+        if (isset($axis[$params->yaxis]) && $axis[$params->yaxis]!=null) 
+            $flds[]=$axis[$params->yaxis].' as y ';
+        if ($params->mode=='Subsector' && isset($params->id))
+        { $wh[] = 'subsector=:subsector';
+          $wp['subsector'] = $params->id;
+        }
+        if ($params->mode=='SIC' && isset($params->id))
+        { $wh[] = 'cid in (select d.cid from sales_divdetails d where d.sic=:sic)';
+          $wp['sic'] = $params->id;
+        }
+        if (isset($params->region) && $params->region!='Global')
+        { $wh[] = 'region=:region';
+          $wp['region'] = $params->region;
+        }
+        if (isset($params->min_size) && 1*$params->min_size > 0)
+        {  $wh[] = 'sales>:minsize';
+           $wp['minsize'] = $params->min_size;
+        }
+        
+        if (count($flds==2))
+        {    $flds[]='name';
+             $sql = "select ".implode(',',$flds).' from sales_companies ';
+             if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
+             $qr = $db->query($sql, $wp);
+             $data = array();
+             while ($r=$db->fetchSingle($qr)) 
+             { $r->x *= 1.0;
+               $r->y *= 1.0;
+               $data[] = $r;
+             }
+             $this->res->xdata = $data;
+             $this->res->xtitle = $titles[$params->xaxis];
+             $this->res->ytitle = $titles[$params->yaxis];
+        }
+        echo json_encode($this->res); 
+    }
+    
     function ajxIndustryAnalysis()
     {   $db = $this->cfg->db; 
         $params = (object)$_POST;  
