@@ -16,7 +16,6 @@ $(function(){
         prm.region = $('#region').val();
         prm.xaxis = $('#x-axis').val();
         prm.yaxis = $('#y-axis').val();
-        
         var minsize = $('#minsize').val();
         if (minsize!='') prm.min_size = minsize;
         
@@ -159,7 +158,20 @@ $(function(){
     $('#region').click(function(){
        reloadChartData();
     });
+
+    $('#x-axis').click(function(){
+       reloadChartData();
+    });
+
+    $('#y-axis').click(function(){
+       reloadChartData();
+    });
+
+    $('#sic_subsector').click(function(){
+       reloadChartData();
+    });
     
+        
     $('#minsize').click(function(){
        reloadChartData();
     });
