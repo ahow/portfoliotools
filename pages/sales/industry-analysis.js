@@ -18,6 +18,7 @@ $(function(){
         prm.yaxis = $('#y-axis').val();
         var minsize = $('#minsize').val();
         if (minsize!='') prm.min_size = minsize;
+        var tnames = [,'SIC','Subsector'];
         
         ajx('/pages/sales/IndustryAnalysis',prm,function(d){
             
@@ -79,7 +80,7 @@ $(function(){
                     series:{  turboThreshold:150000 }
                 },
                 series: [{
-                    name: 'Companies',
+                    name: tnames[$('#sic_subsector').val()],
                     color: 'rgba(03, 83, 223, .5)',
                     data: d.xdata
                 }]
