@@ -19,7 +19,7 @@
         <div class="col-lg-2"><button style="margin-top:25px" class="btn btn-primary b-vchart">View Chart</button></div>
     </div>
     <div class="row">
-        <div id="container" style="min-width: 210px; height: 400px; margin: 0 auto"></div>
+        <div id="container" style="min-width: 600px; height: 600px; margin: 0 auto"></div>
     </div>
 </div>
 <div id="search_sic"></div>
