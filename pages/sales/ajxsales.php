@@ -42,7 +42,7 @@
         {  $d = explode(';', $r->exposure);
            foreach ($cols as $k=>$v) 
            {   $nv = $d[$k];
-               if (1*$nv>0) $nv='+'.$nv;
+               if (is_numeric($nv) && 1*$nv>0) $nv='+'.$nv;
                $r->$v = $nv;
            }
         }
@@ -854,10 +854,18 @@ group by 1");
         $params = (object)$_POST;  
         $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
         $axis = array(null,'sum(sales)',null,null,null,'avg(sales_growth)', 'avg(roic)', 'avg(pe)','avg(evebitda)', 'avg(payout)', 'sum(reviewed)/count(*)');
+        
+        $axis1 = array(null,'sum(sales)',null,null,null,'sum(c.sales_growth*t.proc)/sum(t.proc)',
+        'sum(c.roic*t.proc)/sum(t.proc)','sum(c.pe*t.proc)/sum(t.proc)',
+        'sum(c.evebitda*t.proc)/sum(t.proc)', 'sum(c.payout*t.proc)/sum(t.proc)',
+        'sum(c.reviewed*t.proc)/sum(t.proc)');
+        
         $flds = array();
         
         $wh = array();
         $wp = array();
+        
+        if ($params->mode==1) $axis = $axis1;
         
         if (isset($axis[$params->xaxis]) && $axis[$params->xaxis]!=null) 
             $flds[]=$axis[$params->xaxis].' as x ';
@@ -867,6 +875,7 @@ group by 1");
         { $wh[] = 'subsector=:subsector';
           $wp['subsector'] = $params->id;
         }
+        
         if ($params->mode=='SIC' && isset($params->id))
         { $wh[] = 'cid in (select d.cid from sales_divdetails d where d.sic=:sic)';
           $wp['sic'] = $params->id;
@@ -894,6 +903,35 @@ group by 1");
                    $data[] = $r;
                  }
                  $this->res->xdata = $data;
+             } else
+             {  $db->query('select max(syear), min(syear) from sales_divdetails into @maxyear, @minyear');
+                $db->query('CREATE TEMPORARY TABLE tmp_cid_sales (cid varchar(16) NOT NULL, tsales double, primary key (cid)) ENGINE=MEMORY;');
+                $db->query('insert into tmp_cid_sales
+select d.cid, sum(d.sales)
+from sales_divdetails d
+where d.syear=@maxyear
+group by 1');
+                $db->query('CREATE TEMPORARY TABLE tmp_cid_sic_proc (cid varchar(16) not null, sic integer NOT NULL, proc double, primary key (cid,sic)) ENGINE=MEMORY;');
+                $db->query('insert into tmp_cid_sic_proc
+select d.cid, d.sic, sum(d.sales)/t.tsales
+from sales_divdetails d
+join tmp_cid_sales t on d.cid=t.cid
+where d.syear=@maxyear
+group by 1,2');
+                $flds[]='s.name';
+                $sql = "select ".implode(',',$flds).' from sales_companies c
+join tmp_cid_sic_proc t on c.cid = t.cid
+join sales_sic s on t.sic=s.id';
+                if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
+                $sql.=' group by s.name';
+                $qr = $db->query($sql, $wp);
+                $data = array();
+                while ($r=$db->fetchSingle($qr)) 
+                { $r->x *= 1.0;
+                  $r->y *= 1.0;
+                  $data[] = $r;
+                }
+                $this->res->xdata = $data;
              }
              $this->res->xtitle = $titles[$params->xaxis];
              $this->res->ytitle = $titles[$params->yaxis];
