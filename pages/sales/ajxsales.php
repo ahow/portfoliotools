@@ -853,8 +853,11 @@ group by 1");
     {   $db = $this->cfg->db; 
         $params = (object)$_POST;  
         $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
+        
+        // Subsector mode
         $axis = array(null,'sum(sales)',null,null,null,'avg(sales_growth)', 'avg(roic)', 'avg(pe)','avg(evebitda)', 'avg(payout)', 'sum(reviewed)/count(*)');
         
+        // SIC mode
         $axis1 = array(null,'sum(sales)',null,null,null,'sum(c.sales_growth*t.proc)/sum(t.proc)',
         'sum(c.roic*t.proc)/sum(t.proc)','sum(c.pe*t.proc)/sum(t.proc)',
         'sum(c.evebitda*t.proc)/sum(t.proc)', 'sum(c.payout*t.proc)/sum(t.proc)',
@@ -890,7 +893,7 @@ group by 1");
         }
         
         if (count($flds==2))
-        {    if ($params->mode==2)
+        {    if ($params->mode==2) // Subsector mode
              {   $flds[]='subsector as name';
                  $sql = "select ".implode(',',$flds).' from sales_companies ';
                  if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
@@ -903,7 +906,7 @@ group by 1");
                    $data[] = $r;
                  }
                  $this->res->xdata = $data;
-             } else
+             } else  // SIC mode
              {  $db->query('select max(syear), min(syear) from sales_divdetails into @maxyear, @minyear');
                 $db->query('CREATE TEMPORARY TABLE tmp_cid_sales (cid varchar(16) NOT NULL, tsales double, primary key (cid)) ENGINE=MEMORY;');
                 $db->query('insert into tmp_cid_sales
