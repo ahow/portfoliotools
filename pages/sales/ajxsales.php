@@ -853,7 +853,7 @@ group by 1");
     {   $db = $this->cfg->db; 
         $params = (object)$_POST;  
         $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
-        $axis = array(null,'sum(sales)',null,null,null,'sales_growth', 'avg(roic)', 'avg(pe)','avg(evebitda)', 'avg(payout)', 'sum(reviewed)/count(*)');
+        $axis = array(null,'sum(sales)',null,null,null,'avg(sales_growth)', 'avg(roic)', 'avg(pe)','avg(evebitda)', 'avg(payout)', 'sum(reviewed)/count(*)');
         $flds = array();
         
         $wh = array();
