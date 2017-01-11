@@ -854,6 +854,7 @@ group by 1");
         $params = (object)$_POST;  
         $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
         
+        
         // Subsector mode
         $axis = array(null,'sum(sales)',null,null,null,'avg(sales_growth)', 'avg(roic)', 'avg(pe)','avg(evebitda)', 'avg(payout)', 'sum(reviewed)/count(*)');
         
@@ -862,6 +863,26 @@ group by 1");
         'sum(c.roic*t.proc)/sum(t.proc)','sum(c.pe*t.proc)/sum(t.proc)',
         'sum(c.evebitda*t.proc)/sum(t.proc)', 'sum(c.payout*t.proc)/sum(t.proc)',
         'sum(c.reviewed*t.proc)/sum(t.proc)');
+        
+        function setSubsectorValue($db, $name, $no, $wp, $wh)
+        {   if ($no==2 || $no==3) // top 3  and top 5 (%)
+            {   $wh[] = " c.subsector=:subsector ";
+                $wp['subsector'] = $name;
+                $sql = "select sum(c.sales) from sales_companies c where ".implode(' and ', $wh)." into @ssum";
+                $qr = $db->query($sql, $wp);
+                if ($no==2)
+                   $sql = "select 100.0*sum(t.sales)/@ssum from (select c.sales from sales_companies c where ".implode(' and ', $wh)." order by 1 desc limit 3) t";
+                else 
+                   $sql = "select 100.0*sum(t.sales)/@ssum from (select c.sales from sales_companies c where ".implode(' and ', $wh)." order by 1 desc limit 5) t";
+                $qr = $db->query($sql, $wp);
+                return 1.0*$db->fetchSingleValue($qr);
+            }
+            return 0;
+        }
+        
+        function setValue($dn, $name, $no)
+        { return 1*$no;
+        }
         
         $flds = array();
         
@@ -893,7 +914,7 @@ group by 1");
         }
         
         // write_log(print_r($flds, true));        
-        if (count($flds)==2)
+        if (true || count($flds)==2)
         {    if ($params->mode==2) // Subsector mode
              {   $flds[]='subsector as name';
                  $sql = "select ".implode(',',$flds).' from sales_companies ';
@@ -902,8 +923,15 @@ group by 1");
                  $qr = $db->query($sql, $wp);
                  $data = array();
                  while ($r=$db->fetchSingle($qr)) 
-                 { $r->x *= 1.0;
-                   $r->y *= 1.0;
+                 {
+                   if (!isset($r->x)) 
+                      $r->x = setSubsectorValue($db, $r->name, $params->xaxis, $wp, $wh);
+                   else  $r->x *= 1.0;
+                      
+                   if (!isset($r->y)) 
+                     $r->y = setSubsectorValue($db, $r->name, $params->yaxis, $wp, $wh);
+                   else  $r->y *= 1.0;
+                   
                    $data[] = $r;
                  }
                  $this->res->xdata = $data;
@@ -931,8 +959,15 @@ join sales_sic s on t.sic=s.id';
                 $qr = $db->query($sql, $wp);
                 $data = array();
                 while ($r=$db->fetchSingle($qr)) 
-                { $r->x *= 1.0;
-                  $r->y *= 1.0;
+                { 
+                  if (!isset($r->x)) 
+                    $r->x = setValue($db, $r->name, $params->xaxis, $wp, $wh);
+                  else  $r->x *= 1.0;
+                  
+                  if (!isset($r->y)) 
+                    $r->y = setValue($db, $r->name, $params->yaxis);
+                  else  $r->y *= 1.0;
+                  
                   $data[] = $r;
                 }
                 $this->res->xdata = $data;
