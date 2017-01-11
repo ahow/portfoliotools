@@ -892,7 +892,8 @@ group by 1");
            $wp['minsize'] = $params->min_size;
         }
         
-        if (count($flds==2))
+        // write_log(print_r($flds, true));        
+        if (count($flds)==2)
         {    if ($params->mode==2) // Subsector mode
              {   $flds[]='subsector as name';
                  $sql = "select ".implode(',',$flds).' from sales_companies ';
