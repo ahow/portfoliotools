@@ -880,8 +880,26 @@ group by 1");
             return 0;
         }
         
-        function setValue($dn, $name, $no)
-        { return 1*$no;
+        function setSICValue($db, $sic, $no, $wp, $wh)
+        {   if ($no==2 || $no==3) // top 3  and top 5 (%)
+            {   
+                $wh[] = " d.sic=:sic ";
+                $wp['sic'] = $sic;
+                
+                $sql = "select sum(d.sales) from sales_divdetails d where ".implode(' and ', $wh)." into @ssum";
+                $qr = $db->query($sql, $wp);
+                
+                if ($no==2) // get total sales of companies with selected SIC number and max year
+                   $sql = "select sum(t.sales) from (select d.sales from sales_divdetails d 
+        join sales_companies c on  d.cid = c.cid
+        where  ".implode(' and ', $wh)." and d.syear=@maxyear  order by 1 desc limit 3) t";
+                else 
+                   $sql = "select 100.0*sum(t.sales)/@ssum from (select c.sales from sales_companies c where ".implode(' and ', $wh)." order by 1 desc limit 5) t";
+                // write_log("no = $no");
+                $qr = $db->query($sql, $wp);
+                return 1.0*$db->fetchSingleValue($qr);
+            }
+            return 10;            
         }
         
         $flds = array();
@@ -951,23 +969,24 @@ join tmp_cid_sales t on d.cid=t.cid
 where d.syear=@maxyear
 group by 1,2');
                 $flds[]='s.name';
+                $flds[]='s.id as sic';
                 $sql = "select ".implode(',',$flds).' from sales_companies c
 join tmp_cid_sic_proc t on c.cid = t.cid
 join sales_sic s on t.sic=s.id';
                 if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
-                $sql.=' group by s.name';
+                $sql.=' group by s.name, s.id';
                 $qr = $db->query($sql, $wp);
                 $data = array();
                 while ($r=$db->fetchSingle($qr)) 
                 { 
                   if (!isset($r->x)) 
-                    $r->x = setValue($db, $r->name, $params->xaxis, $wp, $wh);
+                    $r->x = setSICValue($db, $r->sic, $params->xaxis, $wp, $wh);
                   else  $r->x *= 1.0;
                   
                   if (!isset($r->y)) 
-                    $r->y = setValue($db, $r->name, $params->yaxis);
+                    $r->y = setSICValue($db, $r->sic, $params->yaxis, $wp, $wh);
                   else  $r->y *= 1.0;
-                  
+                  unset($r->sic);
                   $data[] = $r;
                 }
                 $this->res->xdata = $data;
