@@ -886,18 +886,33 @@ group by 1");
                 $wh[] = " d.sic=:sic ";
                 $wp['sic'] = $sic;
                 
-                $sql = "select sum(d.sales) from sales_divdetails d where ".implode(' and ', $wh)." into @ssum";
+                $sql = "select sum(d.sales) 
+from sales_divdetails d 
+ join sales_companies c on  d.cid = c.cid
+where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum";
                 $qr = $db->query($sql, $wp);
+                /*
+                if ($sic=='781') 
+                {   write_log($sql);
+                    write_log(print_r($wp, true));
+                    $qr = $db->query('select @ssum');
+                    write_log('ssum = '.$db->fetchSingleValue($qr));
+                }
+                */
                 
                 if ($no==2) // get total sales of companies with selected SIC number and max year
-                   $sql = "select sum(t.sales) from (select d.sales from sales_divdetails d 
+                   $sql = "select sum(t.sales)/@ssum from (select d.sales from sales_divdetails d 
         join sales_companies c on  d.cid = c.cid
         where  ".implode(' and ', $wh)." and d.syear=@maxyear  order by 1 desc limit 3) t";
                 else 
-                   $sql = "select 100.0*sum(t.sales)/@ssum from (select c.sales from sales_companies c where ".implode(' and ', $wh)." order by 1 desc limit 5) t";
+                   $sql = "select sum(t.sales)/@ssum from (select d.sales from sales_divdetails d 
+        join sales_companies c on  d.cid = c.cid
+        where  ".implode(' and ', $wh)." and d.syear=@maxyear  order by 1 desc limit 3) t";
                 // write_log("no = $no");
                 $qr = $db->query($sql, $wp);
-                return 1.0*$db->fetchSingleValue($qr);
+                $res = 100.0*$db->fetchSingleValue($qr);
+                // if ($sic=='781') write_log("res = $res");
+                return $res;
             }
             return 10;            
         }
