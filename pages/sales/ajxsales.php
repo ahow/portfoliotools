@@ -907,15 +907,62 @@ group by 1");
                   $sum+=$df;
                 }
             }
-            // log stability 
-            // write_log(print_r($years, true));
-            // write_log(print_r($changes, true));
             if ($n!=0) $stability = $sum/$n;
             else $stability='NULL';
             return $stability;
        }
            
-        function setSubsectorValue($db, $name, $no, $wp, $wh)
+
+       function getStabilityBySubsector($db, $wp, $wh, $minyear, $maxyear)
+       {    $years = array();
+            for ($y=$minyear; $y<=$maxyear; $y++)
+            {  
+                $sql = "select 
+   c.cid,c.name,sum(d.sales)
+from sales_companies c
+join sales_divdetails d on c.cid = d.cid
+where ".implode(' and ', $wh)."  and d.syear=$y 
+group by c.cid, c.name
+order by d.sales desc
+limit 20";
+                $years[$y] = array();
+                $qr = $db->query($sql, $wp);
+                $i=1;
+                while ( $r = $db->fetchSingle($qr) )
+                {   $years[$y][$r->cid] = $i;
+                    $i++;
+                }
+            }
+      
+            $changes = array();
+            $n = 0;
+            $sum = 0;
+                        
+            for ($y=$maxyear; $y>$minyear; $y--)
+            {  $yd = ''.$y.'-'.($y-1);
+                $changes[$yd]= array();
+                foreach($years[$y] as $k=>$v)
+                { if (!isset($years[$y-1][$k])) 
+                  {
+                     $df = 5;
+                  }
+                  else 
+                  {  $df = $years[$y][$k] - $years[$y-1][$k];                      
+                  }
+                  $changes[$yd][$k]=$df;
+                  $n++;
+                  $df = abs($df);
+                  if ($df>5) $df=5;
+                  $sum+=$df;
+                }
+            }
+            if ($n!=0) $stability = $sum/$n;
+            else $stability='NULL';
+            return $stability;
+       }
+           
+           
+        function setSubsectorValue($db, $name, $no, $wp, $wh, $minyear, $maxyear)
         {   if ($no==2 || $no==3) // top 3  and top 5 (%)
             {   $wh[] = " c.subsector=:subsector ";
                 $wp['subsector'] = $name;
@@ -927,6 +974,18 @@ group by 1");
                    $sql = "select 100.0*sum(t.sales)/@ssum from (select c.sales from sales_companies c where ".implode(' and ', $wh)." order by 1 desc limit 5) t";
                 $qr = $db->query($sql, $wp);
                 return 1.0*$db->fetchSingleValue($qr);
+            } else
+            if ($no==4)
+            {      
+               $wh[] = " c.subsector=:subsector ";
+               $wp['subsector'] = $name;
+                
+               $stab = getStabilityBySubsector($db,$wp, $wh,$minyear,$maxyear);
+               /*
+                if ($sic=='781') 
+                {    write_log("Stability = $stab");
+                }*/
+                return $stab;
             }
             return 0;
         }
@@ -963,9 +1022,10 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
                     $wp['sic'] = $sic;
                 
                     $stab = getStabilityBySIC($db,$wp, $wh,$minyear,$maxyear);
+               /*
                 if ($sic=='781') 
                 {    write_log("Stability = $stab");
-                }
+                }*/
                    return $stab;
             }
             return 10;            
@@ -1002,7 +1062,15 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
         
         // write_log(print_r($flds, true));        
         if (true || count($flds)==2)
-        {    if ($params->mode==2) // Subsector mode
+        {    
+             $db->query('select max(syear), min(syear) from sales_divdetails into @maxyear, @minyear');
+             $qr = $db->query('select @maxyear as maxyear, @minyear as minyear;');
+             $yr = $db->fetchSingle($qr);
+             $minyear = 1*$yr->minyear;
+             $maxyear = 1*$yr->maxyear;
+            
+            
+             if ($params->mode==2) // Subsector mode
              {   $flds[]='subsector as name';
                  $sql = "select ".implode(',',$flds).' from sales_companies ';
                  if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
@@ -1012,23 +1080,18 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
                  while ($r=$db->fetchSingle($qr)) 
                  {
                    if (!isset($r->x)) 
-                      $r->x = setSubsectorValue($db, $r->name, $params->xaxis, $wp, $wh);
+                      $r->x = setSubsectorValue($db, $r->name, $params->xaxis, $wp, $wh, $minyear, $maxyear);
                    else  $r->x *= 1.0;
                       
                    if (!isset($r->y)) 
-                     $r->y = setSubsectorValue($db, $r->name, $params->yaxis, $wp, $wh);
+                     $r->y = setSubsectorValue($db, $r->name, $params->yaxis, $wp, $wh, $minyear, $maxyear);
                    else  $r->y *= 1.0;
                    
                    $data[] = $r;
                  }
                  $this->res->xdata = $data;
              } else  // SIC mode
-             {  $db->query('select max(syear), min(syear) from sales_divdetails into @maxyear, @minyear');
-                $qr = $db->query('select @maxyear as maxyear, @minyear as minyear;');
-                $yr = $db->fetchSingle($qr);
-                $minyear = 1*$yr->minyear;
-                $maxyear = 1*$yr->maxyear;
-                
+             {                  
                 $db->query('CREATE TEMPORARY TABLE tmp_cid_sales (cid varchar(16) NOT NULL, tsales double, primary key (cid)) ENGINE=MEMORY;');
                 $db->query('insert into tmp_cid_sales
 select d.cid, sum(d.sales)
