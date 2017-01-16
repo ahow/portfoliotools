@@ -849,6 +849,7 @@ group by 1");
         echo json_encode($this->res); 
     }
     
+    
     function ajxIndustryAnalysis()
     {   $db = $this->cfg->db; 
         $params = (object)$_POST;  
@@ -863,7 +864,57 @@ group by 1");
         'sum(c.roic*t.proc)/sum(t.proc)','sum(c.pe*t.proc)/sum(t.proc)',
         'sum(c.evebitda*t.proc)/sum(t.proc)', 'sum(c.payout*t.proc)/sum(t.proc)',
         'sum(c.reviewed*t.proc)/sum(t.proc)');
-        
+
+       function getStabilityBySIC($db, $wp, $wh, $minyear, $maxyear)
+       {    $years = array();
+            for ($y=$minyear; $y<=$maxyear; $y++)
+            {   $sql = "select 
+    c.cid,c.name,sum(d.sales)
+    from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    where ".implode(' and ', $wh)."  and d.syear=$y 
+    group by c.cid, c.name
+    order by d.sales desc
+    limit 20";
+                $years[$y] = array();
+                $qr = $db->query($sql, $wp);
+                $i=1;
+                while ( $r = $db->fetchSingle($qr) )
+                {   $years[$y][$r->cid] = $i;
+                    $i++;
+                }
+            }
+      
+            $changes = array();
+            $n = 0;
+            $sum = 0;
+                        
+            for ($y=$maxyear; $y>$minyear; $y--)
+            {  $yd = ''.$y.'-'.($y-1);
+                $changes[$yd]= array();
+                foreach($years[$y] as $k=>$v)
+                { if (!isset($years[$y-1][$k])) 
+                  {
+                     $df = 5;
+                  }
+                  else 
+                  {  $df = $years[$y][$k] - $years[$y-1][$k];                      
+                  }
+                  $changes[$yd][$k]=$df;
+                  $n++;
+                  $df = abs($df);
+                  if ($df>5) $df=5;
+                  $sum+=$df;
+                }
+            }
+            // log stability 
+            // write_log(print_r($years, true));
+            // write_log(print_r($changes, true));
+            if ($n!=0) $stability = $sum/$n;
+            else $stability='NULL';
+            return $stability;
+       }
+           
         function setSubsectorValue($db, $name, $no, $wp, $wh)
         {   if ($no==2 || $no==3) // top 3  and top 5 (%)
             {   $wh[] = " c.subsector=:subsector ";
@@ -880,7 +931,7 @@ group by 1");
             return 0;
         }
         
-        function setSICValue($db, $sic, $no, $wp, $wh)
+        function setSICValue($db, $sic, $no, $wp, $wh, $minyear, $maxyear)
         {   if ($no==2 || $no==3) // top 3  and top 5 (%)
             {   
                 $wh[] = " d.sic=:sic ";
@@ -891,14 +942,6 @@ from sales_divdetails d
  join sales_companies c on  d.cid = c.cid
 where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum";
                 $qr = $db->query($sql, $wp);
-                /*
-                if ($sic=='781') 
-                {   write_log($sql);
-                    write_log(print_r($wp, true));
-                    $qr = $db->query('select @ssum');
-                    write_log('ssum = '.$db->fetchSingleValue($qr));
-                }
-                */
                 
                 if ($no==2) // get total sales of companies with selected SIC number and max year
                    $sql = "select sum(t.sales)/@ssum from (select d.sales from sales_divdetails d 
@@ -913,6 +956,17 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
                 $res = 100.0*$db->fetchSingleValue($qr);
                 // if ($sic=='781') write_log("res = $res");
                 return $res;
+            } else 
+            if ($no==4)
+            {      
+                    $wh[] = " d.sic=:sic ";
+                    $wp['sic'] = $sic;
+                
+                    $stab = getStabilityBySIC($db,$wp, $wh,$minyear,$maxyear);
+                if ($sic=='781') 
+                {    write_log("Stability = $stab");
+                }
+                   return $stab;
             }
             return 10;            
         }
@@ -970,6 +1024,11 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
                  $this->res->xdata = $data;
              } else  // SIC mode
              {  $db->query('select max(syear), min(syear) from sales_divdetails into @maxyear, @minyear');
+                $qr = $db->query('select @maxyear as maxyear, @minyear as minyear;');
+                $yr = $db->fetchSingle($qr);
+                $minyear = 1*$yr->minyear;
+                $maxyear = 1*$yr->maxyear;
+                
                 $db->query('CREATE TEMPORARY TABLE tmp_cid_sales (cid varchar(16) NOT NULL, tsales double, primary key (cid)) ENGINE=MEMORY;');
                 $db->query('insert into tmp_cid_sales
 select d.cid, sum(d.sales)
@@ -992,14 +1051,15 @@ join sales_sic s on t.sic=s.id';
                 $sql.=' group by s.name, s.id';
                 $qr = $db->query($sql, $wp);
                 $data = array();
+                
                 while ($r=$db->fetchSingle($qr)) 
                 { 
                   if (!isset($r->x)) 
-                    $r->x = setSICValue($db, $r->sic, $params->xaxis, $wp, $wh);
+                    $r->x = setSICValue($db, $r->sic, $params->xaxis, $wp, $wh, $minyear, $maxyear);
                   else  $r->x *= 1.0;
                   
                   if (!isset($r->y)) 
-                    $r->y = setSICValue($db, $r->sic, $params->yaxis, $wp, $wh);
+                    $r->y = setSICValue($db, $r->sic, $params->yaxis, $wp, $wh, $minyear, $maxyear);
                   else  $r->y *= 1.0;
                   unset($r->sic);
                   $data[] = $r;
