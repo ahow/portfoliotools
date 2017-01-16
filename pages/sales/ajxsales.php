@@ -214,7 +214,7 @@ limit 20";
         // get total sales of companies with selected SIC number and max year
         $sql = "select dd.cid, sum(sales) as ctotal
 from sales_divdetails dd
-where dd.syear=:max_year and dd.cid in
+where dd.syear=:max_year and dd.sales>0 and dd.cid in
 (select 
     d.cid 
  from sales_divdetails d 
@@ -275,7 +275,7 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
            $fin->aroic += $pr * $r->roic;
            $fin->aevebitda += $pr * $r->evebitda;
            $fin->apayout += $pr * $r->payout;
-           $fin->tsales += $r->dsales;
+           if ($r->dsales>0) $fin->tsales += $r->dsales;
            $proc_sum+=$pr;
            $fin->market_cap += $pr * $r->market_cap;
                       
