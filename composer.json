@@ -1,8 +1,8 @@
 {
     "require": {
-        "lusitanian/oauth": "0.8.9",
-	"phpmailer/phpmailer": "~5.2",
-    "tecnick.com/tcpdf": "~6.2",
+    "lusitanian/oauth": "0.8.9",
+    "phpmailer/phpmailer": "~5.2",
+    "tecnick.com/tcpdf": "~6.2"
     }
 }
 
