@@ -188,7 +188,7 @@ $(function(){
                 Highcharts.chart('container', params);
                 
                 $('#portfolio').attr('disabled', false);
-                $('#comparasion').attr('disabled', false);
+                $('#comparison').attr('disabled', false);
             } );
         }
     }
