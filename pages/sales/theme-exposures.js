@@ -1,3 +1,9 @@
+function print()
+{ fprint.title.value = 'Title 1';
+  fprint.svg.value = $('#container > div').html();
+  fprint.submit();
+}
+
 function mdSelect(selector)
 {   var rows = [];
     var model = $(selector).parents('.bs-model-select:first').attr('data-model')+'/load';

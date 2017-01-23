@@ -6,13 +6,14 @@
 
     // set document information
    $pdf->SetCreator(PDF_CREATOR);
-   $pdf->SetAuthor('Nicola Asuni');
-   $pdf->SetTitle('TCPDF Example 001');
-   $pdf->SetSubject('TCPDF Tutorial');
-   $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+   $pdf->SetAuthor('Andrew Howard');
+   $title = post('title');
+   $pdf->SetTitle($title);
+   $pdf->SetSubject($title);
+   $pdf->SetKeywords('chart '.$title);
 
     // set default header data
-    $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 001', PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
+    $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, 'chart', array(0,64,255), array(0,64,128));
     $pdf->setFooterData(array(0,64,0), array(0,64,128));
 
     // set header and footer fonts
@@ -70,7 +71,11 @@ EOD;
 
 
     // Print text using writeHTMLCell()
-    $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
+    // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
+    
+    // file_put_contents('/tmp/data.svg',  post('svg'));    
+    // $pdf->ImageSVG($file='/tmp/data.svg', $x=30, $y=100, $w='', $h=100, $link='', $align='', $palign='', $border=0, $fitonpage=false);
+    $pdf->ImageSVG($file='@'.post('svg'), $x=10, $y=30, $w='', $h=200, $link='', $align='', $palign='', $border=0, $fitonpage=true);
 
     // ---------------------------------------------------------
 
