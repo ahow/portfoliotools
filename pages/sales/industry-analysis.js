@@ -10,6 +10,13 @@ $(function(){
       return n.toFixed(decimals);
     }
     
+        
+   function print()
+   { fprint.title.value = 'Industry analysis';
+     fprint.svg.value = $('#container svg').get(0).outerHTML;
+     fprint.submit();
+   }
+    
     function reloadChartData()
     {   var prm = {};
         prm.mode = $('#sic_subsector').val();
@@ -87,6 +94,7 @@ $(function(){
             };
              
             Highcharts.chart('container', param);
+            $('.b-print').attr('disabled', false);
         });
        
     }
@@ -180,5 +188,7 @@ $(function(){
     $('.b-vchart').click(function(){
         reloadChartData();
     });
+    
+    $('.b-print').click(print);
     
 });
