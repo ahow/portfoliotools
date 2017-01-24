@@ -52,9 +52,12 @@ $(function(){
         {   $('#portfolio').attr('disabled', true)
             $('#comparison').attr('disabled', true)
             
+             var metric_name = '';
+            
              ajx('/pages/sales/StackedChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
                 // console.log(d) 
                 // chart.setData(d.header, d.data1.data, d.data2.data);
+                metric_name = d.metric;
                 var ser = [];
                 
                 for (var i=0; i<d.p1.data.length; i++)
@@ -75,9 +78,10 @@ $(function(){
                     yAxis: {
                         min: 0,
                         title: {
-                            text: d.metric
+                            text: metric_name
                         }
                     },
+                    legend: { enabled: false },
                     tooltip: {
                         pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
                         shared: true
@@ -105,7 +109,7 @@ $(function(){
                         chart: { type: 'waterfall' },
                         title: { text: 'Sector vs stock effects' },
                         xAxis: { type: 'category' },
-                        yAxis: { title: { text: 'Metric' } },
+                        yAxis: { title: { text: metric_name } },
                         legend: { enabled: false },
                         tooltip: { pointFormat: '<b>{point.y:,.2f}</b>' },
                         series: [{data:d.xdata, 
