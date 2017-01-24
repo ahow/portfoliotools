@@ -35,6 +35,14 @@ function mdSelect(selector)
 $(function(){
     
     // var chart = new barChart('#chart');
+
+    function print()
+    { fprint.title.value = 'Portfolio metrics';     
+      fprint.svg1.value = $('#container svg').get(0).outerHTML;
+      fprint.svg2.value = $('#container2 svg').get(0).outerHTML;
+      fprint.svg3.value = $('#stacked svg').get(0).outerHTML;
+      fprint.submit();
+    }
      
     function reloadChartData()
     {   var pf1 = $('#portfolio').val();
@@ -87,7 +95,8 @@ $(function(){
                     $('#portfolio').attr('disabled', false);
                     $('#comparison').attr('disabled', false);
                     
-                    drawStackedChart('stacked', d)
+                    drawStackedChart('stacked', d);
+                    $('.b-print').attr('disabled', false);
                 } );
                 
                 ajx('/pages/sales/SectorAllocChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
@@ -149,6 +158,7 @@ $(function(){
         reloadChartData();
     });
     
+    $('.b-print').click(print);
     
     
 });
