@@ -1,9 +1,3 @@
-function print()
-{ fprint.title.value = 'Title 1';
-  fprint.svg.value = $('#container > div').html();
-  fprint.submit();
-}
-
 function mdSelect(selector)
 {   var rows = [];
     var model = $(selector).parents('.bs-model-select:first').attr('data-model')+'/load';
@@ -143,7 +137,11 @@ $(function(){
     
     // var chart = new barChart('#chart');
     
-   
+   function print()
+   { fprint.title.value = 'Theme exposures';
+     fprint.svg.value = $('#container > div').html();
+     fprint.submit();
+   }
     
     
     function reloadChartData()
@@ -189,6 +187,7 @@ $(function(){
                 
                 $('#portfolio').attr('disabled', false);
                 $('#comparison').attr('disabled', false);
+                $('.b-print').attr('disabled', false);
             } );
         }
     }
@@ -213,6 +212,6 @@ $(function(){
         reloadChartData();
     });
     
-    
+    $('.b-print').click(print);
     
 });
