@@ -138,8 +138,8 @@ $(function(){
     // var chart = new barChart('#chart');
     
    function print()
-   { fprint.title.value = 'Theme exposures';
-     fprint.svg.value = $('#container > div').html();
+   { fprint.title.value = 'Theme exposures';     
+     fprint.svg.value = $('#container svg').get(0).outerHTML;
      fprint.submit();
    }
     
