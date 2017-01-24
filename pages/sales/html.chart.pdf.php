@@ -14,7 +14,7 @@
    $pdf->SetKeywords('chart '.$title);
 
     // set default header data
-    $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, 'chart', array(0,0,0), array(128,128,128));
+    $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, '', array(0,0,0), array(128,128,128));
     $pdf->setFooterData(array(0,0,0), array(128,128,128));
 
     // set header and footer fonts
@@ -67,7 +67,9 @@
     if ($type=='') $pdf->ImageSVG($file='@'.post('svg'), $x=10, $y=30, $w='', $h=200, $link='', $align='', $palign='', $border=0, $fitonpage=true);
     else if ($type=='pfmetrics')
     {
-        $pdf->ImageSVG($file='@'.post('svg1'), $x=10, $y=30, $w='', $h=200, $link='', $align='', $palign='', $border=0, $fitonpage=false);
+        $pdf->ImageSVG($file='@'.post('svg1'), $x=10, $y=30, $w=97.5, $h='', $link='', $align='', $palign='', $border=0, $fitonpage=false);
+        $pdf->ImageSVG($file='@'.post('svg2'), $x=102.5, $y=30, $w=97.5, $h='', $link='', $align='', $palign='', $border=0, $fitonpage=false);
+        $pdf->ImageSVG($file='@'.post('svg3'), $x=10, $y=110, $w=190, $h='', $link='', $align='', $palign='', $border=0, $fitonpage=false);
     }
 
     // ---------------------------------------------------------
