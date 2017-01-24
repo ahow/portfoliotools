@@ -13,8 +13,8 @@
    $pdf->SetKeywords('chart '.$title);
 
     // set default header data
-    $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, 'chart', array(0,64,255), array(0,64,128));
-    $pdf->setFooterData(array(0,64,0), array(0,64,128));
+    $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, 'chart', array(0,0,0), array(128,128,128));
+    $pdf->setFooterData(array(0,0,0), array(128,128,128));
 
     // set header and footer fonts
     $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -73,15 +73,13 @@ EOD;
     // Print text using writeHTMLCell()
     // $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
     
-    // file_put_contents('/tmp/data.svg',  post('svg'));    
-    // $pdf->ImageSVG($file='/tmp/data.svg', $x=30, $y=100, $w='', $h=100, $link='', $align='', $palign='', $border=0, $fitonpage=false);
     $pdf->ImageSVG($file='@'.post('svg'), $x=10, $y=30, $w='', $h=200, $link='', $align='', $palign='', $border=0, $fitonpage=true);
 
     // ---------------------------------------------------------
 
     // Close and output PDF document
     // This method has several options, check the source code documentation for more information.
-   
-    $pdf->Output('example_001.pdf', 'I');
+    $file_name = str_replace( array(' ',"\t"), '_', $title).'.pdf';   
+    $pdf->Output($file_name, 'I');
 
 ?>
