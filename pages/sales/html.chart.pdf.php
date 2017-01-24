@@ -71,9 +71,10 @@
         $pdf->ImageSVG($file='@'.post('svg2'), $x=102.5, $y=30, $w=97.5, $h='', $link='', $align='', $palign='', $border=0, $fitonpage=false);
         $pdf->ImageSVG($file='@'.post('svg3'), $x=10, $y=110, $w=190, $h='', $link='', $align='', $palign='', $border=0, $fitonpage=false);
     } else if ($type=='industry')
-    {   file_put_contents('/tmp/test.svg', post('svg'));
-        $pdf->setRasterizeVectorImages(true);
+    {   // file_put_contents('/tmp/test.svg', post('svg'));
+        // $pdf->setRasterizeVectorImages(true);
         $pdf->ImageSVG($file='@'.post('svg'), $x=10, $y=30, $w=190, $h='', $link='', $align='', $palign='', $border=0, $fitonpage=false);
+        // $pdf->ImageSVG($file='/tmp/test_x.svg', $x=10, $y=130, $w=190, $h='', $link='', $align='', $palign='', $border=0, $fitonpage=false);
     }
 
     // ---------------------------------------------------------
