@@ -29,7 +29,7 @@
            $this->cfg->addJs('/bootstrap-3.3.6','bootstrap3-typeahead.min.js');
        } 
        else if ($this->nav=='sic')
-       {
+       {   $this->cfg->addJs('/html.php/pages/sales','download.js');
            $this->cfg->addJs('/html.php/pages/sales','sic.js');
        }
        else if ($this->nav=='market-ranking')
@@ -71,6 +71,7 @@
        }
        else if ($this->nav=='industry-analysis')
        {   $this->cfg->addJs('/html.php/pages/sales','lookup.js');
+           $this->cfg->addJs('/html.php/pages/sales','download.js');
            $this->cfg->addJs('/html.php/pages/sales','industry-analysis.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');

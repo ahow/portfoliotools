@@ -77,8 +77,11 @@ $(function(){
       return n.toFixed(decimals);
     }
     
+    var last_data = null;
+    
     function drawRanking(selector, d, totals)
-    {  var s = '<table class="table table-striped">';
+    {  last_data = d;
+       var s = '<table class="table table-striped">';
        var link = "<?php echo mkURL('/sales/companies'); ?>";
         total = 0.0;
         s+='<tr><th style="width:50%">Company</th><th style="width:8%">% of sales</th><th style="width:26%">&nbsp;</th><th style="width:8%">-1Yr</th><th style="width:8%">-2Yr</th></tr>';
@@ -180,5 +183,19 @@ $(function(){
         var val = $('#sic').val();
             marketRanking(val);
     });
+    
+    $('.b-csv').click(function(){
+        
+        function N(v){ if (isNaN(v) || v==undefined) return ''; return v; }
+        
+        var d = last_data;
+        console.log(d); 
+        var csv = '"CID","NAME","% OF SALES","-1Yr","-2Yr"'+"\n";
+        for (var i=0; i<d.rows.length; i++)
+        {   var r = d.rows[i];
+            if (r!=undefined) csv+='"'+r.cid+'","'+r.name.replace("\n",'\\n').replace('"','\"')+'",'+r.psale+','+N(r.psaleY1)+','+N(r.psaleY2)+"\n";
+        }
+        download(csv,'market_ranking.csv');
+     });
     
 });
