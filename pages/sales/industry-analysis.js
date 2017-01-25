@@ -220,7 +220,13 @@ $(function(){
     });
     
      $('.b-csv').click(function(){
-        console.log(last_data);
+        var d = last_data;
+        var csv = '"Company","'+d.xtitle+'","'+d.ytitle+"\"\n";
+        for (var i=0; i<d.xdata.length; i++)
+        {   var r = d.xdata[i];
+            csv+='"'+r.name.replace("\n",'\\n').replace('"','\"')+'",'+r.x+','+r.y+"\n";
+        }
+        download(csv,'industry_analisys.csv');
      });
     
     $('.b-print').click(print);
