@@ -1134,6 +1134,13 @@ join sales_sic s on t.sic=s.id';
         }
         echo json_encode($this->res); 
     }
+    
+    function ajxGetMaxYear()
+    {   $db = $this->cfg->db;
+        $qr = $db->query('select max(syear) as maxyear from sales_divdetails');
+        $this->res->maxyear = $db->fetchSingleValue($qr); 
+        echo json_encode($this->res); 
+    }
  
  }
 
