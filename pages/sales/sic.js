@@ -112,7 +112,9 @@ $(function(){
 
     });
     
-    $('#year').val(new Date().getFullYear()-1);
+    ajx('/pages/sales/GetMaxYear', function(d){ 
+        $('#year').val(d.maxyear);
+    } );
     
     function marketRanking(val)
     { ajx('/pages/sales/Model/sic/row',{id:val},function(d){
