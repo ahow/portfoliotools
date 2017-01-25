@@ -8,17 +8,18 @@
 ?>
 <div id="mranking">
     <div class="row">
-        <div class="col-lg-5"><?=$f->listSelect('sic_subsector','SIC;Subsector')?></div>
-        <div class="col-lg-5"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
+        <div class="col-lg-4"><?=$f->listSelect('sic_subsector','SIC;Subsector')?></div>
+        <div class="col-lg-6"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
         <div class="col-lg-2"><?=$f->input('minsize','number')?></div>
     </div>
     <div class="row">
         <?php $list = 'Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed'; ?>
-        <div class="col-lg-5"><?=$f->listSelect('x-axis',$list)?></div>
-        <div class="col-lg-5"><?=$f->listSelect('y-axis',$list)?></div>
-        <div class="col-lg-2">
+        <div class="col-lg-4"><?=$f->listSelect('x-axis',$list)?></div>
+        <div class="col-lg-4"><?=$f->listSelect('y-axis',$list)?></div>
+        <div class="col-lg-4">
             <div class="btn-group">
                 <button style="margin-top:25px" class="btn btn-primary b-print" disabled="true">Print</button>
+                <button style="margin-top:25px" class="btn btn-default b-csv" disabled="true">Download .CSV</button>
                 <button style="margin-top:25px" class="btn btn-primary b-vchart">View Chart</button>
             </div>
         </div>
