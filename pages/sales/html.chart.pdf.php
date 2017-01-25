@@ -74,7 +74,7 @@
     {   // file_put_contents('/tmp/test.svg', post('svg'));
         // $pdf->setRasterizeVectorImages(true);
         $pdf->ImageSVG($file='@'.post('svg'), $x=10, $y=30, $w=190, $h='', $link='', $align='', $palign='', $border=0, $fitonpage=false);
-        // $pdf->ImageSVG($file='/tmp/test_x.svg', $x=10, $y=130, $w=190, $h='', $link='', $align='', $palign='', $border=0, $fitonpage=false);
+        // $pdf->ImageSVG($file='/tmp/test2.svg', $x=10, $y=130, $w=190, $h='', $link='', $align='', $palign='', $border=0, $fitonpage=false);
     }
 
     // ---------------------------------------------------------

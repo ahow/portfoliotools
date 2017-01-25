@@ -69,15 +69,13 @@ $(function(){
        });
    } 
    
-    /*
-    function lookupRegion(text,foo)
-    {   console.log(text);
-        ajx('/pages/sales/Model/regions/load',{search:text+'%'},function(d){
-            console.log(d);
-        });
-    }*/
-    
-    // $('#region').typeahead({source:lookupRegion});
+    function toFloat(v, decimals)
+    { var n = 1.0*v;
+      if (isNaN(n) || v==null)
+      {   return '-';
+      }
+      return n.toFixed(decimals);
+    }
     
     function drawRanking(selector, d, totals)
     {  var s = '<table class="table table-striped">';
@@ -88,14 +86,12 @@ $(function(){
         {   var r = d.rows[i];
             if (r!=undefined)
             {  var pbar = '<div class="progress"><div class="progress-bar progress-bar-success" aria-valuemin="0" aria-valuemax="100" style="width:'+r.psale+'%"></div></div>';                
-                s+='<tr><td><a href="'+link+'/'+r.cid+'">'+r.name+'</a></td><td>'+r.psale+'</td><td>'+pbar+'</td><td>'+r.psaleY1+'</td><td>'+r.psaleY2+'</td></tr>';
+                s+='<tr><td><a href="'+link+'/'+r.cid+'">'+r.name+'</a></td><td>'+toFloat(r.psale,2)+'</td><td>'+pbar+'</td><td>'+toFloat(r.psaleY1,2)+'</td><td>'+toFloat(r.psaleY2,2)+'</td></tr>';
                total+=1.0*r.psale;
             }
         }
         s+='</table>';
         $(selector).html(s);
-        // console.log(total, totals);
-        // console.log(d);
     }
     
     $('.bs-model-select').each(function(i,e){
@@ -112,7 +108,9 @@ $(function(){
 
     });
     
-    $('#year').val(new Date().getFullYear()-1);
+    ajx('/pages/sales/GetMaxYear', function(d){ 
+        $('#year').val(d.maxyear);
+    } );
     
     function marketRanking(val)
     { ajx('/pages/sales/Model/sic/row',{id:val},function(d){
