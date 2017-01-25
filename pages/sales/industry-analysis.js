@@ -1,6 +1,33 @@
+function download(content, fileName, mimeType) 
+{
+  var a = document.createElement('a');
+  mimeType = mimeType || 'text/csv';
+
+  if (navigator.msSaveBlob) { // IE10
+    return navigator.msSaveBlob(new Blob([content], { type: mimeType }),     fileName);
+  } else if ('download' in a) { //html5 A[download]
+    a.href = 'data:' + mimeType + ',' + encodeURIComponent(content);
+    a.setAttribute('download', fileName);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    return true;
+  } else { //do iframe dataURL download (old ch+FF):
+    var f = document.createElement('iframe');
+    document.body.appendChild(f);
+    f.src = 'data:' + mimeType + ',' + encodeURIComponent(content);
+
+    setTimeout(function() {
+      document.body.removeChild(f);
+    }, 333);
+    return true;
+  }
+} 
+
+
 $(function(){
    
-    var dsic, dsubsec, last_id = null;
+    var dsic, dsubsec, last_id, last_data = null;
      
     function toFloat(v, decimals)
     { var n = 1.0*v;            
@@ -16,7 +43,7 @@ $(function(){
      fprint.svg.value = $('#container svg').get(0).outerHTML;
      fprint.submit();
    }
-    
+   
     function reloadChartData()
     {   var prm = {};
         prm.mode = $('#sic_subsector').val();
@@ -28,6 +55,8 @@ $(function(){
         var tnames = [,'SIC','Subsector'];
         
         ajx('/pages/sales/IndustryAnalysis',prm,function(d){
+            
+            last_data = d;
             
             var param = {
                 chart: {
@@ -95,6 +124,7 @@ $(function(){
              
             Highcharts.chart('container', param);
             $('.b-print').attr('disabled', false);
+            $('.b-csv').attr('disabled', false);
         });
        
     }
@@ -188,6 +218,16 @@ $(function(){
     $('.b-vchart').click(function(){
         reloadChartData();
     });
+    
+     $('.b-csv').click(function(){
+        var d = last_data;
+        var csv = '"Company","'+d.xtitle+'","'+d.ytitle+"\"\n";
+        for (var i=0; i<d.xdata.length; i++)
+        {   var r = d.xdata[i];
+            csv+='"'+r.name.replace("\n",'\\n').replace('"','\"')+'",'+r.x+','+r.y+"\n";
+        }
+        download(csv,'industry_analisys.csv');
+     });
     
     $('.b-print').click(print);
     
