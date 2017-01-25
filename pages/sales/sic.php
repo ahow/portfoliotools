@@ -45,8 +45,9 @@
                 <div class="col-lg-2"><?=$f->input('minsize','number')?></div>
             </div>
             <div class="row">
-                <div class="col-lg-10"><p id="sic_description"></p></div>
+                <div class="col-lg-8"><p id="sic_description"></p></div>
                 <div class="col-lg-2"><?=$f->input('year','number')?></div>
+                <div class="col-lg-2"><button style="margin-top:25px" class="btn btn-default b-csv">Download .CSV</button></div>
             </div>
             <div class="row" id="ranking">
             </div>
