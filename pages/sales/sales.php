@@ -64,6 +64,7 @@
        }
        else if ($this->nav=='companies-analysis')
        {   $this->cfg->addJs('/html.php/pages/sales','lookup.js');
+           $this->cfg->addJs('/html.php/pages/sales','download.js');
            $this->cfg->addJs('/html.php/pages/sales','companies-analysis.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');

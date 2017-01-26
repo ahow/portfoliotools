@@ -1,6 +1,6 @@
 $(function(){
    
-    var dsic, dsubsec, last_id = null, select_mode = '';
+    var dsic, dsubsec, last_id = null, last_data = null, select_mode = '';
      
     function toFloat(v, decimals)
     { var n = 1.0*v;            
@@ -23,7 +23,7 @@ $(function(){
             if (minsize!='') prm.min_size = minsize;
             
             ajx('/pages/sales/CompaniesAnalysis',prm,function(d){
-                
+                last_data = d;
                 var param = {
                     chart: {
                         type: 'scatter',            
@@ -89,6 +89,7 @@ $(function(){
                 };
                  
                 Highcharts.chart('container', param);
+                $('.b-csv').attr('disabled', false);
             });
        
         }
@@ -170,5 +171,15 @@ $(function(){
     $('.b-vchart').click(function(){
         reloadChartData();
     });
+    
+    $('.b-csv').click(function(){
+        var d = last_data;
+        var csv = '"Company","'+d.xtitle+'","'+d.ytitle+"\"\n";
+        for (var i=0; i<d.xdata.length; i++)
+        {   var r = d.xdata[i];
+            csv+='"'+r.name.replace("\n",'\\n').replace('"','\"')+'",'+r.x+','+r.y+"\n";
+        }
+        download(csv,'company_analisys.csv');
+     });
     
 });
