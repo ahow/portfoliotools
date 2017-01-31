@@ -819,7 +819,7 @@ group by 1");
           $wp['subsector'] = $params->id;
         }
         if ($params->mode=='SIC' && isset($params->id))
-        { $wh[] = 'cid in (select d.cid from sales_divdetails d where d.sic=:sic)';
+        { $wh[] = 'cid in (select d.cid from sales_divdetails d where d.sic=:sic and d.syear=@maxyear)';
           $wp['sic'] = $params->id;
         }
         if (isset($params->region) && $params->region!='Global')
@@ -831,13 +831,10 @@ group by 1");
            $wp['minsize'] = $params->min_size;
         }
         
-        if (isset($params->year) && 1*$params->year > 0)
-        {  $wh[] = 'syear=:year';
-           $wp['year'] = 1*$params->year;
-        }
         
         if (count($flds==2))
-        {    $flds[]='name';
+        {    $db->query('select max(syear), min(syear) from sales_divdetails into @maxyear, @minyear');
+             $flds[]='name';
              $sql = "select ".implode(',',$flds).' from sales_companies ';
              if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
              $qr = $db->query($sql, $wp);
@@ -847,6 +844,7 @@ group by 1");
                $r->y *= 1.0;
                $data[] = $r;
              }
+             // $this->res->sql = $sql;
              $this->res->xdata = $data;
              $this->res->xtitle = $titles[$params->xaxis];
              $this->res->ytitle = $titles[$params->yaxis];
