@@ -18,7 +18,7 @@
         <div class="col-lg-4"><?=$f->listSelect('y-axis',$list)?></div>
         <div class="col-lg-4">
             <div class="btn-group">
-                <button style="margin-top:25px" class="btn btn-primary b-print" disabled="true">Print</button>
+                <!-- <button style="margin-top:25px" class="btn btn-primary b-print" disabled="true">Print</button> -->
                 <button style="margin-top:25px" class="btn btn-default b-csv" disabled="true">Download .CSV</button>
                 <button style="margin-top:25px" class="btn btn-primary b-vchart">View Chart</button>
             </div>

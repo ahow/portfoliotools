@@ -43,7 +43,7 @@ CREATE TABLE mc_sessions
 ) DEFAULT CHARSET=utf8;
 
 insert into mc_groups values (1,'admin'),(2,'user'),(3,'editor');
-insert into mc_users (id,name,firstname,lastname,pass) values (1,'admin','Administrator','','21232f297a57a5a743894a0e4a801fc3');
+insert into mc_users (id,name,firstname,lastname,pass) values (1,'admin','Administrator','','$2y$10$A.LAT98F0.RROhxuWTB3c.JjejxA.tv4faNetfRCJPf0HZXCp1j0m');
 insert into mc_usergroups values (1,1);
 
 CREATE TABLE mc_pages

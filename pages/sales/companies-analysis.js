@@ -1,6 +1,6 @@
 $(function(){
    
-    var dsic, dsubsec, last_id = null, select_mode = '';
+    var dsic, dsubsec, last_id = null, last_data = null, select_mode = '';
      
     function toFloat(v, decimals)
     { var n = 1.0*v;            
@@ -21,9 +21,10 @@ $(function(){
             
             var minsize = $('#minsize').val();
             if (minsize!='') prm.min_size = minsize;
+            prm.year = $('#year').val();
             
             ajx('/pages/sales/CompaniesAnalysis',prm,function(d){
-                
+                last_data = d;
                 var param = {
                     chart: {
                         type: 'scatter',            
@@ -89,6 +90,7 @@ $(function(){
                 };
                  
                 Highcharts.chart('container', param);
+                $('.b-csv').attr('disabled', false);
             });
        
         }
@@ -157,7 +159,11 @@ $(function(){
         });
     });    
     
-    $('#year').val(new Date().getFullYear()-1);
+    /*
+    ajx('/pages/sales/GetMaxYear', function(d){ 
+        $('#year').val(d.maxyear);
+    } );
+    */
     
     $('#region').click(function(){
        reloadChartData();
@@ -170,5 +176,15 @@ $(function(){
     $('.b-vchart').click(function(){
         reloadChartData();
     });
+    
+    $('.b-csv').click(function(){
+        var d = last_data;
+        var csv = '"Company","'+d.xtitle+'","'+d.ytitle+"\"\n";
+        for (var i=0; i<d.xdata.length; i++)
+        {   var r = d.xdata[i];
+            csv+='"'+r.name.replace("\n",'\\n').replace('"','\"')+'",'+r.x+','+r.y+"\n";
+        }
+        download(csv,'company_analisys.csv');
+     });
     
 });
