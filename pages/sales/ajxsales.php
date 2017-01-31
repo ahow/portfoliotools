@@ -831,6 +831,11 @@ group by 1");
            $wp['minsize'] = $params->min_size;
         }
         
+        if (isset($params->year) && 1*$params->year > 0)
+        {  $wh[] = 'syear=:year';
+           $wp['year'] = 1*$params->year;
+        }
+        
         if (count($flds==2))
         {    $flds[]='name';
              $sql = "select ".implode(',',$flds).' from sales_companies ';

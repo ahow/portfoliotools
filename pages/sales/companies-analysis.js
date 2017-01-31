@@ -21,6 +21,7 @@ $(function(){
             
             var minsize = $('#minsize').val();
             if (minsize!='') prm.min_size = minsize;
+            prm.year = $('#year').val();
             
             ajx('/pages/sales/CompaniesAnalysis',prm,function(d){
                 last_data = d;
@@ -158,7 +159,11 @@ $(function(){
         });
     });    
     
-    $('#year').val(new Date().getFullYear()-1);
+    /*
+    ajx('/pages/sales/GetMaxYear', function(d){ 
+        $('#year').val(d.maxyear);
+    } );
+    */
     
     $('#region').click(function(){
        reloadChartData();
