@@ -8,7 +8,7 @@
      
 <div class="row">
  <form id="form" class="col-lg-12" enctype="multipart/form-data" method="POST">
- <h5 class="subscribetext">Select 3 files in CSV format</h5>
+ <h5 class="subscribetext">Select 4 files in CSV format</h5>
   <div class="form-group">
     <label for="company_list">Company List:</label>
     <input type="file" class="form-control" name="company_list" id="company_list">
@@ -26,6 +26,12 @@
     <input type="file" class="form-control" id="division_details" name="division_details">
   </div>
   <div id="preview_division"></div>
+
+  <div class="form-group">
+    <label for="isin_matching">ISIN matching:</label>
+    <input type="file" class="form-control" id="isin_matching" name="isin_matching">
+  </div>
+  <div id="preview_isin"></div>
   
   <div class="checkbox">
      <label><input type="checkbox" name="clear_data" value="" title="">Clear old data</label>
