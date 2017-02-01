@@ -77,7 +77,7 @@ $(function(){
                             },
                             tooltip: {
                                 headerFormat: '<b>{point.key}</b><br>',
-                                pointFormat: d.xtitle+':{point.x}, '+d.ytitle+':{point.y}'
+                                pointFormat: d.xtitle+':{point.x:.2f}, '+d.ytitle+':{point.y:.2f}'
                             }
                         },
                         series:{  turboThreshold:150000 }
