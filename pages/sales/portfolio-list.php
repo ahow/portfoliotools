@@ -94,7 +94,14 @@
              while ($a = fgetcsv($f,0,$spl) )
              {  $r = new stdClass();
                 $r->portfolio_id = $id;
-                $r->isin = trim($a[0]);                
+                $r->isin = trim($a[0]);
+               
+                // replace isin by alias if needed 
+                $qr = $db->query('select isin from sales_isin_matching where isin_alias=:isin',
+                array('isin'=>$r->isin));
+                $row = $db->fetchSingle($qr);
+                if (!empty($row)) $r->isin = $row->isin;
+
                 $r->val = str_replace(',','.', trim($a[1]) );
                 
                 try
