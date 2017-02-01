@@ -88,6 +88,7 @@ update mc_users set pass='$2y$10$EdileunVjDRYQxPBDCjM2exlKLsI8cX7m5i5V63nAs.WKCM
 CREATE TABLE sales_isin_matching
 ( isin varchar(32) NOT NULL,
   isin_alias varchar(32) NOT NULL,
+  index(isin_alias),
   primary key (isin, isin_alias)
 ) DEFAULT CHARSET=utf8;
 
