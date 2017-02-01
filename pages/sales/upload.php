@@ -8,7 +8,7 @@
      
 <div class="row">
  <form id="form" class="col-lg-12" enctype="multipart/form-data" method="POST">
- <h5 class="subscribetext">Select 3 files in CSV format</h5>
+ <h5 class="subscribetext">Select 4 files in CSV format</h5>
   <div class="form-group">
     <label for="company_list">Company List:</label>
     <input type="file" class="form-control" name="company_list" id="company_list">
@@ -26,6 +26,12 @@
     <input type="file" class="form-control" id="division_details" name="division_details">
   </div>
   <div id="preview_division"></div>
+
+  <div class="form-group">
+    <label for="isin_matching">ISIN matching:</label>
+    <input type="file" class="form-control" id="isin_matching" name="isin_matching">
+  </div>
+  <div id="preview_isin"></div>
   
   <div class="checkbox">
      <label><input type="checkbox" name="clear_data" value="" title="">Clear old data</label>
@@ -238,6 +244,60 @@
         }
         */
     }
+    
+    if (isset($_FILES['isin_matching']))
+    {
+        $clist = (object)$_FILES['isin_matching'];
+        $tmp = mktempname('../uploads/isin-matching-');
+        if ($clist->error==0)
+        { if (move_uploaded_file($clist->tmp_name, $tmp))
+          {  $f = fopen($tmp,'r');
+             $h = fgets($f);
+             $a = explode(';',$h);
+             $spl='';
+             if (count($a)>1) $spl=';'; 
+             else
+             {  $a = explode(',',$h);
+                if (count($a)>0) $spl=',';
+             }
+
+            // echo "splitter: $spl<br>";
+             
+             if (count($a)!=2)
+             {  fclose($f);
+                unlink($tmp);
+                echo "<div class=\"alert alert-danger\">Wrong ISIN matching format!</div>";
+                echo ($h);
+                print_r($a);
+                die();
+             }
+             
+             $db = $this->cfg->db;
+             
+             if ($clear) 
+             {  $db->query('delete from sales_isin_matching');
+             }
+             
+             while ($a = fgetcsv($f,0,$spl) )
+             {  $r = new stdClass();
+                $r->isin= trim( $a[0] );
+                $r->isin_alias = trim ($a[1] );
+                
+                try
+                { $db->insertObject('sales_isin_matching',$r);
+                } catch(Exception $e)
+                { // echo $e->getMessage();
+                }
+
+             }
+             fclose($f); 
+             unlink($tmp);
+             echo "<div class=\"alert alert-success\">ISIN matching list uploaded!</div>";
+          }
+    
+        }
+    }
+    
     
     
 ?>

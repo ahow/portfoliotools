@@ -54,6 +54,7 @@ $(function(){
     new previewCSV('#preview_division','#division_details');
     new previewCSV('#preview_sic_desc','#sic_desc');
     new previewCSV('#preview_company_list','#company_list');
+    new previewCSV('#preview_isin','#isin_matching');
     
     var ctrls = $(".progress");
     for (var i=0; i<ctrls.length; i++)
