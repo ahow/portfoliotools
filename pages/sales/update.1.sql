@@ -84,3 +84,10 @@ RETURN 1.0*REPLACE(SUBSTRING(SUBSTRING_INDEX(str, ';', pos),
 
 -- set default password to admin       
 update mc_users set pass='$2y$10$EdileunVjDRYQxPBDCjM2exlKLsI8cX7m5i5V63nAs.WKCMrjOuzu' where name='admin';
+
+CREATE TABLE sales_isin_matching
+( isin varchar(32) NOT NULL,
+  isin_alias varchar(32) NOT NULL,
+  primary key (isin, isin_alias)
+) DEFAULT CHARSET=utf8;
+
