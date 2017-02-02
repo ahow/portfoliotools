@@ -159,7 +159,7 @@ function arrayList(selector)
    {   d = data;
        rows_total = d.data1.clist.length;
        pager.setTotal(rows_total, rows_onpage);
-       var s = '<tr><th>Company</th>';
+       var s = '<tr><th>Company</th><th>ISIN</th><th>Subsector</th>';
        var h = d.header;
        for (var i=0; i<h.length; i++) s+='<th>'+h[i]+'</th>';
        s+='</tr>';
@@ -176,6 +176,8 @@ function arrayList(selector)
       { s +='<tr>';
         if (rr[i].name==undefined) console.log('i='+i);
         s +='<td>'+rr[i].name+'</td>';
+        s +='<td>'+rr[i].isin+'</td>';
+        s +='<td>'+rr[i].subsector+'</td>';
         for (var j=0; j<h.length; j++) s+='<td>'+toSgFloat( rr[i]['p'+(j+1)], 1)+'</td>';
         s +='</tr>';
       }

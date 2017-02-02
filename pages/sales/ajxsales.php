@@ -488,7 +488,7 @@ join sales_portfolio_data p on t.isin = p.isin and portfolio_id=@pf;";
          
         // If needed company list 
         if ($comp_list)
-        {   $qr = $db->query('select c.name, t.* from tmp_fin_portfolio_values t join sales_companies c on t.isin=c.isin');
+        {   $qr = $db->query('select c.name, c.subsector, t.* from tmp_fin_portfolio_values t join sales_companies c on t.isin=c.isin');
             $r->clist = $qr->fetchAll(PDO::FETCH_OBJ);            
         }
 
