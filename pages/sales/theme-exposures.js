@@ -133,16 +133,73 @@ function barChart(selector)
     return {draw:draw, setData:setData};
 }
 
+
+function arrayList(selector)
+{  var pager = null;
+   var rows_onpage = 10;
+   var d = null;
+   var rows_total = 0;
+   
+   pager = new modelPagination(selector+' .list-pager');
+   pager.change(function(page){
+        //console.log(page);
+        drawPage(page);
+   });
+
+   function toSgFloat(v, decimals)
+   { var n = 1.0*v;            
+      if (isNaN(n) || v==null)
+      {   return '-';
+      }
+      if (n>0) return '+'+n.toFixed(decimals);
+      else return n.toFixed(decimals);
+   }   
+ 
+   function setData(data)
+   {   d = data;
+       rows_total = d.data1.clist.length;
+       pager.setTotal(rows_total, rows_onpage);
+       var s = '<tr><th>Company</th><th>ISIN</th><th>Subsector</th>';
+       var h = d.header;
+       for (var i=0; i<h.length; i++) s+='<th>'+h[i]+'</th>';
+       s+='</tr>';
+       $(selector+' .table thead').html(s);
+       drawPage(1);
+   }
+   
+   function drawPage(p)
+   {  var rr = d.data1.clist;
+      var s = '';      
+      var start = (p-1)*rows_onpage;
+      var h = d.header;
+      var link = "<?php echo mkURL('/sales/companies'); ?>";
+      for (i=start; i<(start+rows_onpage) && i<rows_total; i++)
+      { s +='<tr>';
+        if (rr[i].name==undefined) console.log('i='+i);
+        var l = '<a target="_blank" href="'+link+'/'+rr[i].cid+'">';
+        s +='<td>'+l+rr[i].name+'</a></td>';
+        s +='<td>'+l+rr[i].isin+'</a></td>';
+        s +='<td>'+rr[i].subsector+'</td>';
+        for (var j=0; j<h.length; j++) s+='<td>'+toSgFloat( rr[i]['p'+(j+1)], 1)+'</td>';
+        s +='</tr>';
+      }
+      $(selector+' .table tbody').html(s);
+   }
+   
+   return {setData:setData}
+}
+
+
 $(function(){
     
     // var chart = new barChart('#chart');
+   var list_companies = new arrayList('#list-companies');
     
    function print()
    { fprint.title.value = 'Theme exposures';     
      fprint.svg.value = $('#container svg').get(0).outerHTML;
      fprint.submit();
    }
-    
     
     function reloadChartData()
     {   var pf1 = $('#portfolio').val();
@@ -152,6 +209,7 @@ $(function(){
         {   $('#portfolio').attr('disabled', true)
             $('#comparison').attr('disabled', true)
             ajx('/pages/sales/ComparePortfolio',{pf1:pf1, pf2:pf2},function(d){
+                list_companies.setData(d);
                 // console.log(d) 
                 // chart.setData(d.header, d.data1.data, d.data2.data);
                 for (var i=0; i<d.data1.data.length; i++)
@@ -182,7 +240,7 @@ $(function(){
                         data: d.data2.data
                     }]
                 };
-                console.log(params);
+                // console.log(params);
                 Highcharts.chart('container', params);
                 
                 $('#portfolio').attr('disabled', false);
@@ -213,5 +271,6 @@ $(function(){
     });
     
     $('.b-print').click(print);
+    
     
 });
