@@ -143,6 +143,10 @@ $(function(){
      fprint.submit();
    }
     
+    function drawCompaniesList(d)
+    {
+        console.log(d);
+    }
     
     function reloadChartData()
     {   var pf1 = $('#portfolio').val();
@@ -152,6 +156,7 @@ $(function(){
         {   $('#portfolio').attr('disabled', true)
             $('#comparison').attr('disabled', true)
             ajx('/pages/sales/ComparePortfolio',{pf1:pf1, pf2:pf2},function(d){
+                drawCompaniesList(d);
                 // console.log(d) 
                 // chart.setData(d.header, d.data1.data, d.data2.data);
                 for (var i=0; i<d.data1.data.length; i++)
@@ -182,7 +187,7 @@ $(function(){
                         data: d.data2.data
                     }]
                 };
-                console.log(params);
+                // console.log(params);
                 Highcharts.chart('container', params);
                 
                 $('#portfolio').attr('disabled', false);

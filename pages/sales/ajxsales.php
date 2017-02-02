@@ -429,7 +429,7 @@ order by 1";
        echo json_encode($this->res);
     } 
     
-    function getExposuresByPortfolio($ha)
+    function getExposuresByPortfolio($ha, $comp_list=false)
     {  $db = $this->cfg->db;
                 
         $sql = "CREATE TEMPORARY TABLE tmp_cids (cid varchar(16) NOT NULL, isin varchar(32),
@@ -483,6 +483,14 @@ join sales_companies c on t.cid=c.cid and not c.reviewed
 join tmp_subsector_values sv on c.subsector = sv.subsector
 join sales_portfolio_data p on t.isin = p.isin and portfolio_id=@pf;";
         $db->query($sql);
+         
+         $r = new stdClass();
+         
+        // If needed company list 
+        if ($comp_list)
+        {   $qr = $db->query('select c.name, t.* from tmp_fin_portfolio_values t join sales_companies c on t.isin=c.isin');
+            $r->clist = $qr->fetchAll(PDO::FETCH_OBJ);            
+        }
 
         
         // Calculate total sales for each companie
@@ -520,7 +528,7 @@ from tmp_fin_portfolio_values t";
 
         $d = $db->fetchSingle($qr);
         $a = array();
-        $r = new stdClass();
+       
         foreach($ha as $k=>$v) 
         {   $s = 's'.($k+1);
             $a[$k] = $d->$s;
@@ -580,7 +588,7 @@ group by 1;";
         
         
         $db->query("set @pf=:pf;", array('pf'=>$params->pf1));        
-        $this->res->data1 = $this->getExposuresByPortfolio($ha);
+        $this->res->data1 = $this->getExposuresByPortfolio($ha, true);
         
         $db->query("set @pf=:pf;", array('pf'=>$params->pf2));        
         $this->res->data2 = $this->getExposuresByPortfolio($ha);

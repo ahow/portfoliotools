@@ -32,6 +32,13 @@
         
     </div>
 </div>
+
+<table class="table table-striped selectable">
+    <thead></thead>
+    <tbody></tbody>
+</table>
+<div class="model-pager"></div>
+
 <form name="fprint" method="POST" target="_blank" action="<?=mkURL('/html.php/pages/sales/chart.pdf')?>">
   <input type="hidden" name="svg" />
   <input type="hidden" name="title" />
