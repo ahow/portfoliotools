@@ -172,11 +172,13 @@ function arrayList(selector)
       var s = '';      
       var start = (p-1)*rows_onpage;
       var h = d.header;
+      var link = "<?php echo mkURL('/sales/companies'); ?>";
       for (i=start; i<(start+rows_onpage) && i<rows_total; i++)
       { s +='<tr>';
         if (rr[i].name==undefined) console.log('i='+i);
-        s +='<td>'+rr[i].name+'</td>';
-        s +='<td>'+rr[i].isin+'</td>';
+        var l = '<a target="_blank" href="'+link+'/'+rr[i].cid+'">';
+        s +='<td>'+l+rr[i].name+'</a></td>';
+        s +='<td>'+l+rr[i].isin+'</a></td>';
         s +='<td>'+rr[i].subsector+'</td>';
         for (var j=0; j<h.length; j++) s+='<td>'+toSgFloat( rr[i]['p'+(j+1)], 1)+'</td>';
         s +='</tr>';
