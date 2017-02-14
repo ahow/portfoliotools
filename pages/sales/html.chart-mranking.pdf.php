@@ -64,7 +64,7 @@
 
     $d = json_decode(post('data'));
     
-    $s = $d->descr.'<br><br><table cellpadding="2" cellspacing="2">
+    $s = '<b>Region:</b> '.$d->region.'<br><br>'.$d->descr.'<br><br><table cellpadding="2" cellspacing="2">
     <tr style="background-color:#E5E5E5;"><th width="200">Company</th><th>% of sales</th><th>-1Yr</th><th>-2Yr</th></tr>';
    //  
     
