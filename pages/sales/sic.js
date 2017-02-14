@@ -35,6 +35,16 @@ function modelSICView(selector,d,onclick,ondblclick)
 
 $(function(){
 
+  function print()
+  {   fprint.title.value = 'Market ranking';
+      last_data.descr = $('#sic_description').html();
+      fprint.data.value = JSON.stringify(last_data);
+      console.log(last_data);
+      // $('#container svg').get(0).outerHTML;
+      fprint.submit();
+  }
+
+
   if ($('.model-list').length>0)
   { 
        var model = new modelListController('.model-list', modelSICView);
@@ -181,15 +191,15 @@ $(function(){
     
     $('#sic_id button').click(function(){
         var val = $('#sic').val();
-            marketRanking(val);
+         marketRanking(val);
     });
+    
     
     $('.b-csv').click(function(){
         
         function N(v){ if (isNaN(v) || v==undefined) return ''; return v; }
         
-        var d = last_data;
-        console.log(d); 
+        var d = last_data; 
         var csv = '"CID","NAME","% OF SALES","-1Yr","-2Yr"'+"\n";
         for (var i=0; i<d.rows.length; i++)
         {   var r = d.rows[i];
@@ -197,5 +207,7 @@ $(function(){
         }
         download(csv,'market_ranking.csv');
      });
+     
+     $('.b-print').click(print);
     
 });
