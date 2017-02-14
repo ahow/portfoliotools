@@ -45,9 +45,14 @@
                 <div class="col-lg-2"><?=$f->input('minsize','number')?></div>
             </div>
             <div class="row">
-                <div class="col-lg-8"><p id="sic_description"></p></div>
-                <div class="col-lg-2"><?=$f->input('year','number')?></div>
-                <div class="col-lg-2"><button style="margin-top:25px" class="btn btn-default b-csv">Download .CSV</button></div>
+                <div class="col-lg-7"><p id="sic_description"></p></div>
+                <div class="col-lg-2"><?=$f->input('year','number')?></div>                
+                <div class="col-lg-3">
+                    <div class="btn-group">
+                        <button style="margin-top:25px" class="btn btn-default b-csv">Download .CSV</button>
+                        <button style="margin-top:25px" class="btn btn-primary b-print">Print</button>
+                    </div>
+                </div>
             </div>
             <div class="row" id="ranking">
             </div>
@@ -55,5 +60,10 @@
 
     </div>
     
-
 </div>
+
+<form name="fprint" method="POST" target="_blank" action="<?=mkURL('/html.php/pages/sales/chart-mranking.pdf')?>">
+  <input type="hidden" name="data" />
+  <input type="hidden" name="title" />
+</form>
+
