@@ -38,6 +38,7 @@ $(function(){
   function print()
   {   fprint.title.value = 'Market ranking';
       last_data.descr = $('#sic_description').html();
+      last_data.region = $('#region').val();
       fprint.data.value = JSON.stringify(last_data);
       console.log(last_data);
       // $('#container svg').get(0).outerHTML;
