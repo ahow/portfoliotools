@@ -118,9 +118,6 @@ $(function(){
                     $('#portfolio').attr('disabled', false);
                     $('#comparison').attr('disabled', false);
                     
-                    // params.series[1].data[1].color =  Highcharts.getOptions().colors[5];
-                   
-                    console.log(d);
                     drawStackedChart('stacked', d);
                     $('.b-print').attr('disabled', false);
                 } );
