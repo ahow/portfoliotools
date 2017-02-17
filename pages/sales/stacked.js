@@ -60,12 +60,18 @@ function drawStackedChart(id, data)
     
     raw.sort(function(a,b){ return b.total-a.total });
     
+    // var start_color = "#324778";
+    var start_color = Highcharts.getOptions().colors[0];
+    
+    var c_delta = 1.0/raw[0].data.length*0.5;
+    // attrOptions.fill = colorLumin(Highcharts.getOptions().colors[0], j*0.2);
+    
     for (var i=0; i<raw.length; i++)
     {  options.widths[i] = raw[i].width;
        options.cname[i]=raw[i].cname;
        options.isin[i]=raw[i].isin;
        for (var j=0; j<raw[i].data.length; j++)
-       { if (options.series[j]==undefined) options.series[j] = {name:data.p1.names[j], data:[], xdata:[]};
+       { if (options.series[j]==undefined) options.series[j] = {name:data.p1.names[j], data:[], xdata:[], color:colorLumin(start_color, j*c_delta)};
          options.series[j].xdata[i] = raw[i].data[j];
        }
     }
@@ -76,6 +82,7 @@ function drawStackedChart(id, data)
     var total_width = 0;
     var total_heights = [];        
     var yMax=options.series[0].xdata[0];
+    
     
     for (var i = 0; i < options.series[0].xdata.length; i++)
     {  total_width+=options.widths[i];
@@ -138,9 +145,9 @@ function drawStackedChart(id, data)
                     id: i,
                         'stroke-width': 0.75,
                     stroke: 'white',
-                    fill: Highcharts.getOptions().colors[0]
+                    fill: options.series[0].color
+                   // fill: Highcharts.getOptions().colors[0]
              };
-            
 
             // draw rect, y-position is set to yAxis for animation            
             //var tempRect = chart.renderer.rect(x, this.chartHeight-height-this.yAxis[0].bottom, width, 0, 0)
@@ -161,7 +168,9 @@ function drawStackedChart(id, data)
             var pre = 0;
             
             for (var j=1; j<this.options.series.length; j++)
-            {  attrOptions.fill = Highcharts.getOptions().colors[j];
+            {  //attrOptions.fill = Highcharts.getOptions().colors[j];
+               attrOptions.fill = options.series[j].color;               
+               
                height = (this.yAxis[0].height)/yMax*this.options.series[j].xdata[i];
                
                if (j>1) pre += (this.yAxis[0].height)/yMax*this.options.series[j-1].xdata[i];
