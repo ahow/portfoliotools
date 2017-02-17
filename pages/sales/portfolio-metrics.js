@@ -113,7 +113,7 @@ $(function(){
                         ]
                      };
                      if (d.reverse) params.series[0].data[0].color = Highcharts.getOptions().colors[1];
-                     else params.series[0].data[0].color = Highcharts.getOptions().colors[1];
+                     else params.series[0].data[0].color = Highcharts.getOptions().colors[0];
                      params.series[0].data[1].color = '#b5b5b5'; //Highcharts.getOptions().colors[2];
                      params.series[0].data[2].color = '#b5b5b5'; // Highcharts.getOptions().colors[3];
                      if (d.reverse) params.series[0].data[3].color = Highcharts.getOptions().colors[0];
