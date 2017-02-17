@@ -786,7 +786,8 @@ group by 1");
         $this->res->pf2 = calcTotals($db, $a);
         
         if ($this->res->pf1->actual < $this->res->pf2->actual)
-        {   $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf1));
+        {   $this->res->reverse = false;
+            $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf1));
             $this->res->xdata[] = array('name'=>$db->fetchSingleValue($qr), 'y'=>1.0*$this->res->pf1->actual);
             $sa = 1.0*$this->res->pf1->sector_av - $this->res->pf1->actual;
             $this->res->xdata[] = array('name'=>'Sector allocation', 'y'=>$sa);
@@ -795,7 +796,8 @@ group by 1");
             $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf2));
             $this->res->xdata[] = array('name'=>$db->fetchSingleValue($qr), 'isSum'=>true);
         } else
-        {  $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf2));
+        {  $this->res->reverse = true;
+           $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf2));
            $this->res->xdata[] = array('name'=>$db->fetchSingleValue($qr), 'y'=>1.0*$this->res->pf2->actual);
            $sa = 1.0*$this->res->pf2->sector_av - $this->res->pf2->actual;
            $this->res->xdata[] = array('name'=>'Sector allocation', 'y'=>$sa);

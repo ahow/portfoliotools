@@ -1,16 +1,16 @@
 function drawStackedGradient(id, data)
 {
-    console.log(data);
     var options =  {
         chart: {
             renderTo: id,
-            type: 'column'
+            type: 'waterfall'
         },
         title: {
             text: 'Metric by portfolio'
         },
         xAxis: {
-            categories: [data.name1, data.name2]
+            // categories: [data.name1, data.name2],
+            type: 'category' 
         },
         yAxis: {
             title: {
@@ -19,42 +19,14 @@ function drawStackedGradient(id, data)
             min: 0,
             max: 100
         },
-        tooltip: {
-              pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
-              shared: true
-        },
-        legend: {
-            enabled: true
-        },
-        credits: {
-            enabled: false
-        },
+        legend: { enabled: true },
+        credits: { enabled: false },
+        dataLabels: { enabled: true},
         series: [{name: 'Portfolio', data:[]}, {name: 'Comparison', data:[]}]
     };
     
     var n = -1;
     var raw = [];
-    
-    // var start_color = "#324778";
-    var start_color = Highcharts.getOptions().colors[0];
-    
-   // var c_delta = 1.0/raw[0].data.length*0.5;
-    // attrOptions.fill = colorLumin(Highcharts.getOptions().colors[0], j*0.2);
-    
-    /*
-    for (var i=0; i<raw.length; i++)
-    {  options.widths[i] = raw[i].width;
-       options.cname[i]=raw[i].cname;
-       options.isin[i]=raw[i].isin;
-       for (var j=0; j<raw[i].data.length; j++)
-       { if (options.series[j]==undefined) options.series[j] = {name:data.p1.names[j], data:[], xdata:[], color:colorLumin(start_color, j*c_delta)};
-         options.series[j].xdata[i] = raw[i].data[j];
-       }
-    }
-    */
-    
-    // console.log(raw);
-    // console.log(options);
     
     var total_heights = [];
     var yMax=0; //options.series[0].xdata[0];
@@ -96,75 +68,41 @@ function drawStackedGradient(id, data)
         //draw for each point a rectangular
         
         var next_x = addMarginX;
-
+        var delta_x = this.xAxis[0].width/(series.length+1);
+        var col_width = delta_x*0.75;        
         
-        for (var i = 0; i < series.length; i++) {
-           
-            var x = next_x,
-                y = points[i] + addMarginY,
-                width = (this.xAxis[0].width)*(widths[i]/total_width),
-                height = (this.yAxis[0].height)*(total_heights[i]/yMax);
-                next_x += width;
-
-
-            xAll.push(x);
-            yAll.push(this.chartHeight-height-addMarginY);
-            widthAll.push(width);
-            heightAll.push(height);
-
-            attrOptions = {
-                    id: i,
-                        'stroke-width': 0.75,
-                    stroke: 'white',
-                    fill: options.series[0].color
-                   // fill: Highcharts.getOptions().colors[0]
-             };
-
-            // draw rect, y-position is set to yAxis for animation            
-            //var tempRect = chart.renderer.rect(x, this.chartHeight-height-this.yAxis[0].bottom, width, 0, 0)
-            var tempRect = chart.renderer.rect(x, 0, width, 0, 0)
-                .attr(attrOptions)
-                .add(rectGroup);
-
-            //animate rect
-            tempRect.animate({
-                y: this.chartHeight-height-this.yAxis[0].bottom,
-                height: height
-
-            }, {
-                duration: 1000
-            });
+        var zoom_k = this.yAxis[0].transA;                
+        var sy = this.chartHeight-this.yAxis[0].bottom;        
+        var pt = [data.p1, data.p2];   
+        
+        var c_delta = 1.0/pt.length*0.5; 
+        
+        var start_colors = [Highcharts.getOptions().colors[0], Highcharts.getOptions().colors[1]];
+        for (var i = 0; i < pt.length; i++) {
+            var p = pt[i];
+            var ph = 0;
+            next_x = addMarginX + delta_x*(i+1) - col_width/2;
             
-            // draw other series bars
-            var pre = 0;
-            
-            for (var j=1; j<this.options.series.length; j++)
-            {  //attrOptions.fill = Highcharts.getOptions().colors[j];
-               attrOptions.fill = options.series[j].color;               
+            for (var j=p.data.length-1; j>=0; j--)
+            {   var height = zoom_k*p.data[j];
+                var tempRect = chart.renderer.rect(next_x, sy-height-ph, col_width, 0).attr({
+                "id":i, "stroke-width":0.75, "stroke":"white", "fill":colorLumin(start_colors[i], j*c_delta)
+                }).add(rectGroup);
+                ph = height;
                
-               height = (this.yAxis[0].height)/yMax*this.options.series[j].xdata[i];
-               
-               if (j>1) pre += (this.yAxis[0].height)/yMax*this.options.series[j-1].xdata[i];
-               
-               var tempRect = chart.renderer.rect(x, 0, width, 0, 0)
-                .attr(attrOptions)
-                .add(rectGroup);               
-                
                 tempRect.animate({
-                    y: this.chartHeight-height-this.yAxis[0].bottom-pre,
-                    height: height
-
+                  height: height
                 }, {
                     duration: 1000
                 });
             }
             
-           
-        }; // for loop ends over all rect
+        }
 
 
         // add tooltip to rectangulars AND labels (rectGroup)
         var tooltipIndex;
+        var cname=[data.name1, data.name2];
 
         rectGroup.on('mouseover', function (e) {
 
@@ -180,12 +118,12 @@ function drawStackedGradient(id, data)
             
             if (lastHover!=i)
             {   lastHover=i;
-                var bx = xAll[tooltipIndex], by = yAll[tooltipIndex];            
+                var bx = 1*el.getAttribute('x'), by = 1*el.getAttribute('y');
                // console.log(i);
                // render text for tooltip based on coordinates of rect
                 var s = '<b>'+cname[i]+'</b><br>'                
-                for (var j=0; j<series.length; j++)
-                { s+=series[j].name+': '+series[j].xdata[i]+'<br>';
+                for (var j=0; j<pt[i].data.length; j++)
+                { s+=pt[i].names[j]+': '+pt[i].data[j]+'<br>';
                 }
                 text = chart.renderer.text(s, bx, by)
                     .attr({
