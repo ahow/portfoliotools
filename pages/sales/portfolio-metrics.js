@@ -79,6 +79,7 @@ $(function(){
                    ser[i].data[0] = 1.0*d.p1.data[i];
                    ser[i].data[1] = 1.0*d.p2.data[i];
                 }
+                /*
                 var params = {
                     chart: {
                         type: 'column'
@@ -112,8 +113,10 @@ $(function(){
                     for (var i=1; i<params.series.length; i++)
                      params.series[i].color = Highcharts.getOptions().colors[i+1];
                    
-                    console.log(params.series);  
+                    // console.log(params.series);  
                     Highcharts.chart('container', params);
+                    */
+                    drawStackedGradient('container', d)
                     
                     $('#portfolio').attr('disabled', false);
                     $('#comparison').attr('disabled', false);
