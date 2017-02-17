@@ -1,8 +1,22 @@
-/*
- * http://jsfiddle.net/drmrbrewer/215tnLna/33/
- * http://jsfiddle.net/s937de3b/1/
- * http://jsfiddle.net/8zDdA/1/
- */
+
+function colorLumin(hex, lum) 
+{ // Validate hex string
+  hex = String(hex).replace(/[^0-9a-f]/gi, "");
+  if (hex.length < 6) {
+    hex = hex.replace(/(.)/g, '$1$1');
+  }
+  lum = lum || 0;
+  // Convert to decimal and change luminosity
+  var rgb = "#",
+    c;
+  for (var i = 0; i < 3; ++i) {
+    c = parseInt(hex.substr(i * 2, 2), 16);
+    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+    rgb += ("00" + c).substr(c.length);
+  }
+  return rgb;
+}
+
 
 function mdSelect(selector)
 {   var rows = [];
@@ -65,36 +79,8 @@ $(function(){
                    ser[i].data[0] = 1.0*d.p1.data[i];
                    ser[i].data[1] = 1.0*d.p2.data[i];
                 }
-                var params = {
-                    chart: {
-                        type: 'column'
-                    },
-                    title: {
-                        text: 'Metric by portfolio'
-                    },
-                    xAxis: {
-                        categories: [d.name1, d.name2]
-                    },
-                    yAxis: {
-                        min: 0,
-                        title: {
-                            text: metric_name
-                        }
-                    },
-                    legend: { enabled: false },
-                    tooltip: {
-                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
-                        shared: true
-                    },
-                    plotOptions: {
-                        column: {
-                            stacking: 'value'
-                        }
-                    },
-                    series: ser
-                    };
-                    // console.log(JSON.stringify(params));
-                    Highcharts.chart('container', params);
+               
+                    drawStackedGradient('container', d)
                     
                     $('#portfolio').attr('disabled', false);
                     $('#comparison').attr('disabled', false);
@@ -111,6 +97,7 @@ $(function(){
                         xAxis: { type: 'category' },
                         yAxis: { title: { text: metric_name } },
                         legend: { enabled: false },
+                        credits: { enabled: false },
                         tooltip: { pointFormat: '<b>{point.y:,.2f}</b>' },
                         series: [{data:d.xdata, 
                         dataLabels: {
@@ -125,10 +112,12 @@ $(function(){
                         pointPadding: 0}
                         ]
                      };
-                     params.series[0].data[0].color = Highcharts.getOptions().colors[0];
-                     params.series[0].data[1].color = Highcharts.getOptions().colors[2];
-                     params.series[0].data[2].color = Highcharts.getOptions().colors[3];
-                     params.series[0].data[3].color = Highcharts.getOptions().colors[1];                     
+                     if (d.reverse) params.series[0].data[0].color = Highcharts.getOptions().colors[1];
+                     else params.series[0].data[0].color = Highcharts.getOptions().colors[1];
+                     params.series[0].data[1].color = '#b5b5b5'; //Highcharts.getOptions().colors[2];
+                     params.series[0].data[2].color = '#b5b5b5'; // Highcharts.getOptions().colors[3];
+                     if (d.reverse) params.series[0].data[3].color = Highcharts.getOptions().colors[0];
+                     else params.series[0].data[3].color = Highcharts.getOptions().colors[1];
                      for (var i=0; i<params.series[0].data.length; i++)
                         params.series[0].data[i].borderColor="#E5E5E5";
 
