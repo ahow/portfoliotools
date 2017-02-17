@@ -120,7 +120,9 @@ function drawStackedGradient(id, data)
                // render text for tooltip based on coordinates of rect
                 var s = '<b>'+cname[i]+'</b><br>'                
                 for (var j=0; j<pt[i].data.length; j++)
-                { s+=pt[i].names[j]+': '+pt[i].data[j]+'<br>';
+                {   var n = 1.0*pt[i].data[j];
+                    var proc = (n/total_heights[j])*100.0;
+                    s+=pt[i].names[j]+': '+n.toFixed(2)+' ('+proc.toFixed(1)+'%)<br>';
                 }
                 text = chart.renderer.text(s, bx, by)
                     .attr({
