@@ -3,15 +3,16 @@ function drawStackedGradient(id, data)
     var options =  {
         chart: {
             renderTo: id,
-            type: 'waterfall'
+            type: 'column'
         },
         title: {
             text: 'Metric by portfolio'
-        },
+        },/*
         xAxis: {
             // categories: [data.name1, data.name2],
             type: 'category' 
-        },
+        },*/
+        xAxis: { type: 'category' },
         yAxis: {
             title: {
                 text: data.metric
@@ -19,18 +20,17 @@ function drawStackedGradient(id, data)
             min: 0,
             max: 100
         },
-        legend: { enabled: true },
+        legend: { enabled: false},
         credits: { enabled: false },
         dataLabels: { enabled: true},
-        series: [{name: 'Portfolio', data:[]}, {name: 'Comparison', data:[]}]
+        series: [{name: 'Portfolio', data:[{name:'Portfolio'},{name:'Comparison'}]}, {name: 'Comparison', data:[]}]
     };
     
     var n = -1;
     var raw = [];
     
     var total_heights = [];
-    var yMax=0; //options.series[0].xdata[0];
-    
+    var yMax=0; 
     
     for (var i = 0; i < data.p1.data.length; i++)
     {  var p = data.p1.data;
@@ -45,16 +45,13 @@ function drawStackedGradient(id, data)
     }
     
     options.yAxis.max = yMax;
-    
+
     var chart = new Highcharts.Chart(options,
     //add function for custom renderer
     function (chart) {
         var series = this.options.series,
             addMarginX = this.plotLeft,
-            addMarginY = this.plotTop,
-            xAll = [],
-            yAll = [],
-            widthAll = [],
+            addMarginY = this.plotTop,           
             heightAll = [];
         
         var lastHover = -1;
@@ -68,8 +65,8 @@ function drawStackedGradient(id, data)
         //draw for each point a rectangular
         
         var next_x = addMarginX;
-        var delta_x = this.xAxis[0].width/(series.length+1);
-        var col_width = delta_x*0.75;        
+        var delta_x = this.xAxis[0].width/series.length;
+        var col_width = delta_x*0.5;        
         
         var zoom_k = this.yAxis[0].transA;                
         var sy = this.chartHeight-this.yAxis[0].bottom;        
@@ -81,7 +78,7 @@ function drawStackedGradient(id, data)
         for (var i = 0; i < pt.length; i++) {
             var p = pt[i];
             var ph = 0;
-            next_x = addMarginX + delta_x*(i+1) - col_width/2;
+            next_x = addMarginX + delta_x*(i+1)-delta_x/2 - col_width/2;
             
             for (var j=p.data.length-1; j>=0; j--)
             {   var height = zoom_k*p.data[j];
