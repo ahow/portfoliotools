@@ -2,27 +2,21 @@
   <li><a href="<?=mkURL('/sales')?>"><?=T('Sales')?></a></li>
   <li class="active" ><?=$this->cfg->title?></li>
 </ol>
-
+<?php
+    include(__DIR__.'/bsforms.php');
+    $f = new BSformDefault();
+?>
 <h2 class="uppertitle"><?=$this->cfg->title?></h2>
 
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#tabpflist">Portfolio list</a></li>
-  <li id="tbedit" class="disabled"><a data-toggle="tab" href="#tabedit">Market ranking</a></li>
+  <li id="tbedit"><a data-toggle="tab" href="#tabedit">Portfolio summaries</a></li>
 </ul>
 
 <div class="tab-content"  style="padding-top: 15px;">
    
    <div id="tabpflist" class="tab-pane fade in active"> 
-        <div class="model-list" data-model="/pages/sales/Model/sic">
-            <div class="input-group model-search">
-                <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" title="Search" placeholder="<?=T('Search')?>">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">
-                        <span class="glyphicon glyphicon-search"></span>&nbsp;
-                        <?=T('Search')?>
-                    </button> 
-                </span>
-            </div>
+        <div class="model-list" data-model="/pages/sales/Model/portfolio">
             <table class="table table-striped selectable">
                 <thead></thead>
                 <tbody></tbody>
