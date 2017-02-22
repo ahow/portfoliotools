@@ -63,6 +63,34 @@ function editPortfolioSummary(selector){
       {   var tds = $(rows[i]).find('td');          
           d.options.push({name:tds[1].innerHTML, checked:$(tds[0]).find('input')[0].checked});
       }
+      
+      function getColumns(cname)
+      { var columns = [];
+        var cols = $(selector+' '+cname+' thead th');
+        for (i=1; i<cols.length; i++) columns.push(cols[i].innerHTML);
+        return columns;
+      }
+      
+      function getSeries(cname)
+      {   var rows = $(selector+' '+cname+' tbody tr');
+          var series = [];
+          for (i=0; i<rows.length; i++) 
+          {   var tds = $(rows[i]).find('td');
+              var data = [];
+              for (var j=0; j<tds.length; j++) data.push(tds[j].innerHTML);
+              series.push({name:$(rows[i]).find('th')[0].innerHTML, data:data});
+          }
+          return series;
+      }
+      
+      d.bar = {};
+      d.bar.columns = getColumns('.bar-chart');
+      d.bar.series = getSeries('.bar-chart');
+      
+      d.line = {};
+      d.line.columns = getColumns('.line-chart');
+      d.line.series = getSeries('.line-chart');
+
       console.log(d);
       
     }
