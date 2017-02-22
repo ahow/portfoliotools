@@ -48,6 +48,33 @@
         }
     }
     
+    function ajxSavePortfolioSummaries()
+    {   $db = $this->cfg->db;
+        $params = (object)$_POST;
+        $row = new stdClass();
+        $row->portfolio_id = $params->portfolio_id;
+        $row->description = $params->description;
+        $row->json = json_encode($params);
+        
+        if (isset($params->id))
+        {   $row->id = $params->id;
+            $qr = $db->query('update sales_portfolio_summaries 
+            set portfolio_id=:portfolio_id,
+            description=:description,json=:json
+            where id=:id',$row);
+            $this->res->insert_id = $row->id;
+        }
+        else 
+        {       
+            $qr = $db->query('insert into sales_portfolio_summaries 
+            (portfolio_id,description,json) values
+            (:portfolio_id, :description, :json)',$row);
+            $this->res->insert_id = $db->db->lastInsertId();
+        }
+        $this->res->info = T('SAVED');
+        echo json_encode($this->res);
+    }
+    
     function ajxForm1()
     {   $db = $this->cfg->db;
         $params = (object)$_POST;

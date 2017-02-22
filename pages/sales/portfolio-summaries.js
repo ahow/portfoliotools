@@ -40,8 +40,66 @@ function modelPortfolioView(selector,d,onclick,ondblclick)
 }
 
 function editPortfolioSummary(selector){
+    var id=null, name=null, insert_id = null;
+    
     function show(id)
     {   $(selector+' .modal').modal('show');
+    }
+    
+    function setPortfolio(_id, _name)
+    {   id = _id;
+        name = _name;
+        $(selector+' .modal .pfname').html(name);
+    }
+    
+    function save()
+    { var d = {};
+      d.description = $(selector+' .modal #description').val();
+      d.portfolio_id = id;
+      d.options = [];
+      var rows = $(selector+' .opt-list tr');
+      var i = 0;
+      for (i=0; i<rows.length; i++) 
+      {   var tds = $(rows[i]).find('td');          
+          d.options.push({name:tds[1].innerHTML, checked:$(tds[0]).find('input')[0].checked});
+      }
+      
+      function getColumns(cname)
+      { var columns = [];
+        var cols = $(selector+' '+cname+' thead th');
+        for (i=1; i<cols.length; i++) columns.push(cols[i].innerHTML);
+        return columns;
+      }
+      
+      function getSeries(cname)
+      {   var rows = $(selector+' '+cname+' tbody tr');
+          var series = [];
+          for (i=0; i<rows.length; i++) 
+          {   var tds = $(rows[i]).find('td');
+              var data = [];
+              for (var j=0; j<tds.length; j++) data.push(tds[j].innerHTML);
+              series.push({name:$(rows[i]).find('th')[0].innerHTML, data:data});
+          }
+          return series;
+      }
+      
+      d.bar = {};
+      d.bar.columns = getColumns('.bar-chart');
+      d.bar.series = getSeries('.bar-chart');
+      
+      d.line = {};
+      d.line.columns = getColumns('.line-chart');
+      d.line.series = getSeries('.line-chart');
+      
+      if (insert_id!=null) d.id = insert_id;
+
+      ajx('/pages/sales/SavePortfolioSummaries', d, function(dd){                   
+            if (!dd.error) setOk(dd.info); 
+            if (dd.insert_id!=undefined) insert_id = dd.insert_id;
+       });
+            
+     // console.log(d);
+      
     }
     
     $(selector+' .b-add-category').click(function(){
@@ -56,6 +114,10 @@ function editPortfolioSummary(selector){
           });
     });
     
+    $(selector+' .b-save').click(function(){
+         edit.save();  
+    });
+        
     $(selector+' .b-add-bar-column').click(function(){
          $(selector+' .bar-chart thead tr').append('<th contenteditable="true"></th>');
          $(selector+' .bar-chart tbody tr').append('<td contenteditable="true"></td>');
@@ -68,8 +130,23 @@ function editPortfolioSummary(selector){
          s+='</tr>';         
          $(selector+' .bar-chart tbody').append(s);
     });   
-       
-    return {show:show};
+
+    $(selector+' .b-add-line-column').click(function(){
+         $(selector+' .line-chart thead tr').append('<th contenteditable="true"></th>');
+         $(selector+' .line-chart tbody tr').append('<td contenteditable="true"></td>');
+    });    
+    
+    $(selector+' .b-add-line-row').click(function(){
+         var n = $(selector+' .line-chart thead th').length;
+         var s = '<tr><th contenteditable="true"></th>';
+         for (var i=1; i<n; i++) s+='<td contenteditable="true"></td>';
+         s+='</tr>';         
+         $(selector+' .line-chart tbody').append(s);
+    }); 
+    
+    
+           
+    return {show:show, setPortfolio:setPortfolio, save:save};
 }
 
 
@@ -86,10 +163,7 @@ $(function(){
        
        model.load();
        model.click(function(e, row){
-           // console.log(row);
-           $('#sic').val(row.id);
-          //  marketRanking(row.id);
-           $('#tbedit').removeClass('disabled');
+           edit.setPortfolio(row.id, row.portfolio);
        });
        
         // enable pager
