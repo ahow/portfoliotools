@@ -1,4 +1,4 @@
-var dialog;
+var edit;
 
 function modelPortfolioView(selector,d,onclick,ondblclick)
 {  var s = '';
@@ -33,10 +33,25 @@ function modelPortfolioView(selector,d,onclick,ondblclick)
    });
    
    $('button.b-new').click(function(e){
-       $('#editpfsum .modal').modal('show');
+       edit.show();
+       // $('#editpfsum .modal').modal('show');
        // console.log(e.target)
    });
 }
+
+function editPortfolioSummary(selector){
+    function show(id)
+    {   $(selector+' .modal').modal('show');
+    }
+    
+    $(selector+' .b-add-category').click(function(){
+          $(selector+' .opt-list').append('<div><input type="checkbox" />&nbsp;<span contenteditable="true">Option</span></div>');
+          //console.log('Category');
+    });
+       
+    return {show:show};
+}
+
 
 $(function(){
      
@@ -69,21 +84,8 @@ $(function(){
        
    }
    
-   views.view('/pages/sales/editpfsummary','#editpfsum', function(){        
-       console.log('view loaded');
-       /*
-        dsic = new searchDialog('#search_sic', "/pages/sales/Model/sic",'Search SIC');
-        dsic.select(function(sr, target){
-            $('#sic_code input').val(sr.name);
-            $('#subsec input').val('');
-            last_sic = sr.id;
-            loadSIC(last_sic);
-        });
-        
-        $('#sic_code button').click(function(){
-            dsic.open();
-        });*/
-        
+   views.view('/pages/sales/editpfsummary','#editpfsum', function(){
+       edit = new editPortfolioSummary('#editpfsum');
     });
    
    

@@ -14,26 +14,35 @@
       </div>
       <div class="modal-body">
 
-     <!-- Search form -->
-     <div class="#editdivision">
-        <div class="row">
-            <div class="col-lg-12"><?=$f->input('me')?></div>
-        </div>
-        <div class="row">
-            <div class="col-lg-4"><?=$f->input('sic','number')?></div>
-        </div>
-        <div class="row">
-            <div class="col-lg-4"><?=$f->input('sales','number')?></div>
-        </div>
-     </div>
-     <?php
-        echo $f->hidden('syear','number');
-        echo $f->hidden('division','number');
-        echo $f->hidden('cid','text');
-     ?>
-      <!-- /Search form -->
-        
+     <ul class="nav nav-tabs">
+       <li class="active"><a data-toggle="tab" href="#setcategories">Set categories</a></li>
+       <li id="tbedit"><a data-toggle="tab" href="#barchart">Bar chart inputs</a></li>
+     </ul>
+
+     <div class="tab-content">
+         
+         <div id="setcategories" class="tab-pane fade in active"> 
+         
+             <div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="opt-list" style="padding:20px;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <button class="btn btn-primary b-add-category">Add category</button>
+                    </div>
+                </div>            
+             </div>
+             
+         </div>
+         
+         <div id="barchart" class="tab-pane fade"> 
+         </div>
+         
       </div>
+      
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-default btn-success b-save model-update">Save</button>
