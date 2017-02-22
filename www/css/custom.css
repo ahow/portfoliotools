@@ -43,6 +43,8 @@ span.w-label { color: rgb(167, 167, 167); padding-left:6pt; font-size: 14pt }
 }
 
 
+
+
 @media only screen and (max-width: 1024px) {
     .modal.large > div {
         width: 96%;
@@ -154,4 +156,10 @@ div.row.divider {
 .a-right { text-align:right }
 .w-reviewed td { color:#52647A; font-weight:bold; }
 table.selectable tr.w-reviewed.active td { color:#C9E2FF; }
+
+.table-ctrls td, .table-ctrls th { padding:4px; }
+table.table-ctrls {margin-top:15px; margin-bottom:15px;}
+
+table.t-bordered { border-collapse: collapse;}
+.t-bordered th, .t-bordered td { border: solid #E5E5E5 1px;}
 

@@ -78,7 +78,11 @@
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
-       } else
+       } 
+       else if ($this->nav=='portfolio-summaries')
+       {   $this->cfg->addJs('/html.php/pages/sales','portfolio-summaries.js');
+       } 
+       else
        {   $this->cfg->addJs('/html.php/pages/sales','inittable.js');
        }
      }
