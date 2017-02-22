@@ -56,3 +56,6 @@
   <input type="hidden" name="title" />
 </form>
 
+<div id="editpfsum"></div>
+
+

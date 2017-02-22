@@ -1,3 +1,5 @@
+var dialog;
+
 function modelPortfolioView(selector,d,onclick,ondblclick)
 {  var s = '';
    var i;
@@ -15,7 +17,7 @@ function modelPortfolioView(selector,d,onclick,ondblclick)
        var r = d.rows[i];
        if (r.id!=undefined) s+='<tr data-id="'+i+'">'; else s+='<tr>';
        for (j in d.columns) s+='<td>'+r[ d.columns[j] ]+'</td>';
-       s+='<td><div class="btn-group pull-right"><button class="btn btn-sm">New summary</button></div></td></tr>';
+       s+='<td><div class="btn-group pull-right"><button class="btn btn-sm b-new">New summary</button></div></td></tr>';
    }
    $(selector).find('tbody').html(s);
    if (onclick!=null)  $(selector+' tbody tr').click(function(row){
@@ -29,9 +31,18 @@ function modelPortfolioView(selector,d,onclick,ondblclick)
        var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
        ondblclick(row, d.rows[id]);
    });
+   
+   $('button.b-new').click(function(e){
+       $('#editpfsum .modal').modal('show');
+       // console.log(e.target)
+   });
 }
 
 $(function(){
+     
+  // var dialog;
+  var views = new htviewCached();
+  
         
   if ($('.model-list').length>0)
   { 
@@ -57,6 +68,24 @@ $(function(){
        });
        
    }
+   
+   views.view('/pages/sales/editpfsummary','#editpfsum', function(){        
+       console.log('view loaded');
+       /*
+        dsic = new searchDialog('#search_sic', "/pages/sales/Model/sic",'Search SIC');
+        dsic.select(function(sr, target){
+            $('#sic_code input').val(sr.name);
+            $('#subsec input').val('');
+            last_sic = sr.id;
+            loadSIC(last_sic);
+        });
+        
+        $('#sic_code button').click(function(){
+            dsic.open();
+        });*/
+        
+    });
+   
    
 });
 
