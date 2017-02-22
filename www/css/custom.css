@@ -160,3 +160,6 @@ table.selectable tr.w-reviewed.active td { color:#C9E2FF; }
 .table-ctrls td, .table-ctrls th { padding:4px; }
 table.table-ctrls {margin-top:15px; margin-bottom:15px;}
 
+table.t-bordered { border-collapse: collapse;}
+.t-bordered th, .t-bordered td { border: solid #E5E5E5 1px;}
+

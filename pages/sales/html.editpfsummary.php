@@ -43,7 +43,7 @@
          <div id="barchart" class="tab-pane fade">
               <div class="row">
                     <div class="col-lg-12">
-                        <table class="table-ctrls bar-chart">
+                        <table class="table-ctrls bar-chart t-bordered">
                          <thead><th>Series</th></thead>
                          <tbody style="padding:20px;"></tbody>
                         </table>
