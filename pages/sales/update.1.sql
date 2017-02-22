@@ -92,3 +92,14 @@ CREATE TABLE sales_isin_matching
   primary key (isin, isin_alias)
 ) DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE sales_portfolio_summaries
+( id integer NOT NULL AUTO_INCREMENT,
+  portfolio_id integer not null,
+  description  varchar(400),
+  created timestamp null default current_timestamp,
+  json text,
+  primary key (id),
+  foreign key (portfolio_id) references sales_portfolio(id) on delete CASCADE
+) DEFAULT CHARSET=utf8;
+
