@@ -40,7 +40,7 @@ function modelPortfolioView(selector,d,onclick,ondblclick)
 }
 
 function editPortfolioSummary(selector){
-    var id=null, name=null;
+    var id=null, name=null, insert_id = null;
     
     function show(id)
     {   $(selector+' .modal').modal('show');
@@ -90,8 +90,15 @@ function editPortfolioSummary(selector){
       d.line = {};
       d.line.columns = getColumns('.line-chart');
       d.line.series = getSeries('.line-chart');
+      
+      if (insert_id!=null) d.id = insert_id;
 
-      console.log(d);
+      ajx('/pages/sales/SavePortfolioSummaries', d, function(dd){                   
+            if (!dd.error) setOk(dd.info); 
+            if (dd.insert_id!=undefined) insert_id = dd.insert_id;
+       });
+            
+     // console.log(d);
       
     }
     
