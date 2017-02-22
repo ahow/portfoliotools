@@ -26,7 +26,9 @@
              <div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="opt-list" style="padding:20px;"></div>
+                        <table class="table-ctrls">
+                         <tbody class="opt-list" style="padding:20px;"></tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="row">

@@ -45,8 +45,15 @@ function editPortfolioSummary(selector){
     }
     
     $(selector+' .b-add-category').click(function(){
-          $(selector+' .opt-list').append('<div><input type="checkbox" />&nbsp;<span contenteditable="true">Option</span></div>');
-          //console.log('Category');
+          $(selector+' .opt-list').append('<tr><td><input type="checkbox" /></td>'+
+          '<td contenteditable="true">Option</td>'+
+          '<td><button class="btn btn-sm b-del">Delete</button></td></tr>');
+          
+          $(selector+' .opt-list tr:last .b-del').click(function(e){
+              setTimeout(function(){
+                    $(e.target).parent().parent().remove();
+              },100);
+          });
     });
        
     return {show:show};
