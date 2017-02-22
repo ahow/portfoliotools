@@ -40,8 +40,20 @@ function modelPortfolioView(selector,d,onclick,ondblclick)
 }
 
 function editPortfolioSummary(selector){
+    var id=null, name=null;
+    
     function show(id)
     {   $(selector+' .modal').modal('show');
+    }
+    
+    function setPortfolio(_id, _name)
+    {   id = _id;
+        name = _name;
+        $(selector+' .modal .pfname').html(name);
+    }
+    
+    function save()
+    {
     }
     
     $(selector+' .b-add-category').click(function(){
@@ -81,8 +93,10 @@ function editPortfolioSummary(selector){
          s+='</tr>';         
          $(selector+' .line-chart tbody').append(s);
     }); 
+    
+    
            
-    return {show:show};
+    return {show:show, setPortfolio:setPortfolio, save:save};
 }
 
 
@@ -99,10 +113,7 @@ $(function(){
        
        model.load();
        model.click(function(e, row){
-           // console.log(row);
-           $('#sic').val(row.id);
-          //  marketRanking(row.id);
-           $('#tbedit').removeClass('disabled');
+           edit.setPortfolio(row.id, row.portfolio);
        });
        
         // enable pager
