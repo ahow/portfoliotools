@@ -53,7 +53,18 @@ function editPortfolioSummary(selector){
     }
     
     function save()
-    {
+    { var d = {};
+      d.description = $(selector+' .modal #description').val();
+      d.portfolio_id = id;
+      d.options = [];
+      var rows = $(selector+' .opt-list tr');
+      var i = 0;
+      for (i=0; i<rows.length; i++) 
+      {   var tds = $(rows[i]).find('td');          
+          d.options.push({name:tds[1].innerHTML, checked:$(tds[0]).find('input')[0].checked});
+      }
+      console.log(d);
+      
     }
     
     $(selector+' .b-add-category').click(function(){
@@ -68,6 +79,10 @@ function editPortfolioSummary(selector){
           });
     });
     
+    $(selector+' .b-save').click(function(){
+         edit.save();  
+    });
+        
     $(selector+' .b-add-bar-column').click(function(){
          $(selector+' .bar-chart thead tr').append('<th contenteditable="true"></th>');
          $(selector+' .bar-chart tbody tr').append('<td contenteditable="true"></td>');
