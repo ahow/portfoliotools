@@ -40,7 +40,21 @@
              
          </div>
          
-         <div id="barchart" class="tab-pane fade"> 
+         <div id="barchart" class="tab-pane fade">
+              <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table-ctrls bar-chart">
+                         <thead><th>Series</th></thead>
+                         <tbody style="padding:20px;"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <button class="btn btn-primary b-add-bar-row">Add row</button>
+                        <button class="btn btn-primary b-add-bar-column">Add column</button>
+                    </div>
+                </div>
          </div>
          
       </div>

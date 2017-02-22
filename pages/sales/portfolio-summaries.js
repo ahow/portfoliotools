@@ -55,6 +55,19 @@ function editPortfolioSummary(selector){
               },100);
           });
     });
+    
+    $(selector+' .b-add-bar-column').click(function(){
+         $(selector+' .bar-chart thead tr').append('<th contenteditable="true">Column</th>');
+         $(selector+' .bar-chart tbody tr').append('<td contenteditable="true"></td>');
+    });    
+    
+    $(selector+' .b-add-bar-row').click(function(){
+         var n = $(selector+' .bar-chart thead th').length;
+         var s = '<tr><th contenteditable="true"></th>';
+         for (var i=1; i<n; i++) s+='<td  contenteditable="true"></td>';
+         s+='</tr>';         
+         $(selector+' .bar-chart tbody').append(s);
+    });   
        
     return {show:show};
 }

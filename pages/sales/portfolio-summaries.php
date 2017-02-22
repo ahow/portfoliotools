@@ -27,25 +27,7 @@
     
     <div class="tab-pane fade" id="tabedit">
 
-        <div id="mranking">
-            <div class="row">
-                <div class="col-lg-6"><?=$f->search('sic_id','sic')?></div>
-                <div class="col-lg-4"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
-                <div class="col-lg-2"><?=$f->input('minsize','number')?></div>
-            </div>
-            <div class="row">
-                <div class="col-lg-7"><p id="sic_description"></p></div>
-                <div class="col-lg-2"><?=$f->input('year','number')?></div>                
-                <div class="col-lg-3">
-                    <div class="btn-group">
-                        <button style="margin-top:25px" class="btn btn-default b-csv">Download .CSV</button>
-                        <button style="margin-top:25px" class="btn btn-primary b-print">Print</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row" id="ranking">
-            </div>
-        </div>
+        
 
     </div>
     
