@@ -68,7 +68,20 @@ function editPortfolioSummary(selector){
          s+='</tr>';         
          $(selector+' .bar-chart tbody').append(s);
     });   
-       
+
+    $(selector+' .b-add-line-column').click(function(){
+         $(selector+' .line-chart thead tr').append('<th contenteditable="true"></th>');
+         $(selector+' .line-chart tbody tr').append('<td contenteditable="true"></td>');
+    });    
+    
+    $(selector+' .b-add-line-row').click(function(){
+         var n = $(selector+' .line-chart thead th').length;
+         var s = '<tr><th contenteditable="true"></th>';
+         for (var i=1; i<n; i++) s+='<td contenteditable="true"></td>';
+         s+='</tr>';         
+         $(selector+' .line-chart tbody').append(s);
+    }); 
+           
     return {show:show};
 }
 
