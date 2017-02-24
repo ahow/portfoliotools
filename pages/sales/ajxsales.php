@@ -55,10 +55,12 @@
         $qr = $db->query('select * from sales_portfolio_summaries 
         where id=:id',array('id'=>(1*$params->id)) );
         $r = $db->fetchSingle($qr);
-        $d = json_decode($r->json);
-        $d->description = $r->description;
-        $d->portfolio_id = $r->portfolio_id;
-        $this->res->row = $d;
+        if (!empty($r))
+        {  $d = json_decode($r->json);
+           $d->description = $r->description;
+           $d->portfolio_id = $r->portfolio_id;
+           $this->res->row = $d;
+        }
         echo json_encode($this->res);
     }
     

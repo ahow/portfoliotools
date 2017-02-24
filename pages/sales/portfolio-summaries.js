@@ -210,11 +210,15 @@ $(function(){
    
    model_sum = new modelListController('#tabedit .model-list', model_view);
    model_sum.load();
+   model_sum.last_id = null;
    model_sum.click(function(e, row){
-        ajx('/pages/sales/LoadPortfolioSummaries', {id:row.id}, function(d){
-            console.log(d);
-            // if (dd.insert_id!=undefined) insert_id = dd.insert_id;
-       });
+        if (model_sum.last_id!=row.id)
+        {  model_sum.last_id=row.id;
+           ajx('/pages/sales/LoadPortfolioSummaries', {id:row.id}, function(d){
+                console.log(d);
+                // if (dd.insert_id!=undefined) insert_id = dd.insert_id;
+           });
+        }
    });
    
    var pager_sum = new modelPagination('#tabedit .model-pager');
