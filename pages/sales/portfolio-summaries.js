@@ -45,14 +45,76 @@ function createCustomModelView(_html, _init)
 function editPortfolioSummary(selector){
     var id=null, name=null, insert_id = null, onaftersave = null;
     
-    function show(id)
+    function show()
     {   $(selector+' .modal').modal('show');
     }
+    
+    function edit(row_id)
+    {  clear();
+       insert_id = row_id;
+      
+       function fillTable(sel, d)
+       {  var i, j;
+          var s = '<tr><th>Series</th>';
+          for (i=0; i<d.columns.length; i++) s+='<th contenteditable="true">'+d.columns[i]+'</th>';
+          s+='</tr>';
+          $(sel+' thead').html(s);
+          
+          s='';
+          for (i=0; i<d.series.length; i++) 
+          { var r = d.series[i];
+            s+='<tr><th contenteditable="true">'+r.name+'</th>';
+            for (j=0; j<r.data.length; j++) s+='<td contenteditable="true">'+r.data[j]+'</td>';
+            s+='</tr>';
+          }
+          $(sel+' tbody').html(s);          
+       }
+
+       ajx('/pages/sales/LoadPortfolioSummaries', {id:row_id}, function(d){
+            console.log(d);
+            id = d.row.portfolio_id;
+            $(selector+' .modal #description').val(d.row.description);
+            if (d.row.bar!=undefined) fillTable(selector+' .bar-chart', d.row.bar);
+            if (d.row.line!=undefined) fillTable(selector+' .line-chart', d.row.line);
+            if (d.row.options!=undefined)
+            {     var i;
+                  var s = '';
+                  for (i=0; i<d.row.options.length; i++)
+                  { var chk;
+                    if (d.row.options[i].checked=='true') chk = ' checked '
+                    s+='<tr><td><input type="checkbox" '+chk+'/></td>'+
+              '<td contenteditable="true">'+d.row.options[i].name+'</td>'+
+              '<td><button class="btn btn-sm b-del">Delete</button></td></tr>';
+                  }                
+                  $(selector+' .opt-list').html(s);                  
+                  $(selector+' .opt-list .b-del').click(deleteOption);
+            }
+            show();
+       }); 
+      
+       
+    }
+    
     
     function setPortfolio(_id, _name)
     {   id = _id;
         name = _name;
         $(selector+' .modal .pfname').html(name);
+    }
+    
+    function addNew()
+    {  clear();
+       show();
+    } 
+    
+    function clear()
+    { insert_id = null;
+      $(selector+' .modal #description').val('');
+      $(selector+' .bar-chart thead').html('<tr><th>Series</th></tr>');
+      $(selector+' .bar-chart tbody').html('');
+      $(selector+' .line-chart thead').html('<tr><th>Series</th></tr>');
+      $(selector+' .line-chart tbody').html('');
+      $(selector+' tbody.opt-list').html('');
     }
     
     function save()
@@ -107,23 +169,23 @@ function editPortfolioSummary(selector){
       
     }
     
+    function deleteOption(e)
+    {  setTimeout(function(){
+            $(e.target).parent().parent().remove();
+        },100);
+    }
     
     function afterSave(foo){ onaftersave=foo; }
     
     $(selector+' .b-add-category').click(function(){
           $(selector+' .opt-list').append('<tr><td><input type="checkbox" /></td>'+
           '<td contenteditable="true">Option</td>'+
-          '<td><button class="btn btn-sm b-del">Delete</button></td></tr>');
-          
-          $(selector+' .opt-list tr:last .b-del').click(function(e){
-              setTimeout(function(){
-                    $(e.target).parent().parent().remove();
-              },100);
-          });
+          '<td><button class="btn btn-sm b-del">Delete</button></td></tr>');          
+          $(selector+' .opt-list tr:last .b-del').click(deleteOption);
     });
     
-    $(selector+' .b-save').click(function(){
-         edit.save();  
+    $(selector+' .b-save').click(function(){        
+        save();  
     });
         
     $(selector+' .b-add-bar-column').click(function(){
@@ -154,7 +216,8 @@ function editPortfolioSummary(selector){
     
     
            
-    return {show:show, setPortfolio:setPortfolio, save:save, afterSave:afterSave};
+    return {show:show, setPortfolio:setPortfolio, save:save,
+        afterSave:afterSave, edit:edit, addNew:addNew};
 }
 
 
@@ -171,7 +234,7 @@ $(function(){
    <button class="btn btn-sm b-new">New summary</button>\
    </div>', function(){      
       $('button.b-new').click(function(e){
-            edit.show();      
+            edit.addNew();      
       });
    });
    
@@ -195,6 +258,7 @@ $(function(){
    
    var model_sum = null;
    var model_view = new createCustomModelView('<div class="btn-group pull-right">\
+   <button class="btn btn-sm btn-primary b-edit">Edit</button>\
    <button class="btn btn-sm btn-danger b-delete">Delete</button>\
    </div>', function(d){
         $('button.b-delete').click(function(e){
@@ -208,7 +272,13 @@ $(function(){
                    }
               });
             }
-       });
+        });
+        $('button.b-edit').click(function(e){
+            var id = $(e.target).parents('tr:first').addClass('active').attr('data-id');
+            var r = d.rows[id];
+            edit.edit(r.id);
+        });
+       
    });
    
    model_sum = new modelListController('#tabedit .model-list', model_view);
