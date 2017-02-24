@@ -156,28 +156,42 @@ $(function(){
   var views = new htviewCached();
   
         
-  if ($('.model-list').length>0)
-  { 
-       var pager;       
-       var model = new modelListController('.model-list', modelPortfolioView);
-       
-       model.load();
-       model.click(function(e, row){
-           edit.setPortfolio(row.id, row.portfolio);
-       });
-       
-        // enable pager
-       pager = new modelPagination('.model-list .model-pager');
-       
-       model.total(function(total, rows_lim){
-           pager.setTotal(total, rows_lim);
-       })
-       pager.change(function(n){
-           model.load(n);
-       });
-       
-   }
+ 
+   var pager;       
+   var model = new modelListController('#tabpflist .model-list', modelPortfolioView);
    
+   model.load();
+   model.click(function(e, row){
+       edit.setPortfolio(row.id, row.portfolio);
+   });
+   
+    // enable pager
+   pager = new modelPagination('#tabpflist .model-list .model-pager');
+   
+   model.total(function(total, rows_lim){
+       pager.setTotal(total, rows_lim);
+   })
+   pager.change(function(n){
+       model.load(n);
+   });
+   
+   
+   
+   var model_sum = new modelListController('#tabedit .model-list');
+   model_sum.load();
+   model_sum.click(function(e, row){
+        console.log(row);
+   });
+   
+   var pager_sum = new modelPagination('#tabedit .model-list .model-pager');
+   model_sum.total(function(total, rows_lim){
+       pager_sum.setTotal(total, rows_lim);
+   })
+   pager_sum.change(function(n){
+       model_sum.load(n);
+   });
+   
+
    views.view('/pages/sales/editpfsummary','#editpfsum', function(){
        edit = new editPortfolioSummary('#editpfsum');
     });

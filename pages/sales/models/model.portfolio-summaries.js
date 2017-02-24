@@ -1,6 +1,6 @@
 { "table": "sales_portfolio_summaries",
   "select": "select id,created,description from $table $where $order $limit",
-  "list_columns": "id,created,description",
+  "list_columns": "created,description",
   "primary_key": "id",
   "default_order":"id",
   "search":"name like :description",
