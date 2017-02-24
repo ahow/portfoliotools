@@ -74,8 +74,12 @@ function modelListController(selector, customView)
    function loaded(fu){ onloaded = fu;}
    
    function draw(d)
-   { if (ondraw!=null) ondraw(selector, d, onclick, ondblclick);
-     if (ontotal!=null) ontotal(d.total);    
+   { if (ondraw!=null) ondraw(selector, d, onclick, ondblclick);      
+     if (ontotal!=null) 
+     {  if (d.rows_number_limit!=undefined)  
+            ontotal(d.total, d.rows_number_limit);
+        else ontotal(d.total);
+     }
      if (onloaded!=null) onloaded(d);
    }
    

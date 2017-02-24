@@ -54,8 +54,7 @@ $(function(){
        {   var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');
            var r = d.rows[id];
            if (confirm('Delete '+r.portfolio+' ('+r.created+') ?')) 
-           {  console.log('delete', r.id);
-              ajx('/pages/sales/Model/portfolio/delete', {id:r.id}, function(d){
+           {  ajx('/pages/sales/Model/portfolio/delete', {id:r.id}, function(d){
                    if (!d.error) 
                    { setOk('Row Deleted');
                      model.load();

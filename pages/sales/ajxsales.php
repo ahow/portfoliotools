@@ -48,14 +48,31 @@
         }
     }
     
+    function ajxLoadPortfolioSummaries()
+    {   $db = $this->cfg->db;
+        $params = (object)$_POST;
+        if (isset($params->id))
+        $qr = $db->query('select * from sales_portfolio_summaries 
+        where id=:id',array('id'=>(1*$params->id)) );
+        $r = $db->fetchSingle($qr);
+        if (!empty($r))
+        {  $d = json_decode($r->json);
+           $d->description = $r->description;
+           $d->portfolio_id = $r->portfolio_id;
+           $this->res->row = $d;
+        }
+        echo json_encode($this->res);
+    }
+    
     function ajxSavePortfolioSummaries()
     {   $db = $this->cfg->db;
         $params = (object)$_POST;
         $row = new stdClass();
         $row->portfolio_id = $params->portfolio_id;
         $row->description = $params->description;
-        $row->json = json_encode($params);
-        
+        unset($params->portfolio_id);
+        unset($params->description);
+        $row->json = json_encode($params);        
         if (isset($params->id))
         {   $row->id = $params->id;
             $qr = $db->query('update sales_portfolio_summaries 

@@ -26,9 +26,18 @@
     </div>
     
     <div class="tab-pane fade" id="tabedit">
-
-        
-
+        <div class="row">
+            <div class="model-list col-lg-4" data-model="/pages/sales/Model/portfolio-summaries">
+                <table class="table table-striped selectable">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+                <div class="model-pager"></div>
+            </div>
+            <div class="col-lg-8">
+                    
+            </div>
+        </div>
     </div>
     
 </div>
