@@ -76,9 +76,23 @@ function editPortfolioSummary(selector){
             $(selector+' .modal #description').val(d.row.description);
             if (d.row.bar!=undefined) fillTable(selector+' .bar-chart', d.row.bar);
             if (d.row.line!=undefined) fillTable(selector+' .line-chart', d.row.line);
-                // if (dd.insert_id!=undefined) insert_id = dd.insert_id;
+            if (d.row.options!=undefined)
+            {     var i;
+                  var s = '';
+                  for (i=0; i<d.row.options.length; i++)
+                  { var chk;
+                    if (d.row.options[i].checked=='true') chk = ' checked '
+                    s+='<tr><td><input type="checkbox" '+chk+'/></td>'+
+              '<td contenteditable="true">'+d.row.options[i].name+'</td>'+
+              '<td><button class="btn btn-sm b-del">Delete</button></td></tr>';
+                  }                
+                  $(selector+' .opt-list').html(s);                  
+                  $(selector+' .opt-list .b-del').click(deleteOption);
+            }
+            show();
        }); 
-       show();
+      
+       
     }
     
     
