@@ -43,7 +43,7 @@ function createCustomModelView(_html, _init)
 }
 
 function editPortfolioSummary(selector){
-    var id=null, name=null, insert_id = null;
+    var id=null, name=null, insert_id = null, onaftersave = null;
     
     function show(id)
     {   $(selector+' .modal').modal('show');
@@ -86,6 +86,7 @@ function editPortfolioSummary(selector){
           return series;
       }
       
+      
       d.bar = {};
       d.bar.columns = getColumns('.bar-chart');
       d.bar.series = getSeries('.bar-chart');
@@ -99,11 +100,15 @@ function editPortfolioSummary(selector){
       ajx('/pages/sales/SavePortfolioSummaries', d, function(dd){                   
             if (!dd.error) setOk(dd.info); 
             if (dd.insert_id!=undefined) insert_id = dd.insert_id;
+            if (!dd.error && onaftersave!=null) onaftersave(dd); 
        });
             
      // console.log(d);
       
     }
+    
+    
+    function afterSave(foo){ onaftersave=foo; }
     
     $(selector+' .b-add-category').click(function(){
           $(selector+' .opt-list').append('<tr><td><input type="checkbox" /></td>'+
@@ -149,7 +154,7 @@ function editPortfolioSummary(selector){
     
     
            
-    return {show:show, setPortfolio:setPortfolio, save:save};
+    return {show:show, setPortfolio:setPortfolio, save:save, afterSave:afterSave};
 }
 
 
