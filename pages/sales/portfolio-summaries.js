@@ -1,42 +1,46 @@
 var edit;
 
-function modelPortfolioView(selector,d,onclick,ondblclick)
-{  var s = '';
-   var i;
-   
-   if (d.titles!=undefined)
-   {   var h = '<tr>';
-       for (i in d.titles)
-       { h+='<th>'+d.titles[i]+'</th>';               
+// Custom view fabric
+function createCustomModelView(_html, _init)
+{   var html = _html;
+    var init = _init;
+    
+    function modelPortfolioView(selector,d,onclick,ondblclick)
+    {  var s = '';
+       var i;
+       
+       if (d.titles!=undefined)
+       {   var h = '<tr>';
+           for (i in d.titles)
+           { h+='<th>'+d.titles[i]+'</th>';
+           }
+           h+='<th>&nbsp;</th></tr>';
+           $(selector).find('thead').html(h);
        }
-       h+='<th>&nbsp;</th></tr>';
-       $(selector).find('thead').html(h);
-   }
-   for (i in d.rows)
-   {   var j;
-       var r = d.rows[i];
-       if (r.id!=undefined) s+='<tr data-id="'+i+'">'; else s+='<tr>';
-       for (j in d.columns) s+='<td>'+r[ d.columns[j] ]+'</td>';
-       s+='<td><div class="btn-group pull-right"><button class="btn btn-sm b-new">New summary</button></div></td></tr>';
-   }
-   $(selector).find('tbody').html(s);
-   if (onclick!=null)  $(selector+' tbody tr').click(function(row){
-       $(row.target).parents('table:first').find('tr').removeClass('active');
-       var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
-       onclick(row, d.rows[id]);
-   });
-   
-   if (ondblclick!=undefined && ondblclick!=null)  $(selector+' tbody tr').dblclick(function(row){
-       $(row.target).parents('table:first').find('tr').removeClass('active');
-       var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
-       ondblclick(row, d.rows[id]);
-   });
-   
-   $('button.b-new').click(function(e){
-       edit.show();
-       // $('#editpfsum .modal').modal('show');
-       // console.log(e.target)
-   });
+       for (i in d.rows)
+       {   var j;
+           var r = d.rows[i];
+           if (r.id!=undefined) s+='<tr data-id="'+i+'">'; else s+='<tr>';
+           for (j in d.columns) s+='<td>'+r[ d.columns[j] ]+'</td>';
+           s+='<td>'+html+'</td></tr>';
+       }
+       $(selector).find('tbody').html(s);
+       if (onclick!=null)  $(selector+' tbody tr').click(function(row){
+           $(row.target).parents('table:first').find('tr').removeClass('active');
+           var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
+           onclick(row, d.rows[id]);
+       });
+       
+       if (ondblclick!=undefined && ondblclick!=null)  $(selector+' tbody tr').dblclick(function(row){
+           $(row.target).parents('table:first').find('tr').removeClass('active');
+           var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
+           ondblclick(row, d.rows[id]);
+       });
+       console.log(_init);
+       if (init!=undefined) init();
+    }
+    
+    return modelPortfolioView;
 }
 
 function editPortfolioSummary(selector){
@@ -155,10 +159,20 @@ $(function(){
   // var dialog;
   var views = new htviewCached();
   
-        
  
-   var pager;       
-   var model = new modelListController('#tabpflist .model-list', modelPortfolioView);
+   var pager;  
+   
+
+   var view = new createCustomModelView('<div class="btn-group pull-right">\
+   <button class="btn btn-sm b-new">New summary</button>\
+   </div>', function(){      
+      $('button.b-new').click(function(e){
+            console.log('INIT');
+            edit.show();      
+      });
+   });
+   
+   var model = new modelListController('#tabpflist .model-list', view);
    
    model.load();
    model.click(function(e, row){
@@ -176,8 +190,11 @@ $(function(){
    });
    
    
+   var model_view = new createCustomModelView('<h3>test</h3>', function(){
+       console.log('Function 2');
+   });
    
-   var model_sum = new modelListController('#tabedit .model-list');
+   var model_sum = new modelListController('#tabedit .model-list', model_view);
    model_sum.load();
    model_sum.click(function(e, row){
         ajx('/pages/sales/LoadPortfolioSummaries', {id:row.id}, function(d){
