@@ -200,8 +200,6 @@ $(function(){
         $('button.b-delete').click(function(e){
             var id = $(e.target).parents('tr:first').addClass('active').attr('data-id');
             var r = d.rows[id];
-            console.log('Delete '+r.id);
-            
             if (confirm('Delete '+r.description+'?')) 
             {  ajx('/pages/sales/Model/portfolio-summaries/delete', {id:r.id}, function(d){
                    if (!d.error) 
@@ -237,6 +235,10 @@ $(function(){
 
    views.view('/pages/sales/editpfsummary','#editpfsum', function(){
        edit = new editPortfolioSummary('#editpfsum');
+       edit.afterSave(function(d){
+            model_sum.load();
+            $('#tbedit a[href="#tabedit"]').tab('show');
+       });
     });
    
    
