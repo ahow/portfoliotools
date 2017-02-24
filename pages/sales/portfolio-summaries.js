@@ -45,14 +45,40 @@ function createCustomModelView(_html, _init)
 function editPortfolioSummary(selector){
     var id=null, name=null, insert_id = null, onaftersave = null;
     
-    function show(id)
+    function show()
     {   $(selector+' .modal').modal('show');
     }
+    
+    function edit(id)
+    {  clear();
+       insert_id = id;       
+       ajx('/pages/sales/LoadPortfolioSummaries', {id:id}, function(d){
+                console.log(d);
+                // if (dd.insert_id!=undefined) insert_id = dd.insert_id;
+       });
+       show();
+    }
+    
     
     function setPortfolio(_id, _name)
     {   id = _id;
         name = _name;
         $(selector+' .modal .pfname').html(name);
+    }
+    
+    function addNew()
+    {  clear();
+       show();
+    } 
+    
+    function clear()
+    { insert_id = null;
+      $(selector+' .modal #description').val('');
+      $(selector+' .bar-chart thead').html('<tr><th>Series</th></tr>');
+      $(selector+' .bar-chart tbody').html('');
+      $(selector+' .line-chart thead').html('<tr><th>Series</th></tr>');
+      $(selector+' .line-chart tbody').html('');
+      $(selector+' tbody.opt-list').html('');
     }
     
     function save()
@@ -122,8 +148,8 @@ function editPortfolioSummary(selector){
           });
     });
     
-    $(selector+' .b-save').click(function(){
-         edit.save();  
+    $(selector+' .b-save').click(function(){        
+        save();  
     });
         
     $(selector+' .b-add-bar-column').click(function(){
@@ -154,7 +180,8 @@ function editPortfolioSummary(selector){
     
     
            
-    return {show:show, setPortfolio:setPortfolio, save:save, afterSave:afterSave};
+    return {show:show, setPortfolio:setPortfolio, save:save,
+        afterSave:afterSave, edit:edit, addNew:addNew};
 }
 
 
@@ -171,7 +198,7 @@ $(function(){
    <button class="btn btn-sm b-new">New summary</button>\
    </div>', function(){      
       $('button.b-new').click(function(e){
-            edit.show();      
+            edit.addNew();      
       });
    });
    
@@ -195,6 +222,7 @@ $(function(){
    
    var model_sum = null;
    var model_view = new createCustomModelView('<div class="btn-group pull-right">\
+   <button class="btn btn-sm btn-primary b-edit">Edit</button>\
    <button class="btn btn-sm btn-danger b-delete">Delete</button>\
    </div>', function(d){
         $('button.b-delete').click(function(e){
@@ -208,7 +236,13 @@ $(function(){
                    }
               });
             }
-       });
+        });
+        $('button.b-edit').click(function(e){
+            var id = $(e.target).parents('tr:first').addClass('active').attr('data-id');
+            var r = d.rows[id];
+            edit.edit(r.id);
+        });
+       
    });
    
    model_sum = new modelListController('#tabedit .model-list', model_view);
