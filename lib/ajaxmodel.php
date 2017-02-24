@@ -148,7 +148,7 @@
             $db = $this->cfg->db;
             $sql = $this->SQLVars($model->delete);
             $db->query($sql, $params);
-        } else return $this->error(T('DELETE_MODEL_PARAM_NOT_FOUND').' '.$method,__LINE__);
+        } else return $this->error(T('DELETE_MODEL_PARAM_NOT_FOUND'),__LINE__);
         echo json_encode($this->res);
     }
 

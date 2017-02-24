@@ -36,8 +36,7 @@ function createCustomModelView(_html, _init)
            var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
            ondblclick(row, d.rows[id]);
        });
-       console.log(_init);
-       if (init!=undefined) init();
+       if (init!=undefined) init(d);
     }
     
     return modelPortfolioView;
@@ -167,7 +166,6 @@ $(function(){
    <button class="btn btn-sm b-new">New summary</button>\
    </div>', function(){      
       $('button.b-new').click(function(e){
-            console.log('INIT');
             edit.show();      
       });
    });
@@ -187,14 +185,30 @@ $(function(){
    })
    pager.change(function(n){
        model.load(n);
+
    });
    
-   
-   var model_view = new createCustomModelView('<h3>test</h3>', function(){
-       console.log('Function 2');
+   var model_sum = null;
+   var model_view = new createCustomModelView('<div class="btn-group pull-right">\
+   <button class="btn btn-sm btn-danger b-delete">Delete</button>\
+   </div>', function(d){
+        $('button.b-delete').click(function(e){
+            var id = $(e.target).parents('tr:first').addClass('active').attr('data-id');
+            var r = d.rows[id];
+            console.log('Delete '+r.id);
+            
+            if (confirm('Delete '+r.description+'?')) 
+            {  ajx('/pages/sales/Model/portfolio-summaries/delete', {id:r.id}, function(d){
+                   if (!d.error) 
+                   { setOk('Row Deleted');
+                     model_sum.load();
+                   }
+              });
+            }
+       });
    });
    
-   var model_sum = new modelListController('#tabedit .model-list', model_view);
+   model_sum = new modelListController('#tabedit .model-list', model_view);
    model_sum.load();
    model_sum.click(function(e, row){
         ajx('/pages/sales/LoadPortfolioSummaries', {id:row.id}, function(d){
