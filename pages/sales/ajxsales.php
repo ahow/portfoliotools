@@ -48,6 +48,19 @@
         }
     }
     
+    function ajxLoadPortfolioSummaries()
+    {   $db = $this->cfg->db;
+        $params = (object)$_POST;
+        if (isset($params->id))
+        $qr = $db->query('select * from sales_portfolio_summaries 
+        where id=:id',array('id'=>(1*$params->id)) );
+        $r = $db->fetchSingleRow($qr);
+        $d = json_decode($r->json);
+        $d->description = $r->description;
+        $this->res->row = $d;
+        echo json_encode($this->res);
+    }
+    
     function ajxSavePortfolioSummaries()
     {   $db = $this->cfg->db;
         $params = (object)$_POST;

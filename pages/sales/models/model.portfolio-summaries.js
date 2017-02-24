@@ -4,7 +4,7 @@
   "primary_key": "id",
   "default_order":"id",
   "search":"name like :description",
-  "rows_number_limit": 5,
+  "rows_number_limit": 8,
   "select_row": "select * from $table where id=:id",
   "select_total": "select count(*) from $table $where"
 }
