@@ -183,7 +183,7 @@ $(function(){
         console.log(row);
    });
    
-   var pager_sum = new modelPagination('#tabedit .model-list .model-pager');
+   var pager_sum = new modelPagination('#tabedit .model-pager');
    model_sum.total(function(total, rows_lim){
        pager_sum.setTotal(total, rows_lim);
    })
