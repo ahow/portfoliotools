@@ -180,7 +180,10 @@ $(function(){
    var model_sum = new modelListController('#tabedit .model-list');
    model_sum.load();
    model_sum.click(function(e, row){
-        console.log(row);
+        ajx('/pages/sales/LoadPortfolioSummaries', {id:row.id}, function(d){
+            console.log(d);
+            // if (dd.insert_id!=undefined) insert_id = dd.insert_id;
+       });
    });
    
    var pager_sum = new modelPagination('#tabedit .model-pager');
