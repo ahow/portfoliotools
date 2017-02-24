@@ -49,13 +49,35 @@ function editPortfolioSummary(selector){
     {   $(selector+' .modal').modal('show');
     }
     
-    function edit(id)
+    function edit(row_id)
     {  clear();
-       insert_id = id;       
-       ajx('/pages/sales/LoadPortfolioSummaries', {id:id}, function(d){
-                console.log(d);
+       insert_id = row_id;
+      
+       function fillTable(sel, d)
+       {  var i, j;
+          var s = '<tr><th>Series</th>';
+          for (i=0; i<d.columns.length; i++) s+='<th contenteditable="true">'+d.columns[i]+'</th>';
+          s+='</tr>';
+          $(sel+' thead').html(s);
+          
+          s='';
+          for (i=0; i<d.series.length; i++) 
+          { var r = d.series[i];
+            s+='<tr><th contenteditable="true">'+r.name+'</th>';
+            for (j=0; j<r.data.length; j++) s+='<td contenteditable="true">'+r.data[j]+'</td>';
+            s+='</tr>';
+          }
+          $(sel+' tbody').html(s);          
+       }
+
+       ajx('/pages/sales/LoadPortfolioSummaries', {id:row_id}, function(d){
+            console.log(d);
+            id = d.row.portfolio_id;
+            $(selector+' .modal #description').val(d.row.description);
+            if (d.row.bar!=undefined) fillTable(selector+' .bar-chart', d.row.bar);
+            if (d.row.line!=undefined) fillTable(selector+' .line-chart', d.row.line);
                 // if (dd.insert_id!=undefined) insert_id = dd.insert_id;
-       });
+       }); 
        show();
     }
     
@@ -133,19 +155,19 @@ function editPortfolioSummary(selector){
       
     }
     
+    function deleteOption(e)
+    {  setTimeout(function(){
+            $(e.target).parent().parent().remove();
+        },100);
+    }
     
     function afterSave(foo){ onaftersave=foo; }
     
     $(selector+' .b-add-category').click(function(){
           $(selector+' .opt-list').append('<tr><td><input type="checkbox" /></td>'+
           '<td contenteditable="true">Option</td>'+
-          '<td><button class="btn btn-sm b-del">Delete</button></td></tr>');
-          
-          $(selector+' .opt-list tr:last .b-del').click(function(e){
-              setTimeout(function(){
-                    $(e.target).parent().parent().remove();
-              },100);
-          });
+          '<td><button class="btn btn-sm b-del">Delete</button></td></tr>');          
+          $(selector+' .opt-list tr:last .b-del').click(deleteOption);
     });
     
     $(selector+' .b-save').click(function(){        
