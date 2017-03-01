@@ -303,6 +303,7 @@ $(function(){
                         $('#p-options').html(s);
                     }
                     if (d.row.portfolio!=undefined) $('#p-name').html(d.row.portfolio);
+                    if (d.row.description!=undefined) $('#p-description').html(d.row.description);
                     
                     // console.log('view: ',d);
     
