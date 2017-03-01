@@ -53,12 +53,15 @@
         $params = (object)$_POST;
         if (isset($params->id) && $params->id!='')
         {
-          $qr = $db->query('select * from sales_portfolio_summaries 
-          where id=:id',array('id'=>(1*$params->id)) );
+          $qr = $db->query('select s.*, p.portfolio, p.description as pdescr 
+ from sales_portfolio_summaries s
+ join sales_portfolio p on s.portfolio_id=p.id
+ where s.id=:id',array('id'=>(1*$params->id)) );
           $r = $db->fetchSingle($qr);
             if (!empty($r))
             {  $d = json_decode($r->json);
                $d->description = $r->description;
+               $d->portfolio = trim($r->portfolio);
                $d->portfolio_id = $r->portfolio_id;
                $this->res->row = $d;
             }

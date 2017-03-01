@@ -72,6 +72,7 @@ function editPortfolioSummary(selector){
 
        ajx('/pages/sales/LoadPortfolioSummaries', {id:row_id}, function(d){
             console.log(d);
+            $(selector+' .modal .pfname').html(d.row.portfolio);
             id = d.row.portfolio_id;
             $(selector+' .modal #description').val(d.row.description);
             if (d.row.bar!=undefined) fillTable(selector+' .bar-chart', d.row.bar);
