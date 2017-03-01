@@ -289,7 +289,25 @@ $(function(){
         if (model_sum.last_id!=row.id)
         {  model_sum.last_id=row.id;
            ajx('/pages/sales/LoadPortfolioSummaries', {id:row.id}, function(d){
-                console.log(d);
+                                
+                views.view('/pages/sales/pfsummary','#pfsummary', function(){
+                    var i;
+                    if (d.row.options!=undefined)
+                    {  var s = '<tr>';
+                        for (i=0; i<d.row.options.length; i++)
+                        {   var r = d.row.options[i];
+                            if (r.checked=='false') s+='<td class="disabled">'+r.name+'</td>';
+                            else  s+='<td>'+r.name+'</td>';
+                        }
+                        s += '<tr>';
+                        $('#p-options').html(s);
+                    }
+                    if (d.row.portfolio!=undefined) $('#p-name').html(d.row.portfolio);
+                    
+                    // console.log('view: ',d);
+    
+                });
+
                 // if (dd.insert_id!=undefined) insert_id = dd.insert_id;
            });
         }
@@ -311,6 +329,7 @@ $(function(){
             $('#tbedit a[href="#tabedit"]').tab('show');
        });
     });
+    
    
    
 });

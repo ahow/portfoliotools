@@ -162,4 +162,5 @@ table.table-ctrls {margin-top:15px; margin-bottom:15px;}
 
 table.t-bordered { border-collapse: collapse;}
 .t-bordered th, .t-bordered td { border: solid #E5E5E5 1px;}
+td.disabled { color: #A19C9C; }
 

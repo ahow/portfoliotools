@@ -34,7 +34,7 @@
                 </table>
                 <div class="model-pager"></div>
             </div>
-            <div class="col-lg-8">
+            <div id="pfsummary" class="col-lg-8">
                     
             </div>
         </div>
