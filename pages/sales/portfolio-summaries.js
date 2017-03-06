@@ -89,7 +89,10 @@ function editPortfolioSummary(selector){
                   }                
                   $(selector+' .opt-list').html(s);                  
                   $(selector+' .opt-list .b-del').click(deleteOption);
+                  
             }
+            if (d.row.bar.title!=undefined) $(selector+' .modal #bar_title').val(d.row.bar.title);
+            if (d.row.line.title!=undefined) $(selector+' .modal #line_title').val(d.row.line.title);
             show();
        }); 
       
@@ -110,6 +113,8 @@ function editPortfolioSummary(selector){
     
     function clear()
     { insert_id = null;
+      $(selector+' .modal #bar_title').val('');
+      $(selector+' .modal #line_title').val('');
       $(selector+' .modal #description').val('');
       $(selector+' .bar-chart thead').html('<tr><th>Series</th></tr>');
       $(selector+' .bar-chart tbody').html('');
@@ -151,19 +156,22 @@ function editPortfolioSummary(selector){
       
       
       d.bar = {};
+      d.bar.title = $(selector+' .modal #bar_title').val();
       d.bar.columns = getColumns('.bar-chart');
       d.bar.series = getSeries('.bar-chart');
       
       d.line = {};
+      d.line.title = $(selector+' .modal #line_title').val();
       d.line.columns = getColumns('.line-chart');
       d.line.series = getSeries('.line-chart');
       
       if (insert_id!=null) d.id = insert_id;
 
-      ajx('/pages/sales/SavePortfolioSummaries', d, function(dd){                   
+      ajx('/pages/sales/SavePortfolioSummaries', d, function(dd){
             if (!dd.error) setOk(dd.info); 
+            if (insert_id!=null) $(selector+' .modal').modal('hide');
             if (dd.insert_id!=undefined) insert_id = dd.insert_id;
-            if (!dd.error && onaftersave!=null) onaftersave(dd); 
+            if (!dd.error && onaftersave!=null) onaftersave(dd);
        });
             
      // console.log(d);
@@ -219,6 +227,75 @@ function editPortfolioSummary(selector){
            
     return {show:show, setPortfolio:setPortfolio, save:save,
         afterSave:afterSave, edit:edit, addNew:addNew};
+}
+
+function fixSeries(s)
+{ var ser = s;
+  for (var i=0; i<ser.length; i++)
+  { for (var j=0; j<ser[i].data.length; j++) ser[i].data[j] *= 1.0;
+  }  
+  return ser;
+}
+
+function renderBarChart(d)
+{  Highcharts.chart('ch-bar', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: d.title
+    },
+    xAxis: {
+        categories: d.columns
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: d.title
+        }
+    },
+    legend: {
+        reversed: false
+    },
+    credits: { enabled: false },
+    plotOptions: {
+        series: {
+            stacking: 'normal'
+        }
+    },
+    series: fixSeries(d.series)
+  });
+
+}
+
+function renderLineChart(d)
+{ 
+  Highcharts.chart('ch-line', {
+
+    title: {
+        text: d.title
+    },
+
+    yAxis: {
+        title: {
+            text: d.title
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+    credits: { enabled: false },
+    plotOptions: {
+        series: {
+            pointStart: 2010
+        }
+    },
+
+    series: fixSeries(d.series)
+
+  });
 }
 
 
@@ -282,13 +359,8 @@ $(function(){
        
    });
    
-   model_sum = new modelListController('#tabedit .model-list', model_view);
-   model_sum.load();
-   model_sum.last_id = null;
-   model_sum.click(function(e, row){
-        if (model_sum.last_id!=row.id)
-        {  model_sum.last_id=row.id;
-           ajx('/pages/sales/LoadPortfolioSummaries', {id:row.id}, function(d){
+   function updateSummaryView(row_id)
+   {   ajx('/pages/sales/LoadPortfolioSummaries', {id:row_id}, function(d){
                                 
                 views.view('/pages/sales/pfsummary','#pfsummary', function(){
                     var i;
@@ -304,6 +376,8 @@ $(function(){
                     }
                     if (d.row.portfolio!=undefined) $('#p-name').html(d.row.portfolio);
                     if (d.row.description!=undefined) $('#p-description').html(d.row.description);
+                    if (d.row.bar!=undefined) renderBarChart(d.row.bar);
+                    if (d.row.line!=undefined) renderLineChart(d.row.line);
                     
                     // console.log('view: ',d);
     
@@ -311,6 +385,15 @@ $(function(){
 
                 // if (dd.insert_id!=undefined) insert_id = dd.insert_id;
            });
+   }
+   
+   model_sum = new modelListController('#tabedit .model-list', model_view);
+   model_sum.load();
+   model_sum.last_id = null;
+   model_sum.click(function(e, row){
+        if (model_sum.last_id!=row.id)
+        {  model_sum.last_id=row.id;
+           updateSummaryView(row.id);
         }
    });
    
@@ -327,6 +410,7 @@ $(function(){
        edit = new editPortfolioSummary('#editpfsum');
        edit.afterSave(function(d){
             model_sum.load();
+            if (model_sum.last_id!=null) updateSummaryView(model_sum.last_id);
             $('#tbedit a[href="#tabedit"]').tab('show');
        });
     });
