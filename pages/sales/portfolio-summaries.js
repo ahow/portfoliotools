@@ -71,7 +71,7 @@ function editPortfolioSummary(selector){
        }
 
        ajx('/pages/sales/LoadPortfolioSummaries', {id:row_id}, function(d){
-            console.log(d);
+            // console.log(d);
             $(selector+' .modal .pfname').html(d.row.portfolio);
             id = d.row.portfolio_id;
             $(selector+' .modal #description').val(d.row.description);
@@ -91,8 +91,8 @@ function editPortfolioSummary(selector){
                   $(selector+' .opt-list .b-del').click(deleteOption);
                   
             }
-            if (d.row.bar.title!=undefined) $(selector+' .modal #bar_title').val(d.row.bar.title);
-            if (d.row.line.title!=undefined) $(selector+' .modal #line_title').val(d.row.line.title);
+            if (d.row.bar!=undefined && d.row.bar.title!=undefined) $(selector+' .modal #bar_title').val(d.row.bar.title);
+            if (d.row.line!=undefined && d.row.line.title!=undefined) $(selector+' .modal #line_title').val(d.row.line.title);
             show();
        }); 
       
