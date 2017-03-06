@@ -56,7 +56,7 @@ function editPortfolioSummary(selector){
        function fillTable(sel, d)
        {  var i, j;
           var s = '<tr><th>Series</th>';
-          for (i=0; i<d.columns.length; i++) s+='<th contenteditable="true">'+d.columns[i]+'</th>';
+          if (d.columns!=undefined) for (i=0; i<d.columns.length; i++) s+='<th contenteditable="true">'+d.columns[i]+'</th>';
           s+='</tr>';
           $(sel+' thead').html(s);
           
@@ -231,7 +231,7 @@ function editPortfolioSummary(selector){
 
 function fixSeries(s)
 { var ser = s;
-  for (var i=0; i<ser.length; i++)
+  if (ser!=undefined) for (var i=0; i<ser.length; i++)
   { for (var j=0; j<ser[i].data.length; j++) ser[i].data[j] *= 1.0;
   }  
   return ser;
