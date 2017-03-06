@@ -221,15 +221,16 @@ function editPortfolioSummary(selector){
         afterSave:afterSave, edit:edit, addNew:addNew};
 }
 
+function fixSeries(s)
+{ var ser = s;
+  for (var i=0; i<ser.length; i++)
+  { for (var j=0; j<ser[i].data.length; j++) ser[i].data[j] *= 1.0;
+  }  
+  return ser;
+}
 
 function renderBarChart(d)
-{   var ser = d.series;
-    
-    for (var i=0; i<ser.length; i++)
-    { for (var j=0; j<ser[i].data.length; j++) ser[i].data[j] *= 1.0;
-    }
-    
-    Highcharts.chart('ch-bar', {
+{  Highcharts.chart('ch-bar', {
     chart: {
         type: 'column'
     },
@@ -254,12 +255,40 @@ function renderBarChart(d)
             stacking: 'normal'
         }
     },
-    series: ser
+    series: fixSeries(d.series)
   });
 
 }
 
+function renderLineChart(d)
+{ 
+  Highcharts.chart('ch-line', {
 
+    title: {
+        text: 'Solar Employment Growth by Sector, 2010-2016'
+    },
+
+    yAxis: {
+        title: {
+            text: 'Number of Employees'
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+    credits: { enabled: false },
+    plotOptions: {
+        series: {
+            pointStart: 2010
+        }
+    },
+
+    series: fixSeries(d.series)
+
+  });
+}
 
 
 $(function(){
@@ -345,6 +374,7 @@ $(function(){
                     if (d.row.portfolio!=undefined) $('#p-name').html(d.row.portfolio);
                     if (d.row.description!=undefined) $('#p-description').html(d.row.description);
                     if (d.row.bar!=undefined) renderBarChart(d.row.bar);
+                    if (d.row.line!=undefined) renderLineChart(d.row.line);
                     
                     // console.log('view: ',d);
     
