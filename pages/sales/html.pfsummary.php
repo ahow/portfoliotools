@@ -16,5 +16,15 @@
          <p id="p-description"></p>
      </div>
 </div>
+<div class="row" id="stewardship">
+        <div class="col-lg-6">
+                <div id="ch-bar" style="min-width: 210px; height: 350px; margin: 0 auto"></div>
+        </div>
+        <div class="col-lg-6">
+                <div id="ch-line" style="min-width: 210px; height: 350px; margin: 0 auto"></div>
+        </div>        
+    </div>
+</div>
+
 
  

@@ -222,6 +222,46 @@ function editPortfolioSummary(selector){
 }
 
 
+function renderBarChart(d)
+{   var ser = d.series;
+    
+    for (var i=0; i<ser.length; i++)
+    { for (var j=0; j<ser[i].data.length; j++) ser[i].data[j] *= 1.0;
+    }
+    
+    Highcharts.chart('ch-bar', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Stacked bar chart'
+    },
+    xAxis: {
+        categories: d.columns
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Total fruit consumption'
+        }
+    },
+    legend: {
+        reversed: false
+    },
+    credits: { enabled: false },
+    plotOptions: {
+        series: {
+            stacking: 'normal'
+        }
+    },
+    series: ser
+  });
+
+}
+
+
+
+
 $(function(){
      
   // var dialog;
@@ -304,6 +344,7 @@ $(function(){
                     }
                     if (d.row.portfolio!=undefined) $('#p-name').html(d.row.portfolio);
                     if (d.row.description!=undefined) $('#p-description').html(d.row.description);
+                    if (d.row.bar!=undefined) renderBarChart(d.row.bar);
                     
                     // console.log('view: ',d);
     
