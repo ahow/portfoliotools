@@ -61,6 +61,7 @@ function editPortfolioSummary(selector){
           $(sel+' thead').html(s);
           
           s='';
+          if (d.series!=null) 
           for (i=0; i<d.series.length; i++) 
           { var r = d.series[i];
             s+='<tr><th contenteditable="true">'+r.name+'</th>';
