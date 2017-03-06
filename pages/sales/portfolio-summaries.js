@@ -160,10 +160,11 @@ function editPortfolioSummary(selector){
       
       if (insert_id!=null) d.id = insert_id;
 
-      ajx('/pages/sales/SavePortfolioSummaries', d, function(dd){                   
+      ajx('/pages/sales/SavePortfolioSummaries', d, function(dd){
             if (!dd.error) setOk(dd.info); 
+            if (insert_id!=null) $(selector+' .modal').modal('hide');
             if (dd.insert_id!=undefined) insert_id = dd.insert_id;
-            if (!dd.error && onaftersave!=null) onaftersave(dd); 
+            if (!dd.error && onaftersave!=null) onaftersave(dd);
        });
             
      // console.log(d);
@@ -351,13 +352,8 @@ $(function(){
        
    });
    
-   model_sum = new modelListController('#tabedit .model-list', model_view);
-   model_sum.load();
-   model_sum.last_id = null;
-   model_sum.click(function(e, row){
-        if (model_sum.last_id!=row.id)
-        {  model_sum.last_id=row.id;
-           ajx('/pages/sales/LoadPortfolioSummaries', {id:row.id}, function(d){
+   function updateSummaryView(row_id)
+   {   ajx('/pages/sales/LoadPortfolioSummaries', {id:row_id}, function(d){
                                 
                 views.view('/pages/sales/pfsummary','#pfsummary', function(){
                     var i;
@@ -382,6 +378,15 @@ $(function(){
 
                 // if (dd.insert_id!=undefined) insert_id = dd.insert_id;
            });
+   }
+   
+   model_sum = new modelListController('#tabedit .model-list', model_view);
+   model_sum.load();
+   model_sum.last_id = null;
+   model_sum.click(function(e, row){
+        if (model_sum.last_id!=row.id)
+        {  model_sum.last_id=row.id;
+           updateSummaryView(row.id);
         }
    });
    
@@ -398,6 +403,7 @@ $(function(){
        edit = new editPortfolioSummary('#editpfsum');
        edit.afterSave(function(d){
             model_sum.load();
+            if (model_sum.last_id!=null) updateSummaryView(model_sum.last_id);
             $('#tbedit a[href="#tabedit"]').tab('show');
        });
     });
