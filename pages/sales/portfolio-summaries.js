@@ -89,7 +89,10 @@ function editPortfolioSummary(selector){
                   }                
                   $(selector+' .opt-list').html(s);                  
                   $(selector+' .opt-list .b-del').click(deleteOption);
+                  
             }
+            if (d.row.bar.title!=undefined) $(selector+' .modal #bar_title').val(d.row.bar.title);
+            if (d.row.line.title!=undefined) $(selector+' .modal #line_title').val(d.row.line.title);
             show();
        }); 
       
@@ -110,6 +113,8 @@ function editPortfolioSummary(selector){
     
     function clear()
     { insert_id = null;
+      $(selector+' .modal #bar_title').val('');
+      $(selector+' .modal #line_title').val('');
       $(selector+' .modal #description').val('');
       $(selector+' .bar-chart thead').html('<tr><th>Series</th></tr>');
       $(selector+' .bar-chart tbody').html('');
@@ -151,10 +156,12 @@ function editPortfolioSummary(selector){
       
       
       d.bar = {};
+      d.bar.title = $(selector+' .modal #bar_title').val();
       d.bar.columns = getColumns('.bar-chart');
       d.bar.series = getSeries('.bar-chart');
       
       d.line = {};
+      d.line.title = $(selector+' .modal #line_title').val();
       d.line.columns = getColumns('.line-chart');
       d.line.series = getSeries('.line-chart');
       
@@ -236,7 +243,7 @@ function renderBarChart(d)
         type: 'column'
     },
     title: {
-        text: 'Stacked bar chart'
+        text: d.title
     },
     xAxis: {
         categories: d.columns
@@ -244,7 +251,7 @@ function renderBarChart(d)
     yAxis: {
         min: 0,
         title: {
-            text: 'Total fruit consumption'
+            text: d.title
         }
     },
     legend: {
@@ -266,12 +273,12 @@ function renderLineChart(d)
   Highcharts.chart('ch-line', {
 
     title: {
-        text: 'Solar Employment Growth by Sector, 2010-2016'
+        text: d.title
     },
 
     yAxis: {
         title: {
-            text: 'Number of Employees'
+            text: d.title
         }
     },
     legend: {
