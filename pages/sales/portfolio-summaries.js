@@ -304,7 +304,8 @@ function renderLineChart(d)
 
 function themeExposuresChart(pf1, pf2)
 {   if (pf2!=undefined  && pf1!=undefined)
-    {   pf1*=1;
+    {   $("#ch-theme-exposures").LoadingOverlay("show");
+        pf1*=1;
         pf2*=1;
         //$('#portfolio').attr('disabled', true)
         //$('#comparison').attr('disabled', true)
@@ -339,8 +340,8 @@ function themeExposuresChart(pf1, pf2)
                 }]
             };
             // console.log(params);
-            Highcharts.chart('ch-theme-exposures', params);
-            
+            $("#ch-theme-exposures").LoadingOverlay("hide", true);
+            Highcharts.chart('ch-theme-exposures', params);            
            // $('#portfolio').attr('disabled', false);
            // $('#comparison').attr('disabled', false);
            // $('.b-print').attr('disabled', false);
