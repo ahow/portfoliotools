@@ -20,8 +20,9 @@
 
      <ul class="nav nav-tabs">
        <li class="active"><a data-toggle="tab" href="#setcategories">Set categories</a></li>
-       <li id="tbedit"><a data-toggle="tab" href="#barchart">Bar chart inputs</a></li>
-       <li id="tbedit"><a data-toggle="tab" href="#linechart">Line chart inputs</a></li>
+       <li><a data-toggle="tab" href="#commsett">Common chart settings</a></li>
+       <li><a data-toggle="tab" href="#barchart">Bar chart inputs</a></li>
+       <li><a data-toggle="tab" href="#linechart">Line chart inputs</a></li>
      </ul>
 
      <div class="tab-content">
@@ -43,7 +44,13 @@
              </div>
              
          </div>
-         
+
+         <div id="commsett" class="tab-pane fade">
+             <div class="row" style="padding:20px;">           
+                 <div class="col-lg-12"><?=$f->modelSelect('comparison','/pages/sales/Model/portfolio-lookup')?></div>
+             </div>         
+         </div>
+                  
          <div id="barchart" class="tab-pane fade">
               <div class="row">           
                  <div class="col-lg-12"><?=$f->input('bar_title')?></div>
