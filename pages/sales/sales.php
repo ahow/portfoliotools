@@ -50,7 +50,8 @@
            $this->cfg->addJs('/html.php/pages/sales','metric-list.js');
        }
        else if ($this->nav=='theme-exposures')
-       {   $this->cfg->addJs('/html.php/pages/sales','theme-exposures.js');
+       {   $this->cfg->addJs('/html.php/pages/sales','mdselect.js');
+           $this->cfg->addJs('/html.php/pages/sales','theme-exposures.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
        }
@@ -83,6 +84,7 @@
        {   $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
+           $this->cfg->addJs('/html.php/pages/sales','mdselect.js');
            $this->cfg->addJs('/html.php/pages/sales','portfolio-summaries.js');
        } 
        else

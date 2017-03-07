@@ -94,6 +94,7 @@ function editPortfolioSummary(selector){
             }
             if (d.row.bar!=undefined && d.row.bar.title!=undefined) $(selector+' .modal #bar_title').val(d.row.bar.title);
             if (d.row.line!=undefined && d.row.line.title!=undefined) $(selector+' .modal #line_title').val(d.row.line.title);
+            if (d.row.comparison_id!=undefined) $(selector+' #comparison').val(d.row.comparison_id);
             show();
        }); 
       
@@ -122,12 +123,14 @@ function editPortfolioSummary(selector){
       $(selector+' .line-chart thead').html('<tr><th>Series</th></tr>');
       $(selector+' .line-chart tbody').html('');
       $(selector+' tbody.opt-list').html('');
+      $(selector+' #comparison').val("");
     }
     
     function save()
     { var d = {};
       d.description = $(selector+' .modal #description').val();
       d.portfolio_id = id;
+      d.comparison_id = $(selector+' #comparison').val();
       d.options = [];
       var rows = $(selector+' .opt-list tr');
       var i = 0;
@@ -299,6 +302,52 @@ function renderLineChart(d)
   });
 }
 
+function themeExposuresChart(pf1, pf2)
+{   if (pf2!=undefined  && pf1!=undefined)
+    {   pf1*=1;
+        pf2*=1;
+        //$('#portfolio').attr('disabled', true)
+        //$('#comparison').attr('disabled', true)
+        ajx('/pages/sales/ComparePortfolio',{pf1:pf1, pf2:pf2},function(d){
+            // chart.setData(d.header, d.data1.data, d.data2.data);
+            for (var i=0; i<d.data1.data.length; i++)
+            {  d.data1.data[i] = 1.0*d.data1.data[i];
+               d.data2.data[i] = 1.0*d.data2.data[i];
+            }
+            var params = {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Theme exposures'
+                },
+                xAxis: {
+                    categories: d.header
+                },
+                yAxis: {
+                    title: {text:'Exposure (positive or negative)'}
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: d.name1,
+                    data: d.data1.data
+                }, {
+                    name: d.name2,
+                    data: d.data2.data
+                }]
+            };
+            // console.log(params);
+            Highcharts.chart('ch-theme-exposures', params);
+            
+           // $('#portfolio').attr('disabled', false);
+           // $('#comparison').attr('disabled', false);
+           // $('.b-print').attr('disabled', false);
+        } );
+    }
+}
+
 
 $(function(){
      
@@ -379,7 +428,7 @@ $(function(){
                     if (d.row.description!=undefined) $('#p-description').html(d.row.description);
                     if (d.row.bar!=undefined) renderBarChart(d.row.bar);
                     if (d.row.line!=undefined) renderLineChart(d.row.line);
-                    
+                    if (d.row.comparison_id!=undefined) themeExposuresChart(d.row.portfolio_id, d.row.comparison_id);
                     // console.log('view: ',d);
     
                 });
@@ -414,9 +463,10 @@ $(function(){
             if (model_sum.last_id!=null) updateSummaryView(model_sum.last_id);
             $('#tbedit a[href="#tabedit"]').tab('show');
        });
+       var compar = new mdSelect('#comparison');
     });
     
-   
+    
    
 });
 
