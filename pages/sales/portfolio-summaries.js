@@ -94,6 +94,7 @@ function editPortfolioSummary(selector){
             }
             if (d.row.bar!=undefined && d.row.bar.title!=undefined) $(selector+' .modal #bar_title').val(d.row.bar.title);
             if (d.row.line!=undefined && d.row.line.title!=undefined) $(selector+' .modal #line_title').val(d.row.line.title);
+            if (d.row.comparison_id!=undefined) $(selector+' #comparison').val(d.row.comparison_id);
             show();
        }); 
       
@@ -122,12 +123,14 @@ function editPortfolioSummary(selector){
       $(selector+' .line-chart thead').html('<tr><th>Series</th></tr>');
       $(selector+' .line-chart tbody').html('');
       $(selector+' tbody.opt-list').html('');
+      $(selector+' #comparison').val("");
     }
     
     function save()
     { var d = {};
       d.description = $(selector+' .modal #description').val();
       d.portfolio_id = id;
+      d.comparison_id = $(selector+' #comparison').val();
       d.options = [];
       var rows = $(selector+' .opt-list tr');
       var i = 0;
@@ -425,7 +428,7 @@ $(function(){
                     if (d.row.description!=undefined) $('#p-description').html(d.row.description);
                     if (d.row.bar!=undefined) renderBarChart(d.row.bar);
                     if (d.row.line!=undefined) renderLineChart(d.row.line);
-                    themeExposuresChart(d.row.portfolio_id, 2);
+                    if (d.row.comparison_id!=undefined) themeExposuresChart(d.row.portfolio_id, d.row.comparison_id);
                     // console.log('view: ',d);
     
                 });
@@ -460,9 +463,10 @@ $(function(){
             if (model_sum.last_id!=null) updateSummaryView(model_sum.last_id);
             $('#tbedit a[href="#tabedit"]').tab('show');
        });
+       var compar = new mdSelect('#comparison');
     });
     
-   
+    
    
 });
 
