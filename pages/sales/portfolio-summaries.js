@@ -311,7 +311,9 @@ function socialChart(pf1, pf2, mt)
         if (pf2!=null && mt!=null)
         {              
              var metric_name = '';
-            
+             $("#ch-social").LoadingOverlay("show");
+             $("#ch-by-company").LoadingOverlay("show");
+             
              ajx('/pages/sales/StackedChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
                 // console.log(d) 
                 // chart.setData(d.header, d.data1.data, d.data2.data);
@@ -331,6 +333,9 @@ function socialChart(pf1, pf2, mt)
                     
                     drawStackedChart('ch-by-company', d);
                     $('.b-print').attr('disabled', false);
+                    
+                    $("#ch-social").LoadingOverlay("hide", true);
+                    $("#ch-by-company").LoadingOverlay("hide", true);
                 } );
                 /*
                 ajx('/pages/sales/SectorAllocChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
