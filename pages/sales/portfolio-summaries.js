@@ -302,6 +302,74 @@ function renderLineChart(d)
   });
 }
 
+function socialChart(pf1, pf2, mt)
+{   if (pf2!=undefined  && pf1!=undefined && mt!=undefined)
+    {       
+        if (pf2!=null && mt!=null)
+        {              
+             var metric_name = '';
+            
+             ajx('/pages/sales/StackedChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
+                // console.log(d) 
+                // chart.setData(d.header, d.data1.data, d.data2.data);
+                metric_name = d.metric;
+                var ser = [];
+                
+                for (var i=0; i<d.p1.data.length; i++)
+                {  if (ser[i]==undefined) ser[i]={name:d.p1.names[i], data:[]};
+                   ser[i].data[0] = 1.0*d.p1.data[i];
+                   ser[i].data[1] = 1.0*d.p2.data[i];
+                }
+               
+                    drawStackedGradient('ch-social', d)
+                    
+                    $('#portfolio').attr('disabled', false);
+                    $('#comparison').attr('disabled', false);
+                    
+                    drawStackedChart('stacked', d);
+                    $('.b-print').attr('disabled', false);
+                } );
+                
+                ajx('/pages/sales/SectorAllocChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
+                    
+                var params =  {
+                        chart: { type: 'waterfall' },
+                        title: { text: 'Sector vs stock effects' },
+                        xAxis: { type: 'category' },
+                        yAxis: { title: { text: metric_name } },
+                        legend: { enabled: false },
+                        credits: { enabled: false },
+                        tooltip: { pointFormat: '<b>{point.y:,.2f}</b>' },
+                        series: [{data:d.xdata, 
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.y, 2, '.');
+                            },
+                            style: {
+                                fontWeight: 'bold'
+                            }
+                        },
+                        pointPadding: 0}
+                        ]
+                     };
+                     if (d.reverse) params.series[0].data[0].color = Highcharts.getOptions().colors[1];
+                     else params.series[0].data[0].color = Highcharts.getOptions().colors[0];
+                     params.series[0].data[1].color = '#b5b5b5'; //Highcharts.getOptions().colors[2];
+                     params.series[0].data[2].color = '#b5b5b5'; // Highcharts.getOptions().colors[3];
+                     if (d.reverse) params.series[0].data[3].color = Highcharts.getOptions().colors[0];
+                     else params.series[0].data[3].color = Highcharts.getOptions().colors[1];
+                     for (var i=0; i<params.series[0].data.length; i++)
+                        params.series[0].data[i].borderColor="#E5E5E5";
+
+                    // console.log(JSON.stringify(params));
+                     Highcharts.chart('ch-by-company', params);
+                    // drawSectorAllocChart('container2', d);
+            });
+        }
+    }
+}
+    
 function themeExposuresChart(pf1, pf2)
 {   if (pf2!=undefined  && pf1!=undefined)
     {   $("#ch-theme-exposures").LoadingOverlay("show");
@@ -433,6 +501,8 @@ $(function(){
                     if (d.row.bar!=undefined) renderBarChart(d.row.bar);
                     if (d.row.line!=undefined) renderLineChart(d.row.line);
                     if (d.row.comparison_id!=undefined) themeExposuresChart(d.row.portfolio_id, d.row.comparison_id);
+                    if (d.row.comparison_id!=undefined && d.row.social_id!=undefined) 
+                        socialChart(d.row.portfolio_id, d.row.comparison_id, d.row.social_id);
                     // console.log('view: ',d);
     
                 });
