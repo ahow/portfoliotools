@@ -22,10 +22,10 @@
         </div>    
 </div>
 <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-3">
                 <div id="ch-social" style="min-width: 210px; height: 350px; margin: 0 auto"></div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-5">
                 <div id="ch-by-company" style="min-width: 210px; height: 350px; margin: 0 auto"></div>
         </div>        
     </div>
