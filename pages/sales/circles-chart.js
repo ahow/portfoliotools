@@ -1,4 +1,4 @@
-function circlesChart(div,d)
+>function circlesChart(div,d)
 {   
     var options = {
         chart: {
@@ -73,15 +73,19 @@ function circlesChart(div,d)
         }]
         };
     options.xdata = d.series;
-    var xmax = -1000;
+    var xmax = Number.MIN_VALUE;
+    var xmin = Number.MAX_VALUE;
     for (var i=0; i<d.series.length; i++)
     {  for (var j=0; j<d.series[i].data.length; j++)
        { var n = d.series[i].data[j];
          if (xmax<n) xmax=n;
+         if (xmin>n) xmin=n;
          d.series[i].data[j]=0;  
        }
     }
-    options.yAxis.max = xmax;
+    var decim = (xmax-xmin)/10.0;
+    options.yAxis.max = xmax+decim;
+    options.yAxis.min = xmin-decim;
     Highcharts.chart(div, options);
 }
 
@@ -93,7 +97,7 @@ circlesChart('container', {
         categories: ['Metric1', 'Metric2', 'Metric3', 'Metric4'],
         series:[
             {name:'Best', data:[10,8,7,16]}, 
-            {name:'Worst', data:[3,2,1,5]} 
+            {name:'Worst', data:[3,2,2,5]} 
         ]
     });
     
