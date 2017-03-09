@@ -465,6 +465,7 @@ $(function(){
             $('#tbedit a[href="#tabedit"]').tab('show');
        });
        var compar = new mdSelect('#comparison');
+       var soc_metric = new mdSelect('#social_value_metric');
     });
     
     
