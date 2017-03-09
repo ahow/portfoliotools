@@ -426,7 +426,10 @@ $(function(){
                         $('#p-options').html(s);
                     }
                     if (d.row.portfolio!=undefined) $('#p-name').html(d.row.portfolio);
-                    if (d.row.description!=undefined) $('#p-description').html(d.row.description);
+                    if (d.row.description!=undefined) 
+                    { $('#p-description').html(d.row.description);
+                       $('#pfname').html(d.row.description);      
+                    }
                     if (d.row.bar!=undefined) renderBarChart(d.row.bar);
                     if (d.row.line!=undefined) renderLineChart(d.row.line);
                     if (d.row.comparison_id!=undefined) themeExposuresChart(d.row.portfolio_id, d.row.comparison_id);
@@ -441,12 +444,20 @@ $(function(){
    model_sum = new modelListController('#tabedit .model-list', model_view);
    model_sum.load();
    model_sum.last_id = null;
+   model_sum.prev_id = null;
    model_sum.click(function(e, row){
-        if (model_sum.last_id!=row.id)
-        {  model_sum.last_id=row.id;
-           updateSummaryView(row.id);
-        }
+        model_sum.last_id = row.id;
+        $('#pfname').html(row.description);        
    });
+   
+   $('.w-sumtabs a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        if (e.target.getAttribute('href')=='#tabschart')
+        {  if (model_sum.prev_id!=model_sum.last_id)
+           {  model_sum.prev_id = model_sum.last_id;
+              updateSummaryView(model_sum.last_id);             
+           }
+        }
+   })
    
    var pager_sum = new modelPagination('#tabedit .model-pager');
    model_sum.total(function(total, rows_lim){
@@ -459,10 +470,11 @@ $(function(){
 
    views.view('/pages/sales/editpfsummary','#editpfsum', function(){
        edit = new editPortfolioSummary('#editpfsum');
-       edit.afterSave(function(d){
-            model_sum.load();
-            if (model_sum.last_id!=null) updateSummaryView(model_sum.last_id);
-            $('#tbedit a[href="#tabedit"]').tab('show');
+       edit.afterSave(function(d){            
+            model_sum.load();           
+            $('#schart a').tab('show');
+            if (model_sum.last_id!=null) updateSummaryView(model_sum.last_id);            
+           // $('#tbedit a[href="#tabedit"]').tab('show');
        });
        var compar = new mdSelect('#comparison');
        var soc_metric = new mdSelect('#social_value_metric');

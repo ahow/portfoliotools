@@ -8,9 +8,10 @@
 ?>
 <h2 class="uppertitle"><?=$this->cfg->title?></h2>
 
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs w-sumtabs">
   <li class="active"><a data-toggle="tab" href="#tabpflist">Portfolio list</a></li>
   <li id="tbedit"><a data-toggle="tab" href="#tabedit">Portfolio summaries</a></li>
+  <li id="schart"><a data-toggle="tab" href="#tabschart">Summary charts: <span id="pfname"></span></a></li>
 </ul>
 
 <div class="tab-content"  style="padding-top: 15px;">
@@ -27,17 +28,18 @@
     
     <div class="tab-pane fade" id="tabedit">
         <div class="row">
-            <div class="model-list col-lg-4" data-model="/pages/sales/Model/portfolio-summaries">
+            <div class="model-list col-lg-12" data-model="/pages/sales/Model/portfolio-summaries">
                 <table class="table table-striped selectable">
                     <thead></thead>
                     <tbody></tbody>
                 </table>
                 <div class="model-pager"></div>
-            </div>
-            <div id="pfsummary" class="col-lg-8">
-                    
-            </div>
+            </div>            
         </div>
+    </div>
+    
+    <div class="tab-pane fade" id="tabschart" >
+        <div id="pfsummary"></div>        
     </div>
     
 </div>
