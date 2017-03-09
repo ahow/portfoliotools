@@ -47,7 +47,8 @@
 
          <div id="commsett" class="tab-pane fade">
              <div class="row" style="padding:20px;">           
-                 <div class="col-lg-12"><?=$f->modelSelect('comparison','/pages/sales/Model/portfolio-lookup')?></div>
+                 <div class="col-lg-6"><?=$f->modelSelect('comparison','/pages/sales/Model/portfolio-lookup')?></div>
+                 <div class="col-lg-6"><?=$f->modelSelect('social_value_metric','/pages/sales/Model/metric-lookup')?></div>
              </div>         
          </div>
                   
