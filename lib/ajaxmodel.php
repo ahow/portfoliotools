@@ -146,6 +146,12 @@
     {   if (isset($model->delete))
         {   $params = (object)$_POST;
             $db = $this->cfg->db;
+            if (isset($model->beforeDelete))
+            {  $method = $model->beforeDelete;
+               if (!method_exists($this, $method))
+                return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__); 
+               $this->$method($params);
+            }
             $sql = $this->SQLVars($model->delete);
             $db->query($sql, $params);
         } else return $this->error(T('DELETE_MODEL_PARAM_NOT_FOUND'),__LINE__);
