@@ -1,6 +1,7 @@
 <?php
 /* Определим типы MIME */
- $known_mime_types=array(
+function exttoMIME($ext)
+{  $types=array(
 "pdf" => "application/pdf",
 "txt" => "text/plain",
 "html" => "text/html",
@@ -18,6 +19,9 @@
 "jpg" =>  "image/jpg",
 "php" => "text/plain"
  );
+  if (isset($types[$ext])) return $types[$ext];
+  return "application/force-download";
+}
  
 function fileext($fn)
 { 	$a = explode('.',$fn);
@@ -26,15 +30,11 @@ function fileext($fn)
 }
 
 function output_headers($file)
-{   global  $known_mime_types;
-    $file_extension = fileext($file);
+{   $file_extension = fileext($file);
     $name = rawurldecode($file);
-     
-    if (isset($known_mime_types[$file_extension])){
-       $mime_type=$known_mime_types[$file_extension];
-    } else {
-        $mime_type="application/force-download";
-    }
+    
+    $mime_type = exttoMIME($file_extension);
+    
     @ob_end_clean(); //turn off output buffering to decrease cpu usage
      
      // required for IE, otherwise Content-Disposition may be ignored
@@ -58,7 +58,6 @@ function output_headers($file)
 // file uploading
 function output_file($file, $name, $mime_type='')
 {
- global  $known_mime_types;
  if(!is_readable($file)) die('File '.$file.' not found or inaccessible!');
  
  $size = filesize($file);
@@ -66,14 +65,8 @@ function output_file($file, $name, $mime_type='')
  
  
  if($mime_type=='')
- {
-	 $file_extension = fileext($file);
-	 
-	 if(array_key_exists($file_extension, $known_mime_types)){
-		$mime_type=$known_mime_types[$file_extension];
-	 } else {
-		$mime_type="application/force-download";
-	 }
+ {	 $file_extension = fileext($file);
+	 $mime_type = exttoMIME($file_extension);
  }
  
  @ob_end_clean(); //turn off output buffering to decrease cpu usage
