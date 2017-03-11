@@ -99,7 +99,6 @@ function circlesChart(div,d)
       var data = this.options.xdata;   
       var zoom_k =  this.axes[1].transA;
       var delta_x = -this.axes[1].min*zoom_k;
-      console.log(this);
       
       for (var i=0; i<data.length; i++)
       {		
@@ -129,27 +128,22 @@ function circlesChart(div,d)
 
             //determine with the 'id' to which dataPoint this element belongs
             //problem: if label is hovered, use tootltipIndex of rect
-            var i = parseFloat(el.getAttribute('id'));
-            if (!isNaN(i)) {
-                tooltipIndex = i;
-            }
+            var sid = el.getAttribute('id');
+            var aid = sid.split('-');
+            var i = 1*aid[0];
+            var j = 1*aid[1];
             
-            if (lastHover!=i)
-            {   lastHover=i;
-                var bx = 1*el.getAttribute('x'), by = 1*el.getAttribute('y');
+            
+            if (lastHover!=sid)
+            {   lastHover=sid;
+                var bx = 1*el.getAttribute('cx'), by = 1*el.getAttribute('cy');
                // console.log(i);
                // render text for tooltip based on coordinates of rect
-                var s = '<b>'+cname[i]+'</b><br>'                
-                for (var j=0; j<pt[i].data.length; j++)
-                {   var n = 1.0*pt[i].data[j];
-                    var proc = (n/total_heights[j])*100.0;
-                    s+=pt[i].names[j]+': '+n.toFixed(2)+' ('+proc.toFixed(1)+'%)<br>';
-                }
+                var s = '<b>'+series[i].name+'</b> '+data[i].data[j];                                
                 text = chart.renderer.text(s, bx, by)
                     .attr({
                     zIndex: 101
-                })
-                    .add();
+                }).add();
 
                 var box = text.getBBox();
                
