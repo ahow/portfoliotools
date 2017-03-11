@@ -1,8 +1,9 @@
->function circlesChart(div,d)
+function circlesChart(div,d)
 {   
     var options = {
         chart: {
-            type: 'bar'
+            type: 'bar',
+            renderTo: div,
         },
         title: {
             text: d.title
@@ -11,23 +12,7 @@
             categories: d.categories,
             title: {
                 text: null
-            },
-            plotLines: [{
-                color: '#D0D0D0',
-                width: 1,
-                value: 0},
-                {
-                color: '#D0D0D0',
-                width: 1,
-                value: 1},
-                {
-                color: '#D0D0D0',
-                width: 1,
-                value: 2},
-                {
-                color: '#D0D0D0',
-                width: 1,
-                value: 3}]
+            }
         },
         yAxis: {
             min: 0,
@@ -64,15 +49,16 @@
         credits: {
             enabled: false
         },
-        series: [{
-            name: 'Best',
-            data: [0,0,0,0]
-        }, {
-            name: 'Worst',
-            data: [0,0,0,0]
-        }]
+        series: d.series
         };
-    options.xdata = d.series;
+    options.xdata = [];
+    options.xAxis.plotLines = [];
+    for (var i=0; i<d.series.length; i++){
+    	options.xdata.push( $.extend(true,{}, d.series[i]) );
+    }
+    for (var i=0; i<d.categories.length; i++){
+        options.xAxis.plotLines.push({color: '#D0D0D0', width: 1, value: i});
+    }
     var xmax = Number.MIN_VALUE;
     var xmin = Number.MAX_VALUE;
     for (var i=0; i<d.series.length; i++)
@@ -83,10 +69,110 @@
          d.series[i].data[j]=0;  
        }
     }
+    
+    
     var decim = (xmax-xmin)/10.0;
     options.yAxis.max = xmax+decim;
     options.yAxis.min = xmin-decim;
-    Highcharts.chart(div, options);
+    
+    new Highcharts.Chart(options, function (chart) {
+        var series = this.options.series,
+            addMarginX = this.plotLeft,
+            addMarginY = this.plotTop,           
+            heightAll = [];
+        
+        var lastHover = -1;
+
+        //renderer group for all circles
+        rectGroup = chart.renderer.g()
+            .attr({
+            zIndex: 5
+        }).add();
+
+        //draw for each point a rectangular
+                
+      var delta_y = this.yAxis[0].height/series[0].data.length;     
+      var attr = {"stroke-width":0.75, stroke:"white", fill:'#D0D0D0'};
+      var rad = delta_y*0.7/2;
+
+      
+      var data = this.options.xdata;   
+      var zoom_k =  this.axes[1].transA;
+      var delta_x = -this.axes[1].min*zoom_k;
+      console.log(this);
+      
+      for (var i=0; i<data.length; i++)
+      {		
+          for (var j=0; j<data[i].data.length; j++)
+          {  attr.id=''+i+'-'+j;
+             attr.fill = this.series[i].color;
+             var nx = delta_x+addMarginX+data[i].data[j]*zoom_k;
+            // console.log(nx, data[i].data[j], zoom_k);
+             var cc = chart.renderer.circle(addMarginX, addMarginY+delta_y/2+delta_y*j, rad).attr(attr).add(rectGroup);
+             cc.animate({
+                  cx: nx
+                }, {
+                    duration: 1000
+                });
+          } 	
+      }
+      
+
+        // add tooltip to rectangulars AND labels (rectGroup)
+        var tooltipIndex;
+        var cname=[data.name1, data.name2];
+
+        rectGroup.on('mouseover', function (e) {
+
+            //get the active element (or is there a simpler way?)
+            var el = (e.target.correspondingUseElement) ? e.target.correspondingUseElement : e.target;
+
+            //determine with the 'id' to which dataPoint this element belongs
+            //problem: if label is hovered, use tootltipIndex of rect
+            var i = parseFloat(el.getAttribute('id'));
+            if (!isNaN(i)) {
+                tooltipIndex = i;
+            }
+            
+            if (lastHover!=i)
+            {   lastHover=i;
+                var bx = 1*el.getAttribute('x'), by = 1*el.getAttribute('y');
+               // console.log(i);
+               // render text for tooltip based on coordinates of rect
+                var s = '<b>'+cname[i]+'</b><br>'                
+                for (var j=0; j<pt[i].data.length; j++)
+                {   var n = 1.0*pt[i].data[j];
+                    var proc = (n/total_heights[j])*100.0;
+                    s+=pt[i].names[j]+': '+n.toFixed(2)+' ('+proc.toFixed(1)+'%)<br>';
+                }
+                text = chart.renderer.text(s, bx, by)
+                    .attr({
+                    zIndex: 101
+                })
+                    .add();
+
+                var box = text.getBBox();
+               
+                //box surrounding the tool tip text                     
+                border = chart.renderer.rect(bx-5, by-16, box.width+10, box.height+10, 2)
+                    .attr({
+                    fill: 'rgba(255, 255, 255, 0.95)',
+                    stroke: 'blue',
+                        'stroke-width': 0.5,
+                    zIndex: 100
+                }).add();
+            }
+
+        }).on('mouseout', function () {
+            if (text.element!=undefined)
+            {  text.destroy();
+               border.destroy();
+               lastHover=-1;
+            }
+        });
+
+
+    });
 }
 
 
@@ -96,8 +182,8 @@ circlesChart('container', {
         xtitle: 'Sales',
         categories: ['Metric1', 'Metric2', 'Metric3', 'Metric4'],
         series:[
-            {name:'Best', data:[10,8,7,16]}, 
-            {name:'Worst', data:[3,2,2,5]} 
+            {name:'Metric', data:[10,8,7,16]}, 
+            {name:'Comparison', data:[5,6,6,5]} 
         ]
     });
     
