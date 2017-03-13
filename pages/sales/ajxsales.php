@@ -726,6 +726,15 @@ order by p.isin, m.col");
         echo json_encode($this->res); 
     }
     
+    function ajxStackedChartList()
+    {   $db = $this->cfg->db; 
+        $params = (object)$_POST;
+        $db->query("set @mt=:mt;", array('mt'=>$params->mt)); 
+        //$db->query("set @pf=:pf;", array('pf'=>$params->pf)); 
+        
+        
+    }
+    
     function ajxSectorAllocChart()
     {   
         

@@ -64,10 +64,17 @@ function circlesChart(div,d)
     for (var i=0; i<d.series.length; i++)
     {  for (var j=0; j<d.series[i].data.length; j++)
        { var n = d.series[i].data[j];
+         if (typeof(n)=='array')
+         {	for (k=0; k<n.length; k++)
+            {  if (xmax<n) xmax=n;
+         		   if (xmin>n) xmin=n;             
+            }
+         }
          if (xmax<n) xmax=n;
-         if (xmin>n) xmin=n;
-         d.series[i].data[j]=0;  
+         if (xmin>n) xmin=n;         
        }
+       d.series[i].data = [];
+       for (var j=0; j<d.categories.length; j++) d.series[i].data[j]=0;
     }
     
     
@@ -113,6 +120,8 @@ function circlesChart(div,d)
                 }, {
                     duration: 1000
                 });
+
+						  
           } 	
       }
       
@@ -177,7 +186,7 @@ circlesChart('container', {
         categories: ['Metric1', 'Metric2', 'Metric3', 'Metric4'],
         series:[
             {name:'Metric', data:[10,8,7,16]}, 
-            {name:'Comparison', data:[5,6,6,5]} 
+            {name:'Comparison', data:[5,6,6,9]} 
         ]
     });
     

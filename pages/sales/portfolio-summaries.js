@@ -86,7 +86,7 @@ function editPortfolioSummary(selector){
                     if (d.row.options[i].checked=='true') chk = ' checked '
                     s+='<tr><td><input type="checkbox" '+chk+'/></td>'+
               '<td contenteditable="true">'+d.row.options[i].name+'</td>'+
-              '<td><button class="btn btn-sm b-del">Delete</button></td></tr>';
+              '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>';
                   }                
                   $(selector+' .opt-list').html(s);                  
                   $(selector+' .opt-list .b-del').click(deleteOption);
@@ -196,9 +196,21 @@ function editPortfolioSummary(selector){
     $(selector+' .b-add-category').click(function(){
           $(selector+' .opt-list').append('<tr><td><input type="checkbox" /></td>'+
           '<td contenteditable="true">Option</td>'+
-          '<td><button class="btn btn-sm b-del">Delete</button></td></tr>');          
+          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>');          
           $(selector+' .opt-list tr:last .b-del').click(deleteOption);
     });
+    
+    $(selector+' .b-add-metric-row').click(function(){
+          $(selector+' .metrics-list').append('<tr>\
+         <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
+         <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+          
+          '<td><input type="number" /></td>'+
+          '<td><input type="number" /></td>'+
+          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>');
+          new mdSelect(selector+' .metrics-list .w-metric:last');
+          $(selector+' .metrics-list tr:last .b-del').click(deleteOption);
+    });
+    
     
     $(selector+' .b-save').click(function(){        
         save();  

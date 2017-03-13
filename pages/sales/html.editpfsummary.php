@@ -23,6 +23,7 @@
        <li><a data-toggle="tab" href="#commsett">Common chart settings</a></li>
        <li><a data-toggle="tab" href="#barchart">Bar chart inputs</a></li>
        <li><a data-toggle="tab" href="#linechart">Line chart inputs</a></li>
+       <li><a data-toggle="tab" href="#metrics">Metrics list</a></li>
      </ul>
 
      <div class="tab-content">
@@ -91,7 +92,21 @@
                     </div>
                 </div>
          </div>
-                  
+         <div id="metrics" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table-ctrls">
+                         <thead><th>Metric</th><th>Min</th><th>Max</th></thead>
+                         <tbody class="metrics-list" style="padding:20px;"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <button class="btn btn-primary b-add-metric-row">Add metric</button>                        
+                    </div>
+                </div>
+         </div>
       </div>
       
       <div class="modal-footer">
