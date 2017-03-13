@@ -3,7 +3,7 @@
 
    class auth extends wMod
    { var $user = null;
-   
+     var $defaultURL = '';
    
      function getIPAddr()
      {  $ip_rem = '0.0.0.0';
@@ -111,7 +111,9 @@
            
            if ($this->checkUserPassword($uname, $_POST['upass'],$o))
            {  $u = $this->getInf($o);
-              return $this->startSession($u->id);
+              $s = $this->startSession($u->id);
+              if (isset($this->cfg->authorizedURL)) header('Location: '.$this->cfg->authorizedURL);
+              return $s;
            }
            
          } else
