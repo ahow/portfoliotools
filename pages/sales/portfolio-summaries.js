@@ -90,8 +90,29 @@ function editPortfolioSummary(selector){
                   }                
                   $(selector+' .opt-list').html(s);                  
                   $(selector+' .opt-list .b-del').click(deleteOption);
-                  
             }
+            if (d.row.metrics!=undefined)
+            {     var i;
+                  var s = '';
+                  for (i=0; i<d.row.metrics.length; i++)
+                  { var chk;
+                    var m = d.row.metrics[i];
+                    s+='<tr>\
+         <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
+         <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+
+          '<td><input type="number" value="'+m.min+'"/></td>'+
+          '<td><input type="number" value="'+m.max+'" /></td>'+
+          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>';
+                  }                
+                  $(selector+' .metrics-list').html(s);                  
+                  $(selector+' .metrics-list .b-del').click(deleteOption);
+                  var sels = $(selector+' .metrics-list .w-metric');
+                  for (i=0; i<d.row.metrics.length; i++)
+                  { var m = d.row.metrics[i];
+                    new mdSelect(selector+' .metrics-list .w-metric:eq('+i+')', m.id);
+                  }                  
+            }
+            
             if (d.row.bar!=undefined && d.row.bar.title!=undefined) $(selector+' .modal #bar_title').val(d.row.bar.title);
             if (d.row.line!=undefined && d.row.line.title!=undefined) $(selector+' .modal #line_title').val(d.row.line.title);
             if (d.row.comparison_id!=undefined) $(selector+' #comparison').val(d.row.comparison_id);
@@ -125,6 +146,7 @@ function editPortfolioSummary(selector){
       $(selector+' .line-chart thead').html('<tr><th>Series</th></tr>');
       $(selector+' .line-chart tbody').html('');
       $(selector+' tbody.opt-list').html('');
+      $(selector+' tbody.metrics-list').html('');
       $(selector+' #comparison').val("");
     }
     
@@ -140,6 +162,14 @@ function editPortfolioSummary(selector){
       for (i=0; i<rows.length; i++) 
       {   var tds = $(rows[i]).find('td');          
           d.options.push({name:tds[1].innerHTML, checked:$(tds[0]).find('input')[0].checked});
+      }
+      
+      d.metrics = [];
+      rows = $(selector+' .metrics-list tr');
+      for (i=0; i<rows.length; i++) 
+      {   var tr = $(rows[i]);
+          d.metrics.push({id:tr.find('.w-metric').val(), min:tr.find('input:first').val(),
+               max:tr.find('input:last').val()});
       }
       
       function getColumns(cname)

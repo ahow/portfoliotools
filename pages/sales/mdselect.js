@@ -1,4 +1,4 @@
-function mdSelect(selector)
+function mdSelect(selector, value)
 {   var rows = [];
     var model = $(selector).parents('.bs-model-select:first').attr('data-model')+'/load';
     var onselect = null;
@@ -11,6 +11,7 @@ function mdSelect(selector)
             s+='<option value="'+r.id+'">'+r.name+'</option>';
         }
         $(selector).html(s);
+        if (value!=undefined) $(selector).val(value);
         if (onloaded!=null) onloaded(rows);
     });
     

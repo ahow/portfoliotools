@@ -67,7 +67,7 @@ function circlesChart(div,d)
          if (typeof(n)=='array')
          {	for (k=0; k<n.length; k++)
             {  if (xmax<n) xmax=n;
-         		   if (xmin>n) xmin=n;             
+         	   if (xmin>n) xmin=n;
             }
          }
          if (xmax<n) xmax=n;
