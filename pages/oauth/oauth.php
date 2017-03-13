@@ -40,7 +40,9 @@
            $this->cfg->user->logout();
            $this->cfg->user->startSession($uid);
            $this->cfg->user->checkAuth();
-           header('Location: '.mkURL('/login'));
+           if (isset($this->cfg->authorizedURL)) 
+               header('Location: '.$this->cfg->authorizedURL);
+           else  header('Location: '.mkURL('/login'));
        }
         
      }
