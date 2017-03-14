@@ -359,6 +359,9 @@ function socialChart(pf1, pf2, mt)
              ajx('/pages/sales/StackedChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
                 // console.log(d) 
                 // chart.setData(d.header, d.data1.data, d.data2.data);
+                $("#ch-social").LoadingOverlay("hide", true);
+                $("#ch-by-company").LoadingOverlay("hide", true);
+                    
                 metric_name = d.metric;
                 var ser = [];
                 
@@ -376,8 +379,7 @@ function socialChart(pf1, pf2, mt)
                     drawStackedChart('ch-by-company', d);
                     $('.b-print').attr('disabled', false);
                     
-                    $("#ch-social").LoadingOverlay("hide", true);
-                    $("#ch-by-company").LoadingOverlay("hide", true);
+
                 } );
                 /*
                 ajx('/pages/sales/SectorAllocChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
@@ -432,7 +434,7 @@ function metricsAnalysis(d, pf1, pf2)
 
 function themeExposuresChart(pf1, pf2)
 {   if (pf2!=undefined  && pf1!=undefined)
-    {  // $("#ch-theme-exposures").LoadingOverlay("show");
+    {  $("#ch-theme-exposures").LoadingOverlay("show");
         pf1*=1;
         pf2*=1;
         //$('#portfolio').attr('disabled', true)
