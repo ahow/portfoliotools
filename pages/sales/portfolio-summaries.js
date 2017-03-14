@@ -423,8 +423,10 @@ function socialChart(pf1, pf2, mt)
     
 
 function metricsAnalysis(d, pf1, pf2)
-{   ajx('/pages/sales/MetricsAnalysis',{rows:d, p:pf1, c:pf2},function(d){
-        
+{   $("#met-analys").LoadingOverlay("show");
+    ajx('/pages/sales/MetricsAnalysis',{rows:d, p:pf1, c:pf2},function(r){
+        circlesChart('met-analys', {xdata:r.rows, title:'Other analysis and external'});        
+        $("#met-analys").LoadingOverlay("hide", true);
     });    
 }
 

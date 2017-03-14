@@ -84,6 +84,7 @@
        {   $this->cfg->addJs('/js', 'loadingoverlay.min.js');
            $this->cfg->addJs('/html.php/pages/sales','stacked.js');
            $this->cfg->addJs('/html.php/pages/sales','stacked-gradient.js');
+           $this->cfg->addJs('/html.php/pages/sales','circles-chart.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');

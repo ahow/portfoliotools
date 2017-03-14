@@ -733,10 +733,13 @@ order by p.isin, m.col");
         foreach ($params->rows as $a)
         {   $r = (object)$a;
             $db->query("set @mt=:mt;", array('mt'=>$r->id)); 
-            $db->query("set @pf=:pf;", array('pf'=>$params->p));                        
-            $r->p = $this->getStackedPortfolio();
+            $db->query("set @pf=:pf;", array('pf'=>$params->p));
+            $qr = $db->query("select metric from sales_metrics where id=:id", array('id'=>$r->id));
+            $r->name = $db->fetchSingleValue($qr);
+            $r->p = $this->getStackedPortfolio();            
             $db->query("set @pf=:pf;", array('pf'=>$params->c));
             $r->c = $this->getStackedPortfolio();
+            unset($r->c->names);
             $res[] = $r;
         }
         $this->res->rows = $res;

@@ -9,13 +9,14 @@ function circlesChart(div,d)
             text: d.title
         },
         xAxis: {
+            categories: d.categories,
             title: {
                 text: null
             }
         },
         yAxis: {
-            min: 1,
-            max: 100,
+            min: 0,
+            max: 300,
             title: {
                 text: d.xtitle,
                 align: 'high'
@@ -47,28 +48,19 @@ function circlesChart(div,d)
         },
         credits: {
             enabled: false
-        }
+        },
+        series: d.series
         };
     options.xdata = [];
     options.xAxis.plotLines = [];
-    var categories = [];
-    var zeroes = [];
-    console.log(d);
-    for (var i=0; i<d.xdata.length; i++){
-    	categories.push(d.xdata[i].name);
-        zeroes.push(0);
-        // options.xdata.push( $.extend(true,{}, d.series[i]) );
+    for (var i=0; i<d.series.length; i++){
+    	options.xdata.push( $.extend(true,{}, d.series[i]) );
     }
-    
-    options.xAxis.categories = categories;
-    options.series = [{name:'Portfolio', data:zeroes}, {name:'Comparison', data:zeroes}];
-    
-    for (var i=0; i<categories.length; i++){
+    for (var i=0; i<d.categories.length; i++){
         options.xAxis.plotLines.push({color: '#D0D0D0', width: 1, value: i});
     }
-    // var xmax = Number.MIN_VALUE;
-    // var xmin = Number.MAX_VALUE;
-   /*
+    var xmax = Number.MIN_VALUE;
+    var xmin = Number.MAX_VALUE;
     for (var i=0; i<d.series.length; i++)
     {  for (var j=0; j<d.series[i].data.length; j++)
        { var n = d.series[i].data[j];
@@ -89,7 +81,7 @@ function circlesChart(div,d)
     var decim = (xmax-xmin)/10.0;
     options.yAxis.max = xmax+decim;
     options.yAxis.min = xmin-decim;
-    */
+    
     new Highcharts.Chart(options, function (chart) {
         var series = this.options.series,
             addMarginX = this.plotLeft,
@@ -188,7 +180,6 @@ function circlesChart(div,d)
 
 
 // example of use
-/*
 circlesChart('container', {
         title: 'Test title',
         xtitle: 'Sales',
@@ -198,5 +189,5 @@ circlesChart('container', {
             {name:'Comparison', data:[5,6,6,9]} 
         ]
     });
-*/
+    
     

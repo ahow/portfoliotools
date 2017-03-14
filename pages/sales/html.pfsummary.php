@@ -22,6 +22,14 @@
         </div>    
 </div>
 <div class="row">
+        <div class="col-lg-6">
+                <div id="esg-analys" style="min-width: 450px; height: 350px; margin: 0 auto"></div>
+        </div>    
+        <div class="col-lg-6">
+                <div id="met-analys" style="min-width: 450px; height: 350px; margin: 0 auto"></div>
+        </div>    
+</div>
+<div class="row">
         <div class="col-lg-3">
                 <div id="ch-social" style="min-width: 210px; height: 350px; margin: 0 auto"></div>
         </div>
