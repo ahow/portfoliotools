@@ -432,7 +432,7 @@ function metricsAnalysis(d, pf1, pf2)
 
 function themeExposuresChart(pf1, pf2)
 {   if (pf2!=undefined  && pf1!=undefined)
-    {   $("#ch-theme-exposures").LoadingOverlay("show");
+    {  // $("#ch-theme-exposures").LoadingOverlay("show");
         pf1*=1;
         pf2*=1;
         //$('#portfolio').attr('disabled', true)
