@@ -421,6 +421,13 @@ function socialChart(pf1, pf2, mt)
     }
 }
     
+
+function metricsAnalysis(d, pf1, pf2)
+{   ajx('/pages/sales/MetricsAnalysis',{rows:d, p:pf1, c:pf2},function(d){
+        
+    });    
+}
+
 function themeExposuresChart(pf1, pf2)
 {   if (pf2!=undefined  && pf1!=undefined)
     {   $("#ch-theme-exposures").LoadingOverlay("show");
@@ -554,7 +561,7 @@ $(function(){
                     if (d.row.comparison_id!=undefined) themeExposuresChart(d.row.portfolio_id, d.row.comparison_id);
                     if (d.row.comparison_id!=undefined && d.row.metric_id!=undefined) 
                         socialChart(d.row.portfolio_id, d.row.comparison_id, d.row.metric_id);
-                    // console.log('view: ',d);
+                    if (d.row.metrics!=undefined) metricsAnalysis(d.row.metrics, d.row.portfolio_id, d.row.comparison_id);
     
                 });
 
