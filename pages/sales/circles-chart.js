@@ -49,11 +49,10 @@ function circlesChart(div,d)
             enabled: false
         }
         };
-    options.xdata = [];
+    options.xdata = d.xdata;
     options.xAxis.plotLines = [];
     var categories = [];
     var zeroes = [];
-    console.log(d);
     for (var i=0; i<d.xdata.length; i++){
     	categories.push(d.xdata[i].name);
         zeroes.push(0);
@@ -68,33 +67,17 @@ function circlesChart(div,d)
     }
     // var xmax = Number.MIN_VALUE;
     // var xmin = Number.MAX_VALUE;
-   /*
-    for (var i=0; i<d.series.length; i++)
-    {  for (var j=0; j<d.series[i].data.length; j++)
-       { var n = d.series[i].data[j];
-         if (typeof(n)=='array')
-         {	for (k=0; k<n.length; k++)
-            {  if (xmax<n) xmax=n;
-         	   if (xmin>n) xmin=n;
-            }
-         }
-         if (xmax<n) xmax=n;
-         if (xmin>n) xmin=n;         
-       }
-       d.series[i].data = [];
-       for (var j=0; j<d.categories.length; j++) d.series[i].data[j]=0;
-    }
-    
-    
-    var decim = (xmax-xmin)/10.0;
-    options.yAxis.max = xmax+decim;
-    options.yAxis.min = xmin-decim;
-    */
+
+   function asumm(a)
+   { var r=0; 
+        for (var i=0; i<a.length; i++) r+=1*a[i];
+        return r;
+   }
+      
     new Highcharts.Chart(options, function (chart) {
         var series = this.options.series,
             addMarginX = this.plotLeft,
-            addMarginY = this.plotTop,           
-            heightAll = [];
+            addMarginY = this.plotTop;
         
         var lastHover = -1;
 
@@ -105,32 +88,40 @@ function circlesChart(div,d)
         }).add();
 
         //draw for each point a rectangular
-                
-      var delta_y = this.yAxis[0].height/series[0].data.length;     
+      var delta_y = this.yAxis[0].height/categories.length;     
       var attr = {"stroke-width":0.75, stroke:"white", fill:'#D0D0D0'};
       var rad = delta_y*0.7/2;
 
       
       var data = this.options.xdata;   
-      var zoom_k =  this.axes[1].transA;
-      var delta_x = -this.axes[1].min*zoom_k;
-      
+      var zoom_k =  this.axes[1].transA;      
+
       for (var i=0; i<data.length; i++)
-      {		
-          for (var j=0; j<data[i].data.length; j++)
+      {   var pt = [data[i].p, data[i].c];
+          var nzoom = 100/(data[i].max-data[i].min)*zoom_k;
+          var by = addMarginY+delta_y/2+delta_y*i;
+          
+          var delta_x = -data[i].min*nzoom;
+          
+          chart.renderer.text(data[i].min, addMarginX+3, by-3)
+          .attr({ zIndex: 105}).css({color:'grey'}).add();
+          var tx = chart.renderer.text(data[i].max, addMarginX+100*zoom_k, by-3)
+          .attr({ zIndex: 105}).css({color:'grey'}).add();
+          tx.attr({x:(addMarginX+100*zoom_k-tx.element.clientWidth-3)});
+          
+          for (var j=0; j<pt.length; j++)
           {  attr.id=''+i+'-'+j;
-             attr.fill = this.series[i].color;
-             var nx = delta_x+addMarginX+data[i].data[j]*zoom_k;
-            // console.log(nx, data[i].data[j], zoom_k);
-             var cc = chart.renderer.circle(addMarginX, addMarginY+delta_y/2+delta_y*j, rad).attr(attr).add(rectGroup);
+             attr.fill = this.series[j].color;
+             // attr['data-sum'] = asumm(pt[j].data);
+             var nx = delta_x+addMarginX+asumm(pt[j].data)*nzoom;
+             var cc = chart.renderer.circle(addMarginX, by, rad).attr(attr).add(rectGroup);
              cc.animate({
                   cx: nx
                 }, {
                     duration: 1000
                 });
 
-						  
-          } 	
+          }
       }
       
 
@@ -156,7 +147,9 @@ function circlesChart(div,d)
                 var bx = 1*el.getAttribute('cx'), by = 1*el.getAttribute('cy');
                // console.log(i);
                // render text for tooltip based on coordinates of rect
-                var s = '<b>'+series[i].name+'</b> '+data[i].data[j];                                
+                var pt = [data[i].p, data[i].c];  
+                var s = '<b>'+series[i].name+'</b><br>'+
+                categories[j]+':<br>'+asumm(pt[j].data);
                 text = chart.renderer.text(s, bx, by)
                     .attr({
                     zIndex: 101
@@ -186,17 +179,4 @@ function circlesChart(div,d)
     });
 }
 
-
-// example of use
-/*
-circlesChart('container', {
-        title: 'Test title',
-        xtitle: 'Sales',
-        categories: ['Metric1', 'Metric2', 'Metric3', 'Metric4'],
-        series:[
-            {name:'Metric', data:[10,8,7,16]}, 
-            {name:'Comparison', data:[5,6,6,9]} 
-        ]
-    });
-*/
     
