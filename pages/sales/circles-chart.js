@@ -148,7 +148,7 @@ function circlesChart(div,d)
                // console.log(i);
                // render text for tooltip based on coordinates of rect
                 var pt = [data[i].p, data[i].c];  
-                var s = '<b>'+series[i].name+'</b><br>'+
+                var s = '<b>'+series[j].name+'</b><br>'+
                 categories[j]+':<br>'+asumm(pt[j].data);
                 text = chart.renderer.text(s, bx, by)
                     .attr({
