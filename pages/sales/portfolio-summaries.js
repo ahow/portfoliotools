@@ -357,8 +357,7 @@ function socialChart(pf1, pf2, mt)
              $("#ch-by-company").LoadingOverlay("show");
              
              ajx('/pages/sales/StackedChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
-                // console.log(d) 
-                // chart.setData(d.header, d.data1.data, d.data2.data);
+
                 $("#ch-social").LoadingOverlay("hide", true);
                 $("#ch-by-company").LoadingOverlay("hide", true);
                     
