@@ -9,9 +9,6 @@ function circlesChart(div,d)
             text: d.title
         },
         xAxis: {
-            title: {
-                text: null
-            }
         },
         yAxis: {
             min: 1,
@@ -21,18 +18,11 @@ function circlesChart(div,d)
                 align: 'high'
             },
             labels: {
-                overflow: 'justify'
+                 enabled: false
             }
         },
         tooltip: {
             valueSuffix: ' millions'
-        },
-        plotOptions: {
-            bar: {
-                dataLabels: {
-                    enabled: false
-                }
-            }
         },
         legend: {
             layout: 'vertical',
@@ -109,7 +99,7 @@ function circlesChart(div,d)
           .attr({ zIndex: 105}).css({color:'grey'}).add();
           tx.attr({x:(addMarginX+100*zoom_k-tx.element.clientWidth-3)});
           
-          for (var j=0; j<pt.length; j++)
+          for (var j=pt.length-1; j>=0; j--)
           {  attr.id=''+i+'-'+j;
              attr.fill = this.series[j].color;
              // attr['data-sum'] = asumm(pt[j].data);
