@@ -347,6 +347,45 @@ function renderLineChart(d)
   });
 }
 
+
+function drawStakeHolder(div, d)
+{   var p = {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'By stakeholder'
+    },
+    xAxis: {
+    },
+    credits: {
+        enabled: false
+    }
+   };
+   
+   p.xAxis.categories = [];
+   p.series = [];
+   
+   for (var i=0; i<d.p1.names.length; i++)
+   {   var name = d.p1.names[i];
+       p.xAxis.categories.push(name);       
+   }
+   
+   var dat=[];
+   for (var i=0; i<d.p1.data.length; i++)
+   { dat.push(1.0*d.p1.data[i]);
+   }
+   p.series.push({name:'Portfolio', data:dat})
+   
+   dat=[];
+   for (var i=0; i<d.p2.data.length; i++)
+   { dat.push(1.0*d.p2.data[i]);
+   }   
+   p.series.push({name:'Comparison', data:dat})
+   
+   Highcharts.chart(div, p);
+}
+
 function socialChart(pf1, pf2, mt)
 {   if (pf2!=undefined  && pf1!=undefined && mt!=undefined)
     {       
@@ -370,12 +409,13 @@ function socialChart(pf1, pf2, mt)
                    ser[i].data[1] = 1.0*d.p2.data[i];
                 }
                
-                    drawStackedGradient('ch-social', d)
+                    drawStackedGradient('ch-social', d);
+                    drawStakeHolder('ch-by-stakeholder', d)
+                    drawStackedChart('ch-by-company', d);
+                    
                     
                     $('#portfolio').attr('disabled', false);
-                    $('#comparison').attr('disabled', false);
-                    
-                    drawStackedChart('ch-by-company', d);
+                    $('#comparison').attr('disabled', false);                    
                     $('.b-print').attr('disabled', false);
                     
 
