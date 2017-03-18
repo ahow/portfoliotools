@@ -400,6 +400,7 @@ function socialChart(pf1, pf2, mt)
 
                 $("#ch-social").LoadingOverlay("hide", true);
                 $("#ch-by-company").LoadingOverlay("hide", true);
+                $("#ch-by-stakeholder").LoadingOverlay("hide", true);
                     
                 metric_name = d.metric;
                 var ser = [];
@@ -409,17 +410,16 @@ function socialChart(pf1, pf2, mt)
                    ser[i].data[0] = 1.0*d.p1.data[i];
                    ser[i].data[1] = 1.0*d.p2.data[i];
                 }
+
+                    $('#portfolio').attr('disabled', false);
+                    $('#comparison').attr('disabled', false);
+                    $('#ch-by-stakeholder').attr('disabled', false);
                
                     drawStackedGradient('ch-social', d);
                     drawStakeHolder('ch-by-stakeholder', d)
                     drawStackedChart('ch-by-company', d);
-                    
-                    
-                    $('#portfolio').attr('disabled', false);
-                    $('#comparison').attr('disabled', false);
-                    $('#ch-by-stakeholder').attr('disabled', false);
+
                     $('.b-print').attr('disabled', false);
-                    
 
                 } );
                 /*
