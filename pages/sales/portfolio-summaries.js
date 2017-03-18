@@ -394,6 +394,7 @@ function socialChart(pf1, pf2, mt)
              var metric_name = '';
              $("#ch-social").LoadingOverlay("show");
              $("#ch-by-company").LoadingOverlay("show");
+             $("#ch-by-stakeholder").LoadingOverlay("show");
              
              ajx('/pages/sales/StackedChart',{pf1:pf1, pf2:pf2, mt:mt},function(d){
 
@@ -415,7 +416,8 @@ function socialChart(pf1, pf2, mt)
                     
                     
                     $('#portfolio').attr('disabled', false);
-                    $('#comparison').attr('disabled', false);                    
+                    $('#comparison').attr('disabled', false);
+                    $('#ch-by-stakeholder').attr('disabled', false);
                     $('.b-print').attr('disabled', false);
                     
 
