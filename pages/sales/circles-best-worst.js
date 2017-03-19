@@ -39,7 +39,6 @@ function circlesBestWorstChart(div,d)
     options.xAxis.plotLines = [];
     var categories = ['Portfolio','Holdings'];
     var zeroes = [0,0];
-    console.log(d);
     var xmin = Number.MAX_VALUE, xmax=Number.MIN_VALUE;
     for (var i=0; i<d.rows.length; i++){
     	d.rows[i].val*=1.0;
