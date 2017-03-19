@@ -386,6 +386,12 @@ function drawStakeHolder(div, d)
    Highcharts.chart(div, p);
 }
 
+function esgAnalysis(pf)
+{     ajx('/pages/sales/LoadPortfolioData',{id:pf},function(d){
+            console.log(d);
+      });
+}
+
 function socialChart(pf1, pf2, mt)
 {   if (pf2!=undefined  && pf1!=undefined && mt!=undefined)
     {       
@@ -607,6 +613,7 @@ $(function(){
                     if (d.row.comparison_id!=undefined && d.row.metric_id!=undefined) 
                         socialChart(d.row.portfolio_id, d.row.comparison_id, d.row.metric_id);
                     if (d.row.metrics!=undefined) metricsAnalysis(d.row.metrics, d.row.portfolio_id, d.row.comparison_id);
+                    if (d.row.portfolio_id!=undefined) esgAnalysis(d.row.portfolio_id);
     
                 });
 

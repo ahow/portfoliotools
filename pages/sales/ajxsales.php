@@ -52,9 +52,9 @@
     {   $db = $this->cfg->db;
         $params = (object)$_POST;
         if (isset($params->id) && $params->id!='')
-        { $qr = $db->query('select d.isin, d.val, d.name from sales_portfolio_data d
+        { $qr = $db->query('select d.isin, d.val, c.name from sales_portfolio_data d
  join sales_companies c on d.isin=c.isin
- where d.id=:id',array('id'=>(1*$params->id)) );
+ where d.portfolio_id=:id',array('id'=>(1*$params->id)) );
           $r = $db->fetchSingle($qr);
           $this->res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
         }
