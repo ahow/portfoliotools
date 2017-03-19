@@ -6,19 +6,15 @@ function circlesBestWorstChart(div,d)
             renderTo: div,
         },
         title: {
-            text: d.title
+            text: 'ESG analysis'
         },
         xAxis: {
         },
         yAxis: {
             min: 1,
             max: 100,
-            title: {
-                text: d.xtitle,
-                align: 'high'
-            },
             labels: {
-                 enabled: false
+                 enabled: true
             }
         },
         tooltip: {
@@ -39,31 +35,34 @@ function circlesBestWorstChart(div,d)
             enabled: false
         }
         };
-    options.xdata = d.xdata;
+    options.xdata = d.rows;
     options.xAxis.plotLines = [];
-    var categories = [];
-    var zeroes = [];
-    for (var i=0; i<d.xdata.length; i++){
-    	categories.push(d.xdata[i].name);
-        zeroes.push(0);
-        // options.xdata.push( $.extend(true,{}, d.series[i]) );
+    var categories = ['Portfolio','Holdings'];
+    var zeroes = [0,0];
+    console.log(d);
+    var xmin = Number.MAX_VALUE, xmax=Number.MIN_VALUE;
+    for (var i=0; i<d.rows.length; i++){
+    	d.rows[i].val*=1.0;
+        var r = d.rows[i];
+        if (r.val>xmax) xmax=r.val;
+        if (r.val<xmin) xmin=r.val;        
     }
     
+    var dx = xmax-xmin;
+    var bw = [xmax,xmin];
+    xmin -= dx*0.1;
+    xmax += dx*0.1;
+    
+    options.yAxis.min = xmin;
+    options.yAxis.max = xmax;
+    
     options.xAxis.categories = categories;
-    options.series = [{name:'Portfolio', data:zeroes}, {name:'Comparison', data:zeroes}];
+    options.series = [{name:'Best', data:zeroes}, {name:'Worst', data:zeroes}];
     
     for (var i=0; i<categories.length; i++){
         options.xAxis.plotLines.push({color: '#D0D0D0', width: 1, value: i});
     }
-    // var xmax = Number.MIN_VALUE;
-    // var xmin = Number.MAX_VALUE;
 
-   function asumm(a)
-   { var r=0; 
-        for (var i=0; i<a.length; i++) r+=1*a[i];
-        return r;
-   }
-      
     new Highcharts.Chart(options, function (chart) {
         var series = this.options.series,
             addMarginX = this.plotLeft,
@@ -79,46 +78,60 @@ function circlesBestWorstChart(div,d)
 
         //draw for each point a rectangular
       var delta_y = this.yAxis[0].height/categories.length;     
-      var attr = {"stroke-width":0.75, stroke:"white", fill:'#D0D0D0'};
       var rad = delta_y*0.7/2;
 
       
       var data = this.options.xdata;   
-      var zoom_k =  this.axes[1].transA;      
+      var ax = this.yAxis[0];
+      // var zoom_k =  ax.transA;      
 
-      for (var i=0; i<data.length; i++)
-      {   var pt = [data[i].p, data[i].c];
-          var nzoom = 100/(data[i].max-data[i].min)*zoom_k;
-          var by = addMarginY+delta_y/2+delta_y*i;
-          
-          var delta_x = -data[i].min*nzoom;
-          
-          chart.renderer.text(data[i].min, addMarginX+3, by-3)
-          .attr({ zIndex: 105}).css({color:'grey'}).add();
-          var tx = chart.renderer.text(data[i].max, addMarginX+100*zoom_k, by-3)
-          .attr({ zIndex: 105}).css({color:'grey'}).add();
-          tx.attr({x:(addMarginX+100*zoom_k-tx.element.clientWidth-3)});
-          
-          for (var j=pt.length-1; j>=0; j--)
-          {  attr.id=''+i+'-'+j;
-             attr.fill = this.series[j].color;
-             // attr['data-sum'] = asumm(pt[j].data);
-             var nx = delta_x+addMarginX+asumm(pt[j].data)*nzoom;
-             var cc = chart.renderer.circle(addMarginX, by, rad).attr(attr).add(rectGroup);
-             cc.animate({
-                  cx: nx
-                }, {
-                    duration: 1000
-                });
+      //var pt = [xmin, xmax];
+      // var by = addMarginY+delta_y/2+delta_y*i;
+      var by = addMarginY+delta_y/2;
+      
+      // var nzoom = ax.width/(ax.max-ax.min);
+      var nzoom = ax.transA;
 
-          }
+      var attr = {"stroke-width":0.75, stroke:"white", fill:'#D0D0D0'};
+            
+      var delta_x = -ax.min*nzoom;
+      for (var i=bw.length-1; i>=0; i--)
+      {  attr['data-value']=bw[i];
+         attr['data-name']=this.options.series[i].name;
+         attr.fill = this.series[i].color;         
+         var nx = delta_x+addMarginX+bw[i]*nzoom;        
+         var cc = chart.renderer.circle(addMarginX, by, rad).attr(attr).add(rectGroup);
+         cc.animate({
+               cx: nx
+         }, {
+               duration: 1000
+         });
       }
+
+
+      by = addMarginY+delta_y/2+delta_y;
+      for (var i=0; i<data.length; i++)
+      {  attr.id=''+i+'-0';
+         attr.fill = '#ADD8E6';
+         attr['data-value']=data[i].val;
+         attr['data-name']=data[i].name;
+         var nx = delta_x+addMarginX+nzoom*data[i].val;
+         var cc = chart.renderer.circle(addMarginX, by, rad).attr(attr).css({'fill-opacity':0.5}).add(rectGroup);
+         cc.animate({
+               cx: nx
+         }, {
+               duration: 1000
+         });
+      }
+
+      
       
 
         // add tooltip to rectangulars AND labels (rectGroup)
         var tooltipIndex;
         var cname=[data.name1, data.name2];
-
+        var lastVal = null;
+        
         rectGroup.on('mouseover', function (e) {
 
             //get the active element (or is there a simpler way?)
@@ -126,20 +139,14 @@ function circlesBestWorstChart(div,d)
 
             //determine with the 'id' to which dataPoint this element belongs
             //problem: if label is hovered, use tootltipIndex of rect
-            var sid = el.getAttribute('id');
-            var aid = sid.split('-');
-            var i = 1*aid[0];
-            var j = 1*aid[1];
-            
-            
-            if (lastHover!=sid)
-            {   lastHover=sid;
+            var val = el.getAttribute('data-value');            
+            var name = el.getAttribute('data-name'); 
+                        
+            if (lastVal!=val)
+            {   lastVal=val;
                 var bx = 1*el.getAttribute('cx'), by = 1*el.getAttribute('cy');
-               // console.log(i);
                // render text for tooltip based on coordinates of rect
-                var pt = [data[i].p, data[i].c];  
-                var s = '<b>'+series[j].name+'</b><br>'+
-                categories[j]+':<br>'+asumm(pt[j].data);
+                var s = '<b>'+name+'</b><br>'+val;
                 text = chart.renderer.text(s, bx, by)
                     .attr({
                     zIndex: 101
@@ -161,7 +168,7 @@ function circlesBestWorstChart(div,d)
             if (text.element!=undefined)
             {  text.destroy();
                border.destroy();
-               lastHover=-1;
+               lastVal=null;
             }
         });
 
