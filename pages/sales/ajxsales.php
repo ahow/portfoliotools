@@ -48,6 +48,19 @@
         }
     }
     
+    function ajxLoadPortfolioData()
+    {   $db = $this->cfg->db;
+        $params = (object)$_POST;
+        if (isset($params->id) && $params->id!='')
+        { $qr = $db->query('select d.isin, d.val, d.name from sales_portfolio_data d
+ join sales_companies c on d.isin=c.isin
+ where d.id=:id',array('id'=>(1*$params->id)) );
+          $r = $db->fetchSingle($qr);
+          $this->res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
+        }
+        echo json_encode($this->res);
+    }
+    
     function ajxLoadPortfolioSummaries()
     {   $db = $this->cfg->db;
         $params = (object)$_POST;
@@ -359,7 +372,6 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
        $this->res->rows = array($fin);
        echo json_encode($this->res);
     }
- 
 
     function ajxMarketSummarySubsector()
     {   $params = (object)$_POST;
