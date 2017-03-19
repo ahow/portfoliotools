@@ -388,7 +388,7 @@ function drawStakeHolder(div, d)
 
 function esgAnalysis(pf)
 {     ajx('/pages/sales/LoadPortfolioData',{id:pf},function(d){
-            console.log(d);
+            circlesBestWorstChart('esg-analys', d);
       });
 }
 
