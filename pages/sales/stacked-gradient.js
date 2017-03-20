@@ -48,21 +48,25 @@ function drawStackedGradient(id, data)
     var raw = [];
     
     var total_heights = [];
-    var yMax=0; 
+    var yMax=Number.MIN_VALUE;
+    var yMin=Number.MAX_VALUE;
     
     for (var i = 0; i < data.p1.data.length; i++)
     {  var p = data.p1.data;
        if (total_heights[0]==undefined) total_heights[0]=0;
        total_heights[0]+=1.0*p[i];
        if (yMax<total_heights[0]) yMax=total_heights[0];
+       if (yMin>total_heights[0]) yMin=total_heights[0];
 
        p = data.p2.data;
        if (total_heights[1]==undefined) total_heights[1]=0;
        total_heights[1]+=1.0*p[i];           
-       if (yMax<total_heights[1]) yMax=total_heights[1];       
+       if (yMax<total_heights[1]) yMax=total_heights[1];
+       if (yMin>total_heights[1]) yMin=total_heights[1];
     }
     
     options.yAxis.max = yMax;
+    options.yAxis.min = yMin;
 
     var chart = new Highcharts.Chart(options,
     //add function for custom renderer
