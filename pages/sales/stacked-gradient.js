@@ -51,19 +51,33 @@ function drawStackedGradient(id, data)
     var yMax=Number.MIN_VALUE;
     var yMin=Number.MAX_VALUE;
     
+    function calcYValues(a)
+    {  var t=0, b=0;
+       for (var i=0; i<a.length; i++)
+       {  if (a[i]>=0) t+=1.0*a[i]; else b+=1.0*a[i];
+       }
+       if (yMax<t) yMax=t;
+       if (yMin>b) yMin=b;
+       if (yMin>t) yMin=t;
+       return {top:t, bottom:b};
+    }
+    /*
     for (var i = 0; i < data.p1.data.length; i++)
     {  var p = data.p1.data;
        if (total_heights[0]==undefined) total_heights[0]=0;
        total_heights[0]+=1.0*p[i];
        if (yMax<total_heights[0]) yMax=total_heights[0];
-       if (yMin>total_heights[0]) yMin=total_heights[0];
+       if (yMin>total_heights[0]) yMin=total_heights[0];       
 
        p = data.p2.data;
        if (total_heights[1]==undefined) total_heights[1]=0;
        total_heights[1]+=1.0*p[i];           
        if (yMax<total_heights[1]) yMax=total_heights[1];
        if (yMin>total_heights[1]) yMin=total_heights[1];
-    }
+    }*/
+    
+    total_heights.push( calcYValues(data.p1.data) );
+    total_heights.push( calcYValues(data.p2.data) );    
     
     options.yAxis.max = yMax;
     options.yAxis.min = yMin;
@@ -88,33 +102,55 @@ function drawStackedGradient(id, data)
         
         var next_x = addMarginX;
         var delta_x = this.xAxis[0].width/series.length;
-        var col_width = delta_x*0.5;        
+        var col_width = delta_x*0.5;
         
-        var zoom_k = this.yAxis[0].transA;                
-        var sy = this.chartHeight-this.yAxis[0].bottom;        
-        var pt = [data.p1, data.p2];   
+        var zoom_k = this.yAxis[0].transA; 
+        var pt = [data.p1, data.p2];
         
-        var c_delta = 1.0/pt.length*0.5; 
+        var c_delta = 1.0/pt[0].data.length; 
         
         var start_colors = [Highcharts.getOptions().colors[0], Highcharts.getOptions().colors[1]];
         for (var i = 0; i < pt.length; i++) {
             var p = pt[i];
             var ph = 0;
             next_x = addMarginX + delta_x*(i+1)-delta_x/2 - col_width/2;
+            // var sy = this.chartHeight-this.yAxis[0].bottom;
+            var ny = this.yAxis[0].top+(this.yAxis[0].max-total_heights[i].top)*zoom_k;
+        
             
-            for (var j=p.data.length-1; j>=0; j--)
-            {   var height = zoom_k*p.data[j];
-                var tempRect = chart.renderer.rect(next_x, sy-height-ph, col_width, 0).attr({
-                "id":i, "stroke-width":0.75, "stroke":"white", "fill":colorLumin(start_colors[i], j*c_delta)
-                }).add(rectGroup);
-                ph = height;
-               
-                tempRect.animate({
-                  height: height
-                }, {
-                    duration: 1000
-                });
+            for (var j=0; j<p.data.length; j++)
+            {   if (1.0*p.data[j]>0)
+                {   var height = zoom_k*p.data[j];
+                    var tempRect = chart.renderer.rect(next_x, ny, col_width, 0).attr({
+                    "data-height":p.data[j],
+                    "id":i, "stroke-width":0.75, "stroke":"white", "fill":colorLumin(start_colors[i], j*c_delta)
+                    }).add(rectGroup);
+                    ny += height;
+                    
+                    tempRect.animate({
+                      height: height
+                    }, {
+                        duration: 1000
+                    });
+
+                }
             }
+           for (var j=0; j<p.data.length; j++)
+            {   if (1.0*p.data[j]<0)
+                {   var height = zoom_k*Math.abs(p.data[j]);
+                    var tempRect = chart.renderer.rect(next_x, ny, col_width, 0).attr({                    
+                    "id":i, "stroke-width":0.75, "stroke":"white", "fill":colorLumin(start_colors[i], j*c_delta)
+                    }).add(rectGroup);
+                   
+                    tempRect.animate({
+                      height: height
+                    }, {
+                        duration: 1000
+                    });
+                    ny += height;
+                }
+            }
+            
             
         }
 
@@ -142,8 +178,8 @@ function drawStackedGradient(id, data)
                // render text for tooltip based on coordinates of rect
                 var s = '<b>'+cname[i]+'</b><br>'                
                 for (var j=0; j<pt[i].data.length; j++)
-                {   var n = 1.0*pt[i].data[j];
-                    var proc = (n/total_heights[j])*100.0;
+                {   var n = 1.0*pt[i].data[j];                    
+                    var proc = Math.abs(n/(total_heights[i].top-total_heights[i].bottom))*100.0;
                     s+=pt[i].names[j]+': '+n.toFixed(2)+' ('+proc.toFixed(1)+'%)<br>';
                 }
                 text = chart.renderer.text(s, bx, by)
