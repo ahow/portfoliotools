@@ -93,7 +93,7 @@ function drawStackedGradient(id, data)
         var zoom_k = this.yAxis[0].transA; 
         var pt = [data.p1, data.p2];
         
-        var c_delta = 1.0/pt[0].data.length; 
+        var c_delta = 1.0/pt[0].data.length*0.6; 
         
         var start_colors = [Highcharts.getOptions().colors[0], Highcharts.getOptions().colors[1]];
         for (var i = 0; i < pt.length; i++) {

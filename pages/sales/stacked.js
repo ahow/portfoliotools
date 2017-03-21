@@ -63,7 +63,7 @@ function drawStackedChart(id, data)
     // var start_color = "#324778";
     var start_color = Highcharts.getOptions().colors[0];
     
-    var c_delta = 1.0/raw[0].data.length*0.5;
+    var c_delta = 1.0/raw[0].data.length*0.6;
     // attrOptions.fill = colorLumin(Highcharts.getOptions().colors[0], j*0.2);
     
     for (var i=0; i<raw.length; i++)
