@@ -80,22 +80,33 @@ function drawStackedChart(id, data)
     // console.log(options);
     
     var total_width = 0;
-    var total_heights = [];        
-    var yMax=options.series[0].xdata[0];
+    var total_heights = [];
     
+    var yMax=Number.MIN_VALUE;
+    var yMin=Number.MAX_VALUE;
+    
+    function calcYValues(a)
+    {  var t=0, b=0;
+       for (var i=0; i<a.length; i++)
+       {  if (a[i]>=0) t+=1.0*a[i]; else b+=1.0*a[i];
+       }
+       if (yMax<t) yMax=t;
+       if (yMin>b) yMin=b;
+       if (yMin>t) yMin=t;
+       return {top:t, bottom:b};
+    }
     
     for (var i = 0; i < options.series[0].xdata.length; i++)
     {  total_width+=options.widths[i];
-       for (var j=0; j<options.series.length; j++)
-       {   if (total_heights[i]==undefined) total_heights[i]=0;
-           total_heights[i]+=options.series[j].xdata[i];
-       }
-       if (yMax<total_heights[i]) yMax=total_heights[i];
+       var a = [];
+       for (var j=0; j<options.series.length; j++) a.push(options.series[j].xdata[i]);
+       total_heights.push( calcYValues(a) );
     }
     
-    
     options.yAxis.max = yMax;
+    options.yAxis.min = yMin;
     options.yAxis.title = {text:data.metric};
+    
     
     var chart = new Highcharts.Chart(options,
     //add function for custom renderer
@@ -107,8 +118,6 @@ function drawStackedChart(id, data)
             widths = this.options.widths,
             addMarginX = this.plotLeft,
             addMarginY = this.plotTop,
-            xAll = [],
-            yAll = [],
             widthAll = [],
             heightAll = [];
         
@@ -123,7 +132,7 @@ function drawStackedChart(id, data)
         //draw for each point a rectangular
         
         var next_x = addMarginX;
-        
+        var zoom_k = this.yAxis[0].transA; 
         // console.log('yMax='+yMax);
 
         
@@ -135,57 +144,47 @@ function drawStackedChart(id, data)
                 height = (this.yAxis[0].height)*(total_heights[i]/yMax);
                 next_x += width;
 
-
-            xAll.push(x);
-            yAll.push(this.chartHeight-height-addMarginY);
             widthAll.push(width);
             heightAll.push(height);
-
-            attrOptions = {
-                    id: i,
-                        'stroke-width': 0.75,
-                    stroke: 'white',
-                    fill: options.series[0].color
-                   // fill: Highcharts.getOptions().colors[0]
-             };
-
-            // draw rect, y-position is set to yAxis for animation            
-            //var tempRect = chart.renderer.rect(x, this.chartHeight-height-this.yAxis[0].bottom, width, 0, 0)
-            var tempRect = chart.renderer.rect(x, 0, width, 0, 0)
-                .attr(attrOptions)
-                .add(rectGroup);
-
-            //animate rect
-            tempRect.animate({
-                y: this.chartHeight-height-this.yAxis[0].bottom,
-                height: height
-
-            }, {
-                duration: 1000
-            });
             
             // draw other series bars
             var pre = 0;
             
-            for (var j=1; j<this.options.series.length; j++)
-            {  //attrOptions.fill = Highcharts.getOptions().colors[j];
-               attrOptions.fill = options.series[j].color;               
-               
-               height = (this.yAxis[0].height)/yMax*this.options.series[j].xdata[i];
-               
-               if (j>1) pre += (this.yAxis[0].height)/yMax*this.options.series[j-1].xdata[i];
-               
-               var tempRect = chart.renderer.rect(x, 0, width, 0, 0)
-                .attr(attrOptions)
-                .add(rectGroup);               
-                
-                tempRect.animate({
-                    y: this.chartHeight-height-this.yAxis[0].bottom-pre,
-                    height: height
+            var ny = this.yAxis[0].top+(this.yAxis[0].max-total_heights[i].top)*zoom_k;
+            
+            for (var j=0; j<this.options.series.length; j++)
+            {   var h = 1.0*this.options.series[j].xdata[i];
+                if (h>0)
+                {   var height = zoom_k*h;
+                    var tempRect = chart.renderer.rect(x, ny, width, 0).attr({
+                    "data-id":i, "stroke-width":0.75, "stroke":"white", "fill":options.series[j].color
+                    }).add(rectGroup);
+                    ny += height;
+                    
+                    tempRect.animate({
+                      height: height
+                    }, {
+                        duration: 1000
+                    });
 
-                }, {
-                    duration: 1000
-                });
+                }
+            }
+            for (var j=0; j<this.options.series.length; j++)
+            {   var h = 1.0*this.options.series[j].xdata[i];
+                if (h<=0)
+                {   var height = zoom_k*Math.abs(h);
+                    var tempRect = chart.renderer.rect(x, ny, width, 0).attr({
+                    "data-id":i, "stroke-width":0.75, "stroke":"white", "fill":options.series[j].color
+                    }).add(rectGroup);
+                    ny += height;
+                    
+                    tempRect.animate({
+                      height: height
+                    }, {
+                        duration: 1000
+                    });
+
+                }
             }
             
            
@@ -202,32 +201,31 @@ function drawStackedChart(id, data)
 
             //determine with the 'id' to which dataPoint this element belongs
             //problem: if label is hovered, use tootltipIndex of rect
-            var i = parseFloat(el.getAttribute('id'));
+            var i = parseFloat(el.getAttribute('data-id'));
             if (!isNaN(i)) {
                 tooltipIndex = i;
             }
             
             if (lastHover!=i)
-            {   lastHover=i;
-                var bx = xAll[tooltipIndex], by = yAll[tooltipIndex];            
-               // console.log(i);
+            {   lastHover=i;                
+                var bx = el.getAttribute('x'), by = 20;
+                
                // render text for tooltip based on coordinates of rect
-                var s = '<b>'+cname[i]+'</b><br>'                
+                var s = '<b>'+cname[i]+'</b><br>';
                 for (var j=0; j<series.length; j++)
                 { s+=series[j].name+': '+series[j].xdata[i]+'<br>';
                 }
                 text = chart.renderer.text(s, bx, by)
                     .attr({
                     zIndex: 101
-                })
-                    .add();
-
+                }).add();
+                
                 var box = text.getBBox();
                
                 //box surrounding the tool tip text                     
                 border = chart.renderer.rect(bx-5, by-16, box.width+10, box.height+10, 2)
                     .attr({
-                    fill: 'rgba(255, 255, 255, 0.95)',
+                    fill: 'rgba(255, 255, 255, 0.7)',
                     stroke: 'blue',
                         'stroke-width': 0.5,
                     zIndex: 100

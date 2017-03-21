@@ -61,20 +61,6 @@ function drawStackedGradient(id, data)
        if (yMin>t) yMin=t;
        return {top:t, bottom:b};
     }
-    /*
-    for (var i = 0; i < data.p1.data.length; i++)
-    {  var p = data.p1.data;
-       if (total_heights[0]==undefined) total_heights[0]=0;
-       total_heights[0]+=1.0*p[i];
-       if (yMax<total_heights[0]) yMax=total_heights[0];
-       if (yMin>total_heights[0]) yMin=total_heights[0];       
-
-       p = data.p2.data;
-       if (total_heights[1]==undefined) total_heights[1]=0;
-       total_heights[1]+=1.0*p[i];           
-       if (yMax<total_heights[1]) yMax=total_heights[1];
-       if (yMin>total_heights[1]) yMin=total_heights[1];
-    }*/
     
     total_heights.push( calcYValues(data.p1.data) );
     total_heights.push( calcYValues(data.p2.data) );    
@@ -122,7 +108,6 @@ function drawStackedGradient(id, data)
             {   if (1.0*p.data[j]>0)
                 {   var height = zoom_k*p.data[j];
                     var tempRect = chart.renderer.rect(next_x, ny, col_width, 0).attr({
-                    "data-height":p.data[j],
                     "id":i, "stroke-width":0.75, "stroke":"white", "fill":colorLumin(start_colors[i], j*c_delta)
                     }).add(rectGroup);
                     ny += height;
@@ -193,7 +178,7 @@ function drawStackedGradient(id, data)
                 //box surrounding the tool tip text                     
                 border = chart.renderer.rect(bx-5, by-16, box.width+10, box.height+10, 2)
                     .attr({
-                    fill: 'rgba(255, 255, 255, 0.95)',
+                    fill: 'rgba(255, 255, 255, 0.7)',
                     stroke: 'blue',
                         'stroke-width': 0.5,
                     zIndex: 100
