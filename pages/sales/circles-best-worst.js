@@ -21,10 +21,11 @@ function circlesBestWorstChart(div,d)
             valueSuffix: ' millions'
         },
         legend: {
+            enabled: false,
             layout: 'vertical',
             align: 'right',
             verticalAlign: 'top',
-            x: -40,
+            x: -140,
             y: 80,
             floating: true,
             borderWidth: 1,

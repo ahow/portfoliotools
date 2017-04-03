@@ -25,6 +25,7 @@ function circlesChart(div,d)
             valueSuffix: ' millions'
         },
         legend: {
+            enabled: false,
             layout: 'vertical',
             align: 'right',
             verticalAlign: 'top',
