@@ -61,6 +61,28 @@
         echo json_encode($this->res);
     }
     
+    function ajxESGData()
+    {  $db = $this->cfg->db;
+       $params = (object)$_POST;
+       if (isset($params->pf_id) && isset($params->mt_id))
+       { $db->query('set @pf=:pf', array('pf'=>$params->pf_id));
+         $db->query('set @mt=:mt', array('mt'=>$params->mt_id));
+          
+         $qr = $db->query('select d.isin, d.val, c.name, sum(m.val) as mval
+        from sales_portfolio_data d
+       join sales_companies c on d.isin=c.isin
+       join sales_metrics_data m on m.isin=c.isin and m.metric_id=@mt
+       where d.portfolio_id=@pf
+       group by 1,2,3');
+         $this->res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
+         $pfs = 0;
+         foreach($this->res->rows as $r)
+         {  $pfs+=1.0*$r->val*$r->mval;
+         }
+         $this->res->pfsum = $pfs; // portfolio product summ
+       }
+    }
+    
     function ajxLoadPortfolioSummaries()
     {   $db = $this->cfg->db;
         $params = (object)$_POST;
