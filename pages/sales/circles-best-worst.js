@@ -52,7 +52,8 @@ function circlesBestWorstChart(div,d)
     xmin -= xmin/5;
     
     var dx = xmax-xmin;
-    var bw = [xmax,xmin];
+    var bw = [d.cmsum, d.pfsum];
+  
     xmin -= dx*0.1;
     xmax += dx*0.1;
     
