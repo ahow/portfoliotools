@@ -52,7 +52,7 @@ function circlesBestWorstChart(div,d)
     // xmin -= xmin/5;
     
     var dx = xmax-xmin;
-    var bw = [d.cmsum, d.pfsum];
+    var bw = [d.pfsum, d.cmsum];
       
     xmin -= dx*0.2;
     xmax += dx*0.2;
@@ -61,7 +61,7 @@ function circlesBestWorstChart(div,d)
     options.yAxis.max = xmax;
     
     options.xAxis.categories = categories;
-    options.series = [{name:'Best', data:zeroes}, {name:'Worst', data:zeroes}];
+    options.series = [{name:'Portfolio', data:zeroes}, {name:'Comparison', data:zeroes}];
     
     for (var i=0; i<categories.length; i++){
         options.xAxis.plotLines.push({color: '#D0D0D0', width: 1, value: i});
