@@ -48,15 +48,15 @@ function circlesBestWorstChart(div,d)
         if (r.val<xmin) xmin=r.val;        
     }
     
-    xmax += xmax/5;
-    xmin -= xmin/5;
+    // xmax += xmax/5;
+    // xmin -= xmin/5;
     
     var dx = xmax-xmin;
     var bw = [d.cmsum, d.pfsum];
-  
-    xmin -= dx*0.1;
-    xmax += dx*0.1;
-    
+      
+    xmin -= dx*0.2;
+    xmax += dx*0.2;
+        
     options.yAxis.min = xmin;
     options.yAxis.max = xmax;
     
