@@ -47,10 +47,15 @@
          </div>
 
          <div id="commsett" class="tab-pane fade">
-             <div class="row" style="padding:20px;">           
+             <div class="row" style="padding-top:20px;">
                  <div class="col-lg-6"><?=$f->modelSelect('comparison','/pages/sales/Model/portfolio-lookup')?></div>
                  <div class="col-lg-6"><?=$f->modelSelect('social_value_metric','/pages/sales/Model/metric-lookup')?></div>
              </div>         
+             <div class="row">
+                 <div class="col-lg-6"></div>
+                 <div class="col-lg-6"><?=$f->modelSelect('esg_score','/pages/sales/Model/metric-lookup')?></div>
+             </div>         
+
          </div>
                   
          <div id="barchart" class="tab-pane fade">

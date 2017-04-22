@@ -117,6 +117,8 @@ function editPortfolioSummary(selector){
             if (d.row.line!=undefined && d.row.line.title!=undefined) $(selector+' .modal #line_title').val(d.row.line.title);
             if (d.row.comparison_id!=undefined) $(selector+' #comparison').val(d.row.comparison_id);
             if (d.row.metric_id!=undefined) $(selector+' #social_value_metric').val(d.row.metric_id); 
+            if (d.row.esg_metric_id!=undefined) $(selector+' #esg_score').val(d.row.esg_metric_id); 
+            
             show();
        }); 
       
@@ -141,6 +143,7 @@ function editPortfolioSummary(selector){
       $(selector+' .modal #line_title').val('');
       $(selector+' .modal #description').val('');
       $(selector+' #social_value_metric').val('');
+      $(selector+' #esg_score').val('');
       $(selector+' .bar-chart thead').html('<tr><th>Series</th></tr>');
       $(selector+' .bar-chart tbody').html('');
       $(selector+' .line-chart thead').html('<tr><th>Series</th></tr>');
@@ -156,6 +159,7 @@ function editPortfolioSummary(selector){
       d.portfolio_id = id;
       d.comparison_id = $(selector+' #comparison').val();
       d.metric_id = $(selector+' #social_value_metric').val();
+      d.esg_metric_id = $(selector+' #esg_score').val();
       d.options = [];
       var rows = $(selector+' .opt-list tr');
       var i = 0;
@@ -616,7 +620,7 @@ $(function(){
                     if (d.row.comparison_id!=undefined && d.row.metric_id!=undefined) 
                         socialChart(d.row.portfolio_id, d.row.comparison_id, d.row.metric_id);
                     if (d.row.metrics!=undefined) metricsAnalysis(d.row.metrics, d.row.portfolio_id, d.row.comparison_id);
-                    if (d.row.portfolio_id!=undefined) esgAnalysis2(d.row.portfolio_id, d.row.metric_id, d.row.comparison_id);
+                    if (d.row.esg_metric_id!=undefined) esgAnalysis2(d.row.portfolio_id, d.row.esg_metric_id, d.row.comparison_id);
     
                 });
 
@@ -661,6 +665,7 @@ $(function(){
        });
        var compar = new mdSelect('#comparison');
        var soc_metric = new mdSelect('#social_value_metric');
+       var esg_score = new mdSelect('#esg_score');
     });
     
     
