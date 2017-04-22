@@ -68,7 +68,7 @@
        { $db->query('set @pf=:pf', array('pf'=>$params->pf_id));
          $db->query('set @mt=:mt', array('mt'=>$params->mt_id));
           
-         $qr = $db->query('select d.isin, d.val, c.name, sum(m.val) as mval
+         $qr = $db->query('select d.isin, d.val as pval, c.name, sum(m.val) as val
         from sales_portfolio_data d
        join sales_companies c on d.isin=c.isin
        join sales_metrics_data m on m.isin=c.isin and m.metric_id=@mt
@@ -77,10 +77,11 @@
          $this->res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
          $pfs = 0;
          foreach($this->res->rows as $r)
-         {  $pfs+=1.0*$r->val*$r->mval;
+         {  $pfs+=1.0*$r->val*$r->pval;
          }
          $this->res->pfsum = $pfs; // portfolio product summ
        }
+       echo json_encode($this->res);
     }
     
     function ajxLoadPortfolioSummaries()
