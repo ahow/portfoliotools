@@ -48,23 +48,10 @@
         }
     }
     
-    function ajxLoadPortfolioData()
-    {   $db = $this->cfg->db;
-        $params = (object)$_POST;
-        if (isset($params->id) && $params->id!='')
-        { $qr = $db->query('select d.isin, d.val, c.name from sales_portfolio_data d
- join sales_companies c on d.isin=c.isin
- where d.portfolio_id=:id',array('id'=>(1*$params->id)) );
-          $r = $db->fetchSingle($qr);
-          $this->res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
-        }
-        echo json_encode($this->res);
-    }
-    
     function ajxESGData()
     {  $db = $this->cfg->db;
        $params = (object)$_POST;
-       if (isset($params->pf_id) && isset($params->mt_id))
+       if (isset($params->pf_id) && isset($params->mt_id) && isset($params->comp_id))
        { $db->query('set @pf=:pf', array('pf'=>$params->pf_id));
          $db->query('set @mt=:mt', array('mt'=>$params->mt_id));
           
@@ -78,8 +65,22 @@
          $pfs = 0;
          foreach($this->res->rows as $r)
          {  $pfs+=1.0*$r->val*$r->pval;
-         }
+         }         
          $this->res->pfsum = $pfs; // portfolio product summ
+         
+         $db->query('set @pf=:pf', array('pf'=>$params->comp_id));
+         $qr = $db->query('select d.isin, d.val as pval, c.name, sum(m.val) as val
+        from sales_portfolio_data d
+       join sales_companies c on d.isin=c.isin
+       join sales_metrics_data m on m.isin=c.isin and m.metric_id=@mt
+       where d.portfolio_id=@pf
+       group by 1,2,3');
+         $rows= $qr->fetchAll(PDO::FETCH_OBJ);
+         $cms = 0;
+         foreach($rows as $r)
+         {  $cms+=1.0*$r->val*$r->pval;
+         }         
+         $this->res->cmsum = $cms; // comparison product summ
        }
        echo json_encode($this->res);
     }

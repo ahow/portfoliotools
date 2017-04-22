@@ -386,21 +386,14 @@ function drawStakeHolder(div, d)
    Highcharts.chart(div, p);
 }
 
-function esgAnalysis(pf)
+function esgAnalysis2(pf, mt, comp)
 {     $("#esg-analys").LoadingOverlay("show");
-      ajx('/pages/sales/LoadPortfolioData',{id:pf},function(d){
+      ajx('/pages/sales/ESGData',{pf_id:pf, mt_id:mt, comp_id:comp},function(d){
             $("#esg-analys").LoadingOverlay("hide", true);
             circlesBestWorstChart('esg-analys', d);
       });
 }
 
-function esgAnalysis2(pf, mt)
-{     $("#esg-analys").LoadingOverlay("show");
-      ajx('/pages/sales/ESGData',{pf_id:pf, mt_id:mt},function(d){
-            $("#esg-analys").LoadingOverlay("hide", true);
-            circlesBestWorstChart('esg-analys', d);
-      });
-}
 
 function socialChart(pf1, pf2, mt)
 {   if (pf2!=undefined  && pf1!=undefined && mt!=undefined)
@@ -623,7 +616,7 @@ $(function(){
                     if (d.row.comparison_id!=undefined && d.row.metric_id!=undefined) 
                         socialChart(d.row.portfolio_id, d.row.comparison_id, d.row.metric_id);
                     if (d.row.metrics!=undefined) metricsAnalysis(d.row.metrics, d.row.portfolio_id, d.row.comparison_id);
-                    if (d.row.portfolio_id!=undefined) esgAnalysis2(d.row.portfolio_id, d.row.metric_id);
+                    if (d.row.portfolio_id!=undefined) esgAnalysis2(d.row.portfolio_id, d.row.metric_id, d.row.comparison_id);
     
                 });
 
