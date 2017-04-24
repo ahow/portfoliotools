@@ -41,11 +41,14 @@ function circlesBestWorstChart(div,d)
     var categories = ['Portfolio','Holdings'];
     var zeroes = [0,0];
     var xmin = Number.MAX_VALUE, xmax=Number.MIN_VALUE;
+    var pwmax = xmax;
     for (var i=0; i<d.rows.length; i++){
     	d.rows[i].val*=1.0;
         var r = d.rows[i];
+        var p = 1.0*r.pval;
+        if (p>pwmax) pwmax=p;
         if (r.val>xmax) xmax=r.val;
-        if (r.val<xmin) xmin=r.val;        
+        if (r.val<xmin) xmin=r.val;
     }
     
     // xmax += xmax/5;
@@ -120,7 +123,8 @@ function circlesBestWorstChart(div,d)
          attr['data-value']=data[i].val;
          attr['data-name']=data[i].name;
          var nx = delta_x+addMarginX+nzoom*data[i].val;
-         var cc = chart.renderer.circle(addMarginX, by, rad).attr(attr).css({'fill-opacity':0.5}).add(rectGroup);
+         var r = rad*0.8*data[i].pval/pwmax+0.2*rad;
+         var cc = chart.renderer.circle(addMarginX, by, r).attr(attr).css({'fill-opacity':0.5}).add(rectGroup);
          cc.animate({
                cx: nx
          }, {
