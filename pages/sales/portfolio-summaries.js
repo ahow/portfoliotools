@@ -149,7 +149,7 @@ function editPortfolioSummary(selector){
       $(selector+' .line-chart thead').html('<tr><th>Series</th></tr>');
       $(selector+' .line-chart tbody').html('');
       $(selector+' tbody.opt-list').html('');
-      $(selector+' tbody.metrics-list').html('');
+     // $(selector+' tbody.metrics-list').html('');
       $(selector+' #comparison').val("");
     }
     
@@ -233,18 +233,6 @@ function editPortfolioSummary(selector){
           '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>');          
           $(selector+' .opt-list tr:last .b-del').click(deleteOption);
     });
-    
-    $(selector+' .b-add-metric-row').click(function(){
-          $(selector+' .metrics-list').append('<tr>\
-         <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
-         <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+          
-          '<td><input type="number" /></td>'+
-          '<td><input type="number" /></td>'+
-          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>');
-          new mdSelect(selector+' .metrics-list .w-metric:last');
-          $(selector+' .metrics-list tr:last .b-del').click(deleteOption);
-    });
-    
     
     $(selector+' .b-save').click(function(){        
         save();  
@@ -593,6 +581,7 @@ $(function(){
         });
        
    });
+    
    
    function updateSummaryView(row_id)
    {   ajx('/pages/sales/LoadPortfolioSummaries', {id:row_id}, function(d){
@@ -668,6 +657,22 @@ $(function(){
        var esg_score = new mdSelect('#esg_score');
     });
     
+    function deleteOption(e)
+    {  setTimeout(function(){
+            $(e.target).parent().parent().remove();
+        },100);
+    }
+    
+    $('#metrics .b-add-metric-row').click(function(){
+          $('#metrics .metrics-list').append('<tr>\
+         <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
+         <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+          
+          '<td><input type="number" /></td>'+
+          '<td><input type="number" /></td>'+
+          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>');
+          new mdSelect('#metrics .metrics-list .w-metric:last');
+          $('#metrics .metrics-list tr:last .b-del').click(deleteOption);
+    });
     
    
 });

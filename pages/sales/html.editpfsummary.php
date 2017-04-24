@@ -23,7 +23,6 @@
        <li><a data-toggle="tab" href="#commsett">Common chart settings</a></li>
        <li><a data-toggle="tab" href="#barchart">Bar chart inputs</a></li>
        <li><a data-toggle="tab" href="#linechart">Line chart inputs</a></li>
-       <li><a data-toggle="tab" href="#metrics">Metrics list</a></li>
      </ul>
 
      <div class="tab-content">
@@ -49,13 +48,8 @@
          <div id="commsett" class="tab-pane fade">
              <div class="row" style="padding-top:20px;">
                  <div class="col-lg-6"><?=$f->modelSelect('comparison','/pages/sales/Model/portfolio-lookup')?></div>
-                 <div class="col-lg-6"><?=$f->modelSelect('social_value_metric','/pages/sales/Model/metric-lookup')?></div>
-             </div>         
-             <div class="row">
                  <div class="col-lg-6"></div>
-                 <div class="col-lg-6"><?=$f->modelSelect('esg_score','/pages/sales/Model/metric-lookup')?></div>
              </div>         
-
          </div>
                   
          <div id="barchart" class="tab-pane fade">
@@ -94,21 +88,6 @@
                     <div class="col-lg-4">
                         <button class="btn btn-primary b-add-line-row">Add row</button>
                         <button class="btn btn-primary b-add-line-column">Add column</button>
-                    </div>
-                </div>
-         </div>
-         <div id="metrics" class="tab-pane fade">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <table class="table-ctrls">
-                         <thead><th>Metric</th><th>Min</th><th>Max</th></thead>
-                         <tbody class="metrics-list" style="padding:20px;"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <button class="btn btn-primary b-add-metric-row">Add metric</button>                        
                     </div>
                 </div>
          </div>
