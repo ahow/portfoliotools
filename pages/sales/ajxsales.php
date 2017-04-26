@@ -48,6 +48,30 @@
         }
     }
     
+    function ajxLoadPortfolioSummariesSettings()
+    {  $db = $this->cfg->db;
+       $qr = $db->query("select json from settings where name=:name",array('name'=>'PortfolioSummaries'));
+       $s = $db->fetchSingleValue($qr);
+       if ($s!=null) $this->res->row = json_decode($s);       
+       echo json_encode($this->res);
+    }
+    
+    function ajxSavePortfolioSummariesSettings()
+    {  $db = $this->cfg->db;
+       $params = (object)$_POST;
+       if (isset($params->data))
+       try
+       { $qr = $db->query("insert into settings (name,json) values (:name,:json)",
+           array('name'=>'PortfolioSummaries','json'=>json_encode($params->data)));
+       } catch(Exception $e)
+       {  $qr = $db->query("update settings set json=:json where name=:name",
+           array('name'=>'PortfolioSummaries','json'=>json_encode($params->data)));
+       }  
+       $this->res->info = T('SAVED');     
+       echo json_encode($this->res);
+    }
+    
+    
     function ajxESGData()
     {  $db = $this->cfg->db;
        $params = (object)$_POST;

@@ -42,8 +42,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4">
-                        <button class="btn btn-primary b-add-metric-row">Add metric</button>                        
+                    <div class="col-lg-6">
+                        <button class="btn btn-primary b-add-metric-row">Add metric</button>
+                        <button class="btn btn-success b-save-settings">Save</button>
+                    </div>
+                    <div class="col-lg-6">
                     </div>
                </div>
          </div>

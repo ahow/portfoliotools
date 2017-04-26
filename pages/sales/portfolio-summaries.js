@@ -1,5 +1,11 @@
 var edit;
 
+function deleteOption(e)
+{  setTimeout(function(){
+        $(e.target).parent().parent().remove();
+    },100);
+}
+    
 // Custom view fabric
 function createCustomModelView(_html, _init)
 {   var html = _html;
@@ -40,6 +46,73 @@ function createCustomModelView(_html, _init)
     }
     
     return modelPortfolioView;
+}
+
+
+function editSettings(selector, onloaded)
+{
+    $(selector+' .b-add-metric-row').click(function(){
+          $(selector+' .metrics-list').append('<tr>\
+         <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
+         <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+          
+          '<td><input type="number" /></td>'+
+          '<td><input type="number" /></td>'+
+          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>');
+          new mdSelect(selector+' .metrics-list .w-metric:last');
+          $(selector+' .metrics-list tr:last .b-del').click(deleteOption);
+    });
+    
+    ajx('/pages/sales/LoadPortfolioSummariesSettings', {}, function(d){
+        if (d.row.metrics!=undefined)
+        {     var i;
+                  var s = '';
+                  for (i=0; i<d.row.metrics.length; i++)
+                  { var chk;
+                    var m = d.row.metrics[i];
+                    s+='<tr>\
+         <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
+         <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+
+          '<td><input type="number" value="'+m.min+'"/></td>'+
+          '<td><input type="number" value="'+m.max+'" /></td>'+
+          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>';
+                  }                
+                  $(selector+' .metrics-list').html(s);                  
+                  $(selector+' .metrics-list .b-del').click(deleteOption);
+                  var sels = $(selector+' .metrics-list .w-metric');
+                  for (i=0; i<d.row.metrics.length; i++)
+                  { var m = d.row.metrics[i];
+                    new mdSelect(selector+' .metrics-list .w-metric:eq('+i+')', m.id);
+                  }                  
+
+        }
+        if (onloaded!=undefined) onloaded(d);
+            
+    });
+    
+    function save()
+    {  var d = {};
+        
+       d.metrics = [];
+       var rows = $(selector+' .metrics-list tr');
+       for (i=0; i<rows.length; i++) 
+       {   var tr = $(rows[i]);
+           d.metrics.push({id:tr.find('.w-metric').val(), min:tr.find('input:first').val(),
+           max:tr.find('input:last').val()});
+       }
+       
+       d.metric_id = $(selector+' #social_value_metric').val();
+       d.esg_metric_id = $(selector+' #esg_score').val();
+      
+       ajx('/pages/sales/SavePortfolioSummariesSettings', {data:d}, function(dd){
+           if (!dd.error) setOk(dd.info);           
+       });
+       
+      
+    }
+    
+    $(selector+' .b-save-settings').click(save);
+    
+    return {save:save};
 }
 
 function editPortfolioSummary(selector){
@@ -90,35 +163,11 @@ function editPortfolioSummary(selector){
                   }                
                   $(selector+' .opt-list').html(s);                  
                   $(selector+' .opt-list .b-del').click(deleteOption);
-            }
-            if (d.row.metrics!=undefined)
-            {     var i;
-                  var s = '';
-                  for (i=0; i<d.row.metrics.length; i++)
-                  { var chk;
-                    var m = d.row.metrics[i];
-                    s+='<tr>\
-         <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
-         <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+
-          '<td><input type="number" value="'+m.min+'"/></td>'+
-          '<td><input type="number" value="'+m.max+'" /></td>'+
-          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>';
-                  }                
-                  $(selector+' .metrics-list').html(s);                  
-                  $(selector+' .metrics-list .b-del').click(deleteOption);
-                  var sels = $(selector+' .metrics-list .w-metric');
-                  for (i=0; i<d.row.metrics.length; i++)
-                  { var m = d.row.metrics[i];
-                    new mdSelect(selector+' .metrics-list .w-metric:eq('+i+')', m.id);
-                  }                  
-            }
+            }           
             
             if (d.row.bar!=undefined && d.row.bar.title!=undefined) $(selector+' .modal #bar_title').val(d.row.bar.title);
             if (d.row.line!=undefined && d.row.line.title!=undefined) $(selector+' .modal #line_title').val(d.row.line.title);
             if (d.row.comparison_id!=undefined) $(selector+' #comparison').val(d.row.comparison_id);
-            if (d.row.metric_id!=undefined) $(selector+' #social_value_metric').val(d.row.metric_id); 
-            if (d.row.esg_metric_id!=undefined) $(selector+' #esg_score').val(d.row.esg_metric_id); 
-            
             show();
        }); 
       
@@ -142,8 +191,8 @@ function editPortfolioSummary(selector){
       $(selector+' .modal #bar_title').val('');
       $(selector+' .modal #line_title').val('');
       $(selector+' .modal #description').val('');
-      $(selector+' #social_value_metric').val('');
-      $(selector+' #esg_score').val('');
+      // $(selector+' #social_value_metric').val('');
+      // $(selector+' #esg_score').val('');
       $(selector+' .bar-chart thead').html('<tr><th>Series</th></tr>');
       $(selector+' .bar-chart tbody').html('');
       $(selector+' .line-chart thead').html('<tr><th>Series</th></tr>');
@@ -158,22 +207,12 @@ function editPortfolioSummary(selector){
       d.description = $(selector+' .modal #description').val();
       d.portfolio_id = id;
       d.comparison_id = $(selector+' #comparison').val();
-      d.metric_id = $(selector+' #social_value_metric').val();
-      d.esg_metric_id = $(selector+' #esg_score').val();
       d.options = [];
       var rows = $(selector+' .opt-list tr');
       var i = 0;
       for (i=0; i<rows.length; i++) 
       {   var tds = $(rows[i]).find('td');          
           d.options.push({name:tds[1].innerHTML, checked:$(tds[0]).find('input')[0].checked});
-      }
-      
-      d.metrics = [];
-      rows = $(selector+' .metrics-list tr');
-      for (i=0; i<rows.length; i++) 
-      {   var tr = $(rows[i]);
-          d.metrics.push({id:tr.find('.w-metric').val(), min:tr.find('input:first').val(),
-               max:tr.find('input:last').val()});
       }
       
       function getColumns(cname)
@@ -219,11 +258,7 @@ function editPortfolioSummary(selector){
       
     }
     
-    function deleteOption(e)
-    {  setTimeout(function(){
-            $(e.target).parent().parent().remove();
-        },100);
-    }
+
     
     function afterSave(foo){ onaftersave=foo; }
     
@@ -528,9 +563,26 @@ $(function(){
   var views = new htviewCached();
   
  
-   var pager;  
-   
+  var pager;  
+  var soc_metric;
+  var esg_score;
 
+    
+  var settings = new editSettings('#spset', function(d){
+       
+       // create with default values after loading
+       if (d.row.esg_metric_id!=undefined) 
+          esg_score = new mdSelect('#esg_score', d.row.esg_metric_id);
+       else  
+          esg_score = new mdSelect('#esg_score'); 
+     
+       if (d.row.metric_id!=undefined)  
+          soc_metric = new mdSelect('#social_value_metric', d.row.metric_id); 
+       else
+          soc_metric = new mdSelect('#social_value_metric');
+      
+  }); 
+  
    var view = new createCustomModelView('<div class="btn-group pull-right">\
    <button class="btn btn-sm b-new">New summary</button>\
    </div>', function(){      
@@ -653,27 +705,9 @@ $(function(){
            // $('#tbedit a[href="#tabedit"]').tab('show');
        });
        var compar = new mdSelect('#comparison');
-       var soc_metric = new mdSelect('#social_value_metric');
-       var esg_score = new mdSelect('#esg_score');
     });
     
-    function deleteOption(e)
-    {  setTimeout(function(){
-            $(e.target).parent().parent().remove();
-        },100);
-    }
-    
-    $('#metrics .b-add-metric-row').click(function(){
-          $('#metrics .metrics-list').append('<tr>\
-         <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
-         <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+          
-          '<td><input type="number" /></td>'+
-          '<td><input type="number" /></td>'+
-          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>');
-          new mdSelect('#metrics .metrics-list .w-metric:last');
-          $('#metrics .metrics-list tr:last .b-del').click(deleteOption);
-    });
-    
+
    
 });
 
