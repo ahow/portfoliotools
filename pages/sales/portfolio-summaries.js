@@ -89,9 +89,8 @@ function editSettings(selector, onloaded)
             
     });
     
-    function save()
+    function getData()
     {  var d = {};
-        
        d.metrics = [];
        var rows = $(selector+' .metrics-list tr');
        for (i=0; i<rows.length; i++) 
@@ -102,7 +101,12 @@ function editSettings(selector, onloaded)
        
        d.metric_id = $(selector+' #social_value_metric').val();
        d.esg_metric_id = $(selector+' #esg_score').val();
-      
+       return d; 
+    }
+    
+    function save()
+    {  var d = getData();
+        
        ajx('/pages/sales/SavePortfolioSummariesSettings', {data:d}, function(dd){
            if (!dd.error) setOk(dd.info);           
        });
@@ -112,7 +116,7 @@ function editSettings(selector, onloaded)
     
     $(selector+' .b-save-settings').click(save);
     
-    return {save:save};
+    return {save:save, getData:getData};
 }
 
 function editPortfolioSummary(selector){
@@ -145,7 +149,8 @@ function editPortfolioSummary(selector){
        }
 
        ajx('/pages/sales/LoadPortfolioSummaries', {id:row_id}, function(d){
-            // console.log(d);
+            // console.log(d);            
+            
             $(selector+' .modal .pfname').html(d.row.portfolio);
             id = d.row.portfolio_id;
             $(selector+' .modal #description').val(d.row.description);
@@ -502,7 +507,7 @@ function socialChart(pf1, pf2, mt)
     
 
 function metricsAnalysis(d, pf1, pf2)
-{   $("#met-analys").LoadingOverlay("show");
+{  $("#met-analys").LoadingOverlay("show");
     ajx('/pages/sales/MetricsAnalysis',{rows:d, p:pf1, c:pf2},function(r){
         circlesChart('met-analys', {xdata:r.rows, title:'Other analysis and external'});        
         $("#met-analys").LoadingOverlay("hide", true);
@@ -637,7 +642,7 @@ $(function(){
    
    function updateSummaryView(row_id)
    {   ajx('/pages/sales/LoadPortfolioSummaries', {id:row_id}, function(d){
-                                
+                var st = settings.getData();
                 views.view('/pages/sales/pfsummary','#pfsummary', function(){
                     var i;
                     if (d.row.options!=undefined)
@@ -658,10 +663,10 @@ $(function(){
                     if (d.row.bar!=undefined) renderBarChart(d.row.bar);
                     if (d.row.line!=undefined) renderLineChart(d.row.line);
                     if (d.row.comparison_id!=undefined) themeExposuresChart(d.row.portfolio_id, d.row.comparison_id);
-                    if (d.row.comparison_id!=undefined && d.row.metric_id!=undefined) 
-                        socialChart(d.row.portfolio_id, d.row.comparison_id, d.row.metric_id);
-                    if (d.row.metrics!=undefined) metricsAnalysis(d.row.metrics, d.row.portfolio_id, d.row.comparison_id);
-                    if (d.row.esg_metric_id!=undefined) esgAnalysis2(d.row.portfolio_id, d.row.esg_metric_id, d.row.comparison_id);
+                    if (d.row.comparison_id!=undefined && st.metric_id!=undefined) 
+                        socialChart(d.row.portfolio_id, d.row.comparison_id, st.metric_id);
+                    if (st.metrics!=undefined) metricsAnalysis(st.metrics, d.row.portfolio_id, d.row.comparison_id);
+                    if (st.esg_metric_id!=undefined) esgAnalysis2(d.row.portfolio_id, st.esg_metric_id, d.row.comparison_id);
     
                 });
 
