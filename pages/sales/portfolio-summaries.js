@@ -576,12 +576,12 @@ $(function(){
   var settings = new editSettings('#spset', function(d){
        
        // create with default values after loading
-       if (d.row.esg_metric_id!=undefined) 
+       if (d.row!=undefined && d.row.esg_metric_id!=undefined) 
           esg_score = new mdSelect('#esg_score', d.row.esg_metric_id);
        else  
           esg_score = new mdSelect('#esg_score'); 
      
-       if (d.row.metric_id!=undefined)  
+       if (d.row!=undefined && d.row.metric_id!=undefined)  
           soc_metric = new mdSelect('#social_value_metric', d.row.metric_id); 
        else
           soc_metric = new mdSelect('#social_value_metric');
