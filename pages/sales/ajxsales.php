@@ -790,6 +790,7 @@ order by p.isin, m.col");
     {   $db = $this->cfg->db; 
         $params = (object)$_POST;
         $res = array();
+        if (isset($params->rows))
         foreach ($params->rows as $a)
         {   $r = (object)$a;
             $db->query("set @mt=:mt;", array('mt'=>$r->id)); 
