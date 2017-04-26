@@ -63,7 +63,7 @@ function editSettings(selector, onloaded)
     });
     
     ajx('/pages/sales/LoadPortfolioSummariesSettings', {}, function(d){
-        if (d.row.metrics!=undefined)
+        if (d.row!=undefined && d.row.metrics!=undefined)
         {     var i;
                   var s = '';
                   for (i=0; i<d.row.metrics.length; i++)
