@@ -13,6 +13,8 @@
   <li id="tbedit"><a data-toggle="tab" href="#spset">Summary page settings</a></li>
   <li id="tbedit"><a data-toggle="tab" href="#tabedit">Portfolio summaries</a></li>
   <li id="schart"><a data-toggle="tab" href="#tabschart">Summary charts: <span id="pfname"></span></a></li>
+  <li id="ipsnap"><a data-toggle="tab" href="#psnap">Portfolio snapshot</a></li>
+  <li id="isnap"><a data-toggle="tab" href="#snap">Snapshot: <span id="pfsnap"></span></a></li>
 </ul>
 
 <div class="tab-content"  style="padding-top: 15px;">
@@ -67,7 +69,33 @@
     <div class="tab-pane fade" id="tabschart" >
         <div id="pfsummary"></div>        
     </div>
-    
+
+    <div class="tab-pane fade" id="psnap">
+         <div id="ss_metrics">
+               <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table-ctrls">
+                         <thead><th>Metric</th><th>Min</th><th>Max</th></thead>
+                         <tbody class="metrics-list" style="padding:20px;"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <button class="btn btn-primary b-add-metric-row">Add metric</button>
+                        <button class="btn btn-success b-save-settings">Save</button>
+                    </div>
+                    <div class="col-lg-6">
+                    </div>
+               </div>
+         </div>
+    </div>
+
+    <div class="tab-pane fade" id="snap">
+        <div class="row">
+        </div>
+    </div>
+        
 </div>
 
 <form name="fprint" method="POST" target="_blank" action="<?=mkURL('/html.php/pages/sales/chart-mranking.pdf')?>">
