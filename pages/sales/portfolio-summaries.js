@@ -130,6 +130,33 @@ function editSnapshotSettings(selector, onloaded)
           new mdSelect(selector+' .metrics-list .w-metric:last');
           $(selector+' .metrics-list tr:last .b-del').click(deleteOption);
     });
+    
+    ajx('/pages/sales/LoadSnapshotSummariesSettings', {}, function(d){
+        if (d.row!=undefined && d.row.metrics!=undefined)
+        {     var i;
+                  var s = '';
+                  for (i=0; i<d.row.metrics.length; i++)
+                  { var chk;
+                    var m = d.row.metrics[i];
+                    s+='<tr>\
+         <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
+         <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+
+          '<td><input type="number" value="'+m.min+'"/></td>'+
+          '<td><input type="number" value="'+m.max+'" /></td>'+
+          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>';
+                  }                
+                  $(selector+' .metrics-list').html(s);                  
+                  $(selector+' .metrics-list .b-del').click(deleteOption);
+                  var sels = $(selector+' .metrics-list .w-metric');
+                  for (i=0; i<d.row.metrics.length; i++)
+                  { var m = d.row.metrics[i];
+                    new mdSelect(selector+' .metrics-list .w-metric:eq('+i+')', m.id);
+                  }                  
+
+        }
+        if (onloaded!=undefined) onloaded(d);
+    });
+    
     function save()
     {  var d = getData();
         
@@ -146,9 +173,6 @@ function editSnapshotSettings(selector, onloaded)
            d.metrics.push({id:tr.find('.w-metric').val(), min:tr.find('input:first').val(),
            max:tr.find('input:last').val()});
        }
-       
-       d.metric_id = $(selector+' #social_value_metric').val();
-       d.esg_metric_id = $(selector+' #esg_score').val();
        return d; 
     }
     $(selector+' .b-save-settings').click(save);    
