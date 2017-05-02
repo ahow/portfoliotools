@@ -48,26 +48,34 @@
         }
     }
     
-    function ajxLoadPortfolioSummariesSettings()
+    function loadSettings($key)
     {  $db = $this->cfg->db;
-       $qr = $db->query("select json from settings where name=:name",array('name'=>'PortfolioSummaries'));
+       $qr = $db->query("select json from settings where name=:name",array('name'=>$key));
        $s = $db->fetchSingleValue($qr);
-       if ($s!=null) $this->res->row = json_decode($s);       
-       echo json_encode($this->res);
+       if ($s!=null) $this->res->row = json_decode($s);
     }
     
-    function ajxSavePortfolioSummariesSettings()
+    function saveSettings($key)
     {  $db = $this->cfg->db;
        $params = (object)$_POST;
        if (isset($params->data))
        try
        { $qr = $db->query("insert into settings (name,json) values (:name,:json)",
-           array('name'=>'PortfolioSummaries','json'=>json_encode($params->data)));
+           array('name'=>$key,'json'=>json_encode($params->data)));
        } catch(Exception $e)
        {  $qr = $db->query("update settings set json=:json where name=:name",
-           array('name'=>'PortfolioSummaries','json'=>json_encode($params->data)));
+           array('name'=>$key,'json'=>json_encode($params->data)));
        }  
-       $this->res->info = T('SAVED');     
+       $this->res->info = T('SAVED');
+    }
+
+    function ajxLoadPortfolioSummariesSettings()
+    { $this->loadSettings('PortfolioSummaries');
+       echo json_encode($this->res);
+    }
+        
+    function ajxSavePortfolioSummariesSettings()
+    {  $this->saveSettings('PortfolioSummaries');
        echo json_encode($this->res);
     }
     

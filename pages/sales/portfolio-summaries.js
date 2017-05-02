@@ -86,7 +86,6 @@ function editSettings(selector, onloaded)
 
         }
         if (onloaded!=undefined) onloaded(d);
-            
     });
     
     function getData()
@@ -117,6 +116,43 @@ function editSettings(selector, onloaded)
     $(selector+' .b-save-settings').click(save);
     
     return {save:save, getData:getData};
+}
+
+
+function editSnapshotSettings(selector, onloaded)
+{    $(selector+' .b-add-metric-row').click(function(){
+          $(selector+' .metrics-list').append('<tr>\
+         <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
+         <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+          
+          '<td><input type="number" /></td>'+
+          '<td><input type="number" /></td>'+
+          '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>');
+          new mdSelect(selector+' .metrics-list .w-metric:last');
+          $(selector+' .metrics-list tr:last .b-del').click(deleteOption);
+    });
+    function save()
+    {  var d = getData();
+        
+       ajx('/pages/sales/SaveSnapshotSummariesSettings', {data:d}, function(dd){
+           if (!dd.error) setOk(dd.info);           
+       });
+    }
+    function getData()
+    {  var d = {};
+       d.metrics = [];
+       var rows = $(selector+' .metrics-list tr');
+       for (i=0; i<rows.length; i++) 
+       {   var tr = $(rows[i]);
+           d.metrics.push({id:tr.find('.w-metric').val(), min:tr.find('input:first').val(),
+           max:tr.find('input:last').val()});
+       }
+       
+       d.metric_id = $(selector+' #social_value_metric').val();
+       d.esg_metric_id = $(selector+' #esg_score').val();
+       return d; 
+    }
+    $(selector+' .b-save-settings').click(save);    
+   return {save:save, getData:getData};
 }
 
 function editPortfolioSummary(selector){
@@ -587,6 +623,8 @@ $(function(){
           soc_metric = new mdSelect('#social_value_metric');
       
   }); 
+  
+  var snapsettings = new editSnapshotSettings('#psnap');
   
    var view = new createCustomModelView('<div class="btn-group pull-right">\
    <button class="btn btn-sm b-new">New summary</button>\
