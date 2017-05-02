@@ -70,12 +70,22 @@
     }
 
     function ajxLoadPortfolioSummariesSettings()
-    { $this->loadSettings('PortfolioSummaries');
+    {  $this->loadSettings('PortfolioSummaries');
        echo json_encode($this->res);
     }
         
     function ajxSavePortfolioSummariesSettings()
     {  $this->saveSettings('PortfolioSummaries');
+       echo json_encode($this->res);
+    }
+    
+    function ajxSaveSnapshotSummariesSettings()
+    {  $this->saveSettings('SnapshotSummaries');
+       echo json_encode($this->res);
+    }
+    
+    function ajxLoadSnapshotSummariesSettings()
+    {  $this->loadSettings('SnapshotSummaries');
        echo json_encode($this->res);
     }
     
