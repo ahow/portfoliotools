@@ -637,7 +637,14 @@ function themeExposuresChart(pf1, pf2)
 
 function createSnapshotTab(id)
 {  ajx('/pages/sales/GetPortfolioName',{id:id}, function(d){
-        console.log(d);
+        var num = $('ul.w-sumtabs li').length;
+        var id = 'snap'+num;
+        // creating of a dynamic tabs
+        $('ul.w-sumtabs').append('<li id="i'+id+'"><a data-toggle="tab" href="#'+id+'">Snapshot: '+d.row.portfolio+'<span id="pfsnap"></span></a></li>');        
+        $('div.tab-content').append('<div class="tab-pane fade" id="'+id+'">'+d.row.description+'\
+        <div class="row">\
+        </div>\
+    </div>');
    });
 }
 
