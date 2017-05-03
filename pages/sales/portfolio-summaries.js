@@ -635,6 +635,11 @@ function themeExposuresChart(pf1, pf2)
     }
 }
 
+function createSnapshotTab(id)
+{  ajx('/pages/sales/GetPortfolioName',{id:id}, function(d){
+        console.log(d);
+   });
+}
 
 $(function(){
      
@@ -666,14 +671,13 @@ $(function(){
   
    var view = new createCustomModelView('<div class="btn-group pull-right">\
    <button class="btn btn-sm b-new">New summary</button>\
-   <a data-name="{portfolio}" href="/sales/portfolio-summaries/snapshot/{id}" class="btn btn-sm b-open-snapshot btn-primary">Get snapshot</a>\
+   <button data-id="{id}" class="btn btn-sm b-open-snapshot btn-primary">Get snapshot</button>\
    </div>', function(){      
       $('button.b-new').click(function(e){
             edit.addNew();      
       });
        $('button.b-open-snapshot').click(function(e){
-            console.log(e);
-            console.log(edit.getPortfolio());
+            createSnapshotTab(e.target.getAttribute('data-id'));
       });
    });
    

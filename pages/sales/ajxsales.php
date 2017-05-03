@@ -126,6 +126,14 @@
        }
        echo json_encode($this->res);
     }
+    function ajxGetPortfolioName()
+    {  $db = $this->cfg->db;
+       $params = (object)$_POST;
+       $qr = $db->query('select * from sales_portfolio p where id=:id',
+       array('id'=>$params->id));
+       $this->res->row = $db->fetchSingle($qr);
+       echo json_encode($this->res); 
+    }
     
     function ajxLoadPortfolioSummaries()
     {   $db = $this->cfg->db;
