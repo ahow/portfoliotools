@@ -14,7 +14,21 @@ function createCustomModelView(_html, _init)
     function modelPortfolioView(selector,d,onclick,ondblclick)
     {  var s = '';
        var i;
-       
+       // replace format {name} to row value
+       function formatS(row)
+       {   var myRe = /{\w+\}*/g;
+           var str = html;
+           var a;
+           var r = html;
+           while ((a = myRe.exec(str)) !== null) 
+           {
+             var p = a[0];
+             var nm = p.replace('{','').replace('}','');
+             r = r.replace(p, row[nm]);
+           }
+           return r;
+       }
+
        if (d.titles!=undefined)
        {   var h = '<tr>';
            for (i in d.titles)
@@ -28,7 +42,7 @@ function createCustomModelView(_html, _init)
            var r = d.rows[i];
            if (r.id!=undefined) s+='<tr data-id="'+i+'">'; else s+='<tr>';
            for (j in d.columns) s+='<td>'+r[ d.columns[j] ]+'</td>';
-           s+='<td>'+html+'</td></tr>';
+           s+='<td>'+formatS(r)+'</td></tr>';
        }
        $(selector).find('tbody').html(s);
        if (onclick!=null)  $(selector+' tbody tr').click(function(row){
@@ -245,7 +259,7 @@ function editPortfolioSummary(selector){
         name = _name;
         $(selector+' .modal .pfname').html(name);
     }
-    
+     
     function addNew()
     {  clear();
        show();
@@ -652,9 +666,14 @@ $(function(){
   
    var view = new createCustomModelView('<div class="btn-group pull-right">\
    <button class="btn btn-sm b-new">New summary</button>\
+   <a data-name="{portfolio}" href="/sales/portfolio-summaries/snapshot/{id}" class="btn btn-sm b-open-snapshot btn-primary">Get snapshot</a>\
    </div>', function(){      
       $('button.b-new').click(function(e){
             edit.addNew();      
+      });
+       $('button.b-open-snapshot').click(function(e){
+            console.log(e);
+            console.log(edit.getPortfolio());
       });
    });
    
