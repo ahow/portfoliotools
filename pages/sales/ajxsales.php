@@ -140,7 +140,8 @@
     }
     
     function ajxGetSnapshots()
-    {
+    { $ss = $this->loadSettings('SnapshotSummaries');
+      
     }
     
     function ajxGetPortfolioName()

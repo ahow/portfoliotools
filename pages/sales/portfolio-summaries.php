@@ -71,6 +71,9 @@
 
     <div class="tab-pane fade" id="psnap">
          <div id="ss_metrics">
+              <div class="row">
+                 <div class="col-lg-6"><?=$f->modelSelect('ss_comparison','/pages/sales/Model/portfolio-lookup')?></div>
+               </div>
                <div class="row">
                     <div class="col-lg-12">
                         <table class="table-ctrls">

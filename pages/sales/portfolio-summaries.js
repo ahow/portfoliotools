@@ -165,7 +165,8 @@ function editSnapshotSettings(selector, onloaded)
                   for (i=0; i<d.row.metrics.length; i++)
                   { var m = d.row.metrics[i];
                     new mdSelect(selector+' .metrics-list .w-metric:eq('+i+')', m.id);
-                  }                  
+                  }
+                  $(selector+' #ss_comparison').val(d.row.comparison_id);
 
         }
         if (onloaded!=undefined) onloaded(d);
@@ -187,6 +188,7 @@ function editSnapshotSettings(selector, onloaded)
            d.metrics.push({id:tr.find('.w-metric').val(), min:tr.find('input:first').val(),
            max:tr.find('input:last').val()});
        }
+       d.comparison_id = $(selector+' #ss_comparison').val();
        return d; 
     }
     $(selector+' .b-save-settings').click(save);    
@@ -682,6 +684,8 @@ $(function(){
       
   }); 
   
+  var ss_compar = new mdSelect('#ss_comparison');
+  
   var snapsettings = new editSnapshotSettings('#psnap');
   
    var view = new createCustomModelView('<div class="btn-group pull-right">\
@@ -812,7 +816,7 @@ $(function(){
        var compar = new mdSelect('#comparison');
     });
     
-
+    
    
 });
 
