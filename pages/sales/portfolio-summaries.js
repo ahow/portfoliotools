@@ -643,12 +643,11 @@ function createSnapshotTab(pf_id)
         var id = 'snap'+num;
         var url = window.location.origin+'<?php echo mkURL("/sales/portfolio-summaries/snapshot/") ?>'+pf_id;
         // creating of a dynamic tabs
-        // <button type="button" class="btn btn-default pull-right b-copy-url">
+        // <button type="button" class="btn btn-default pull-right b-copy-url"> <span class="glyphicon glyphicon-tags"></span> Copy URL to clipboard</button>
         $('ul.w-sumtabs').append('<li id="i'+id+'"><a data-toggle="tab" href="#'+id+'">Snapshot: '+d.row.portfolio+'<span id="pfsnap"></span></a></li>');        
         $('div.tab-content').append('<div class="tab-pane fade" id="'+id+'">\
         <div class="row"><div class="col-lg-10">\
-        <a class="pull-right" href="'+url+'">'+url+'</a>\
-        <span class="glyphicon glyphicon-tags"></span> Copy URL to clipboard</button>\
+        <a class="pull-right" href="'+url+'"><span class="glyphicon glyphicon-tags"></span> '+url+'</a>\
         </div></div>\
        <div class="row">\
         <div class="col-lg-10">\
