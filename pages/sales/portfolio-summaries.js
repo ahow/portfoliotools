@@ -833,7 +833,14 @@ $(function(){
        var compar = new mdSelect('#comparison');
     });
     
-    
+    // Process windows location    
+    var apath = window.location.pathname.split('/sales/portfolio-summaries');
+    if (apath.length>1)
+    {   apath = apath[1].split('/');
+        if ((apath.length>2) && apath[1].toLowerCase()=='snapshot')
+        {  createSnapshotTab(apath[2])            
+        }
+    }
    
 });
 
