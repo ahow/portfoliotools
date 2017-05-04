@@ -143,7 +143,7 @@
        if (isset($params->pf_id))
        { $a = array();
          $ss = $this->loadSettings('SnapshotSummaries');
-         if (isset($ss->metrics))
+         if (isset($ss->metrics) && isset($ss->comparison_id))
          foreach ($ss->metrics as $m) 
          {   $m->rows = $this->getSnapshot($m->id, $params->pf_id, $ss->comparison_id);
              // $m->comp_id = $ss->comparison_id;
