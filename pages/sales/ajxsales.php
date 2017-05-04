@@ -52,7 +52,8 @@
     {  $db = $this->cfg->db;
        $qr = $db->query("select json from settings where name=:name",array('name'=>$key));
        $s = $db->fetchSingleValue($qr);
-       if ($s!=null) $this->res->row = json_decode($s);
+       if ($s!=null) return json_decode($s);
+       return null;
     }
     
     function saveSettings($key)
@@ -70,7 +71,7 @@
     }
 
     function ajxLoadPortfolioSummariesSettings()
-    {  $this->loadSettings('PortfolioSummaries');
+    {  $this->res->row = $this->loadSettings('PortfolioSummaries');
        echo json_encode($this->res);
     }
         
@@ -85,7 +86,7 @@
     }
     
     function ajxLoadSnapshotSummariesSettings()
-    {  $this->loadSettings('SnapshotSummaries');
+    {  $this->res->row = $this->loadSettings('SnapshotSummaries');
        echo json_encode($this->res);
     }
     
@@ -136,6 +137,10 @@
          $this->res->pfsum = $res->pfsum;
       }
       echo json_encode($this->res);
+    }
+    
+    function ajxGetSnapshots()
+    {
     }
     
     function ajxGetPortfolioName()
