@@ -62,7 +62,6 @@ function portfolioSnapshotChart(div,d)
     // xmin -= xmin/5;
     
     var dx = xmax-xmin;
-    var bw = [d.pfsum, d.cmsum];
       
     xmin -= dx*0.2;
     xmax += dx*0.2;
@@ -76,8 +75,8 @@ function portfolioSnapshotChart(div,d)
     for (var i=0; i<categories.length; i++){
         options.xAxis.plotLines.push({color: '#D0D0D0', width: 1, value: i});
     }
-    console.log(options);
-    new Highcharts.Chart(options, function (chart) { /*
+
+    new Highcharts.Chart(options, function (chart) { 
         
         var series = this.options.series,
             addMarginX = this.plotLeft,
@@ -110,38 +109,45 @@ function portfolioSnapshotChart(div,d)
       var attr = {"stroke-width":0.75, stroke:"white", fill:'#D0D0D0'};
             
       var delta_x = -ax.min*nzoom;
-      for (var i=bw.length-1; i>=0; i--)
-      {  attr['data-value']=bw[i];
-         attr['data-name']=this.options.series[i].name;
-         attr.fill = this.series[i].color;         
-         var nx = delta_x+addMarginX+bw[i]*nzoom;        
-         var cc = chart.renderer.circle(addMarginX, by, rad).attr(attr).add(rectGroup);
-         cc.animate({
-               cx: nx
-         }, {
-               duration: 1000
-         });
-      }
-
-
-      by = addMarginY+delta_y/2+delta_y;
-      for (var i=0; i<data.length; i++)
-      {  attr.id=''+i+'-0';
-         attr.fill = '#ADD8E6';
-         attr['data-value']=data[i].val;
-         attr['data-name']=data[i].name;
-         var nx = delta_x+addMarginX+nzoom*data[i].val;
-         var r = rad*0.8*data[i].pval/pwmax+0.2*rad;
-         var cc = chart.renderer.circle(addMarginX, by, r).attr(attr).css({'fill-opacity':0.5}).add(rectGroup);
-         cc.animate({
-               cx: nx
-         }, {
-               duration: 1000
-         });
-      }
-
       
-      
+
+    
+     by = addMarginY+delta_y/2;
+     for (var j=0; j<data.length; j++)
+     {    var dd = d.rows[j];
+          for (var i=0; i<dd.rows.rows.length; i++)
+          {  var b = dd.rows.rows[i];
+             attr.id=''+i+'-0';
+             attr.fill = '#ADD8E6';
+             attr['data-value']=b.val;
+             attr['data-name']=b.name;
+             var nx = delta_x+addMarginX+nzoom*b.val;
+             var r = rad*0.8*b.pval/pwmax+0.2*rad;
+             var cc = chart.renderer.circle(addMarginX, by, r).attr(attr).css({'fill-opacity':0.5}).add(rectGroup);
+             cc.animate({
+                   cx: nx
+             }, {
+                   duration: 1000
+             });
+         }
+         
+         var bw = [dd.rows.pfsum, dd.rows.cmsum];
+         for (var i=bw.length-1; i>=0; i--)
+         {  attr['data-value']=bw[i];
+             attr['data-name']=this.options.series[i].name;
+             attr.fill = this.series[i].color;         
+             var nx = delta_x+addMarginX+bw[i]*nzoom;        
+             var cc = chart.renderer.circle(addMarginX, by, rad).attr(attr).add(rectGroup);
+             cc.animate({
+                   cx: nx
+             }, {
+                   duration: 1000
+             });
+         }
+         
+         by += delta_y;  
+     }
+
 
         // add tooltip to rectangulars AND labels (rectGroup)
         var tooltipIndex;
@@ -187,7 +193,7 @@ function portfolioSnapshotChart(div,d)
                lastVal=null;
             }
         });
-*/
+
 
     });
 }
