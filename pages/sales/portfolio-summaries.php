@@ -14,7 +14,6 @@
   <li id="tbedit"><a data-toggle="tab" href="#tabedit">Portfolio summaries</a></li>
   <li id="schart"><a data-toggle="tab" href="#tabschart">Summary charts: <span id="pfname"></span></a></li>
   <li id="ipsnap"><a data-toggle="tab" href="#psnap">Portfolio snapshot</a></li>
-  <li id="isnap"><a data-toggle="tab" href="#snap">Snapshot: <span id="pfsnap"></span></a></li>
 </ul>
 
 <div class="tab-content"  style="padding-top: 15px;">
@@ -90,12 +89,7 @@
                </div>
          </div>
     </div>
-
-    <div class="tab-pane fade" id="snap">
-        <div class="row">
-        </div>
-    </div>
-        
+    
 </div>
 
 <form name="fprint" method="POST" target="_blank" action="<?=mkURL('/html.php/pages/sales/chart-mranking.pdf')?>">
