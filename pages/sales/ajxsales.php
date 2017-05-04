@@ -89,10 +89,10 @@
        echo json_encode($this->res);
     }
     
-    
-    function ajxESGData()
+    function getSnapshot($metric, $portfolio, $comparison)    
     {  $db = $this->cfg->db;
        $params = (object)$_POST;
+       $res = new stdClass();
        if (isset($params->pf_id) && isset($params->mt_id) && isset($params->comp_id))
        { $db->query('set @pf=:pf', array('pf'=>$params->pf_id));
          $db->query('set @mt=:mt', array('mt'=>$params->mt_id));
@@ -103,12 +103,12 @@
        join sales_metrics_data m on m.isin=c.isin and m.metric_id=@mt
        where d.portfolio_id=@pf
        group by 1,2,3');
-         $this->res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
+         $res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
          $pfs = 0;
-         foreach($this->res->rows as $r)
+         foreach($res->rows as $r)
          {  $pfs+=1.0*$r->val*$r->pval;
          }         
-         $this->res->pfsum = $pfs; // portfolio product summ
+         $res->pfsum = $pfs; // portfolio product summ
          
          $db->query('set @pf=:pf', array('pf'=>$params->comp_id));
          $qr = $db->query('select d.isin, d.val as pval, c.name, sum(m.val) as val
@@ -122,10 +122,22 @@
          foreach($rows as $r)
          {  $cms+=1.0*$r->val*$r->pval;
          }         
-         $this->res->cmsum = $cms; // comparison product summ
+         $res->cmsum = $cms; // comparison product summ
        }
-       echo json_encode($this->res);
+       return $res;       
     }
+    
+    function ajxESGData()
+    { $params = (object)$_POST;
+      if (isset($params->pf_id) && isset($params->mt_id) && isset($params->comp_id))
+      {  $res = $this->getSnapshot($params->mt_id, $params->pf_id, $params->comp_id);
+         $this->res->rows = $res->rows;
+         $this->res->cmsum = $res->cmsum;
+         $this->res->pfsum = $res->pfsum;
+      }
+      echo json_encode($this->res);
+    }
+    
     function ajxGetPortfolioName()
     {  $db = $this->cfg->db;
        $params = (object)$_POST;

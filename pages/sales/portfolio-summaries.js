@@ -642,9 +642,17 @@ function createSnapshotTab(id)
         // creating of a dynamic tabs
         $('ul.w-sumtabs').append('<li id="i'+id+'"><a data-toggle="tab" href="#'+id+'">Snapshot: '+d.row.portfolio+'<span id="pfsnap"></span></a></li>');        
         $('div.tab-content').append('<div class="tab-pane fade" id="'+id+'">'+d.row.description+'\
-        <div class="row">\
+  <div class="row">\
+     <div class="row">\
+        <div class="col-lg-6">\
+                <div id="ch'+id+'" style="min-width: 450px; height: 350px; margin: 0 auto"></div>\
         </div>\
-    </div>');
+        <div class="col-lg-6">\
+        </div>\
+     </div>\
+  </div>\
+</div>');
+        $('#i'+id+' a').tab('show'); // activate created tab
    });
 }
 
