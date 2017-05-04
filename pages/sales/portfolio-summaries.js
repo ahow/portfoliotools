@@ -637,8 +637,8 @@ function themeExposuresChart(pf1, pf2)
     }
 }
 
-function createSnapshotTab(id)
-{  ajx('/pages/sales/GetPortfolioName',{id:id}, function(d){
+function createSnapshotTab(pf_id)
+{  ajx('/pages/sales/GetPortfolioName',{id:pf_id}, function(d){
         var num = $('ul.w-sumtabs li').length;
         var id = 'snap'+num;
         // creating of a dynamic tabs
@@ -654,7 +654,10 @@ function createSnapshotTab(id)
      </div>\
   </div>\
 </div>');
-        $('#i'+id+' a').tab('show'); // activate created tab
+        ajx('/pages/sales/GetSnapshots',{pf_id:pf_id}, function(d){
+            console.log(d);
+            $('#i'+id+' a').tab('show'); // activate created tab
+        });  
    });
 }
 

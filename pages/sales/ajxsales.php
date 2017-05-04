@@ -91,40 +91,39 @@
     }
     
     function getSnapshot($metric, $portfolio, $comparison)    
-    {  $db = $this->cfg->db;
-       $params = (object)$_POST;
+    {  $db = $this->cfg->db;       
        $res = new stdClass();
-       if (isset($params->pf_id) && isset($params->mt_id) && isset($params->comp_id))
-       { $db->query('set @pf=:pf', array('pf'=>$params->pf_id));
-         $db->query('set @mt=:mt', array('mt'=>$params->mt_id));
+       
+       $db->query('set @pf=:pf', array('pf'=>$portfolio));
+       $db->query('set @mt=:mt', array('mt'=>$metric));
           
-         $qr = $db->query('select d.isin, d.val as pval, c.name, sum(m.val) as val
+       $qr = $db->query('select d.isin, d.val as pval, c.name, sum(m.val) as val
         from sales_portfolio_data d
        join sales_companies c on d.isin=c.isin
        join sales_metrics_data m on m.isin=c.isin and m.metric_id=@mt
        where d.portfolio_id=@pf
        group by 1,2,3');
-         $res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
-         $pfs = 0;
-         foreach($res->rows as $r)
-         {  $pfs+=1.0*$r->val*$r->pval;
-         }         
-         $res->pfsum = $pfs; // portfolio product summ
+       $res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
+       $pfs = 0;
+       foreach($res->rows as $r)
+       {  $pfs+=1.0*$r->val*$r->pval;
+       }         
+       $res->pfsum = $pfs; // portfolio product summ
          
-         $db->query('set @pf=:pf', array('pf'=>$params->comp_id));
-         $qr = $db->query('select d.isin, d.val as pval, c.name, sum(m.val) as val
+       $db->query('set @pf=:pf', array('pf'=>$comparison));
+       $qr = $db->query('select d.isin, d.val as pval, c.name, sum(m.val) as val
         from sales_portfolio_data d
        join sales_companies c on d.isin=c.isin
        join sales_metrics_data m on m.isin=c.isin and m.metric_id=@mt
        where d.portfolio_id=@pf
        group by 1,2,3');
-         $rows= $qr->fetchAll(PDO::FETCH_OBJ);
-         $cms = 0;
-         foreach($rows as $r)
-         {  $cms+=1.0*$r->val*$r->pval;
-         }         
-         $res->cmsum = $cms; // comparison product summ
-       }
+       $rows= $qr->fetchAll(PDO::FETCH_OBJ);
+       $cms = 0;
+       foreach($rows as $r)
+       {  $cms+=1.0*$r->val*$r->pval;
+       }         
+       $res->cmsum = $cms; // comparison product summ
+       
        return $res;       
     }
     
@@ -140,8 +139,20 @@
     }
     
     function ajxGetSnapshots()
-    { $ss = $this->loadSettings('SnapshotSummaries');
-      
+    {  $params = (object)$_POST;
+       if (isset($params->pf_id))
+       { $a = array();
+         $ss = $this->loadSettings('SnapshotSummaries');
+         if (isset($ss->metrics))
+         foreach ($ss->metrics as $m) 
+         {   $m->rows = $this->getSnapshot($m->id, $params->pf_id, $ss->comparison_id);
+             // $m->comp_id = $ss->comparison_id;
+             // $m->pf_id = $params->pf_id;
+             $a[] = $m;
+         }
+         $this->res->rows = $a;
+       }
+       echo json_encode($this->res);
     }
     
     function ajxGetPortfolioName()
