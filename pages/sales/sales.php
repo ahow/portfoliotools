@@ -91,6 +91,7 @@
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
            $this->cfg->addJs('/html.php/pages/sales','mdselect.js');
            $this->cfg->addJs('/html.php/pages/sales','portfolio-summaries.js');
+           $this->cfg->addJs('/html.php/pages/sales','portfolio-snapshot.js');
        } 
        else
        {   $this->cfg->addJs('/html.php/pages/sales','inittable.js');

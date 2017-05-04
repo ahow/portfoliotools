@@ -643,19 +643,20 @@ function createSnapshotTab(pf_id)
         var id = 'snap'+num;
         // creating of a dynamic tabs
         $('ul.w-sumtabs').append('<li id="i'+id+'"><a data-toggle="tab" href="#'+id+'">Snapshot: '+d.row.portfolio+'<span id="pfsnap"></span></a></li>');        
-        $('div.tab-content').append('<div class="tab-pane fade" id="'+id+'">'+d.row.description+'\
+        $('div.tab-content').append('<div class="tab-pane fade" id="'+id+'">\
   <div class="row">\
      <div class="row">\
-        <div class="col-lg-6">\
+        <div class="col-lg-10">\
                 <div id="ch'+id+'" style="min-width: 450px; height: 350px; margin: 0 auto"></div>\
         </div>\
-        <div class="col-lg-6">\
+        <div class="col-lg-2">\
         </div>\
      </div>\
   </div>\
 </div>');
-        ajx('/pages/sales/GetSnapshots',{pf_id:pf_id}, function(d){
-            console.log(d);
+        ajx('/pages/sales/GetSnapshots',{pf_id:pf_id}, function(dd){
+            dd.title = d.row.portfolio;
+            portfolioSnapshotChart('ch'+id, dd);
             $('#i'+id+' a').tab('show'); // activate created tab
         });  
    });
