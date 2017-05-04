@@ -641,11 +641,13 @@ function createSnapshotTab(pf_id)
 {  ajx('/pages/sales/GetPortfolioName',{id:pf_id}, function(d){
         var num = $('ul.w-sumtabs li').length;
         var id = 'snap'+num;
+        var url = window.location.origin+'<?php echo mkURL("/sales/portfolio-summaries/snapshot/") ?>'+pf_id;
         // creating of a dynamic tabs
+        // <button type="button" class="btn btn-default pull-right b-copy-url">
         $('ul.w-sumtabs').append('<li id="i'+id+'"><a data-toggle="tab" href="#'+id+'">Snapshot: '+d.row.portfolio+'<span id="pfsnap"></span></a></li>');        
         $('div.tab-content').append('<div class="tab-pane fade" id="'+id+'">\
         <div class="row"><div class="col-lg-10">\
-        <button type="button" class="btn btn-default pull-right b-copy-url">\
+        <a class="pull-right" href="'+url+'">'+url+'</a>\
         <span class="glyphicon glyphicon-tags"></span> Copy URL to clipboard</button>\
         </div></div>\
        <div class="row">\
@@ -660,9 +662,15 @@ function createSnapshotTab(pf_id)
             dd.title = d.row.portfolio;
             portfolioSnapshotChart('ch'+id, dd);
             $('#i'+id+' a').tab('show'); // activate created tab
-            $('#'+id+' .b-copy-url').click(function(){
-                 console.log(id);
+            /*
+            $('#'+id+' .b-copy-url').click(function(){                
+               $('#'+id+' a')[0].select();
+               document.execCommand('copy');
+               // var copyEvent = new ClipboardEvent('copy', { dataType: 'text/plain', data:url } );
+               // document.dispatchEvent(copyEvent);
+                
             });
+            */
         });  
    });
 }
