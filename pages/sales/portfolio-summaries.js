@@ -641,10 +641,12 @@ function createSnapshotTab(pf_id)
 {  ajx('/pages/sales/GetPortfolioName',{id:pf_id}, function(d){
         var num = $('ul.w-sumtabs li').length;
         var id = 'snap'+num;
-        var url = window.location.origin+'<?php echo mkURL("/sales/portfolio-summaries/snapshot/") ?>'+pf_id;
+        // /html.php/pages/sales/portfolio-snapshot/
+        // /sales/portfolio-summaries/snapshot/
+        var url = window.location.origin+'<?php echo mkURL("/html.php/pages/sales/portfolio-snapshot/") ?>'+pf_id;
         // creating of a dynamic tabs
         // <button type="button" class="btn btn-default pull-right b-copy-url"> <span class="glyphicon glyphicon-tags"></span> Copy URL to clipboard</button>
-        $('ul.w-sumtabs').append('<li id="i'+id+'"><a data-toggle="tab" href="#'+id+'">Snapshot: '+d.row.portfolio+'<span id="pfsnap"></span></a></li>');        
+        $('ul.w-sumtabs').append('<li id="i'+id+'"><a target="_blank" data-toggle="tab" href="#'+id+'">Snapshot: '+d.row.portfolio+'<span id="pfsnap"></span></a></li>');        
         $('div.tab-content').append('<div class="tab-pane fade" id="'+id+'">\
         <div class="row"><div class="col-lg-10">\
         <a class="pull-right" href="'+url+'"><span class="glyphicon glyphicon-tags"></span> '+url+'</a>\
