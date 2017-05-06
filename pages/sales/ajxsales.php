@@ -105,10 +105,12 @@
        group by 1,2,3');
        $res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
        $pfs = 0;
+       $pvs = 0.0; // total of portfolio values
        foreach($res->rows as $r)
        {  $pfs+=1.0*$r->val*$r->pval;
-       }         
-       $res->pfsum = $pfs; // portfolio product summ
+          $pvs+=1.0*$r->pval;
+       }
+       $res->pfsum = $pfs/$pvs; // corrected portfolio product summ
          
        $db->query('set @pf=:pf', array('pf'=>$comparison));
        $qr = $db->query('select d.isin, d.val as pval, c.name, sum(m.val) as val
@@ -119,10 +121,12 @@
        group by 1,2,3');
        $rows= $qr->fetchAll(PDO::FETCH_OBJ);
        $cms = 0;
+       $pvs = 0.0; // total of portfolio values
        foreach($rows as $r)
        {  $cms+=1.0*$r->val*$r->pval;
-       }         
-       $res->cmsum = $cms; // comparison product summ
+          $pvs+=1.0*$r->pval;
+       }
+       $res->cmsum = $cms/$pvs; // corrected comparison product summ
        
        return $res;       
     }
