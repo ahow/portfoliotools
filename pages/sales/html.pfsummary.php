@@ -11,7 +11,7 @@
          <h3 id="p-name"></h3> 
      </div>
      <div class="col-lg-4">
-         <button class="btn btn-primary pull-right">Save  description of charts</button>
+         <button class="btn btn-primary pull-right w-save-desc">Save  description of charts</button>
      </div>
 </div>
 <div class="row">
