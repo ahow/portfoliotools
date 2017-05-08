@@ -789,6 +789,7 @@ $(function(){
                         socialChart(d.row.portfolio_id, d.row.comparison_id, st.metric_id);
                     if (st.metrics!=undefined) metricsAnalysis(st.metrics, d.row.portfolio_id, d.row.comparison_id);
                     if (st.esg_metric_id!=undefined) esgAnalysis2(d.row.portfolio_id, st.esg_metric_id, d.row.comparison_id);
+                    $('h3.sum-title:first').focus()
     
                 });
 
