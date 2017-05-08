@@ -7,8 +7,11 @@
      </div>
 </div>
 <div class="row">
-     <div class="col-lg-12">
-         <h3 id="p-name"></h3>
+     <div class="col-lg-8">         
+         <h3 id="p-name"></h3> 
+     </div>
+     <div class="col-lg-4">
+         <button class="btn btn-primary pull-right">Save  description of charts</button>
      </div>
 </div>
 <div class="row">
