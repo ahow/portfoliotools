@@ -611,7 +611,7 @@ function createSnapshotTab(pf_id)
         $('ul.w-sumtabs').append('<li id="i'+id+'"><a target="_blank" data-toggle="tab" href="#'+id+'">Snapshot: '+d.row.portfolio+'<span id="pfsnap"></span></a></li>');        
         $('div.tab-content').append('<div class="tab-pane fade" id="'+id+'">\
         <div class="row"><div class="col-lg-10">\
-        <a class="pull-right" href="'+url+'"><span class="glyphicon glyphicon-tags"></span> '+url+'</a>\
+        <a class="pull-right" target="_blank" href="'+url+'"><span class="glyphicon glyphicon-tags"></span> '+url+'</a>\
         </div></div>\
        <div class="row">\
         <div class="col-lg-10">\
