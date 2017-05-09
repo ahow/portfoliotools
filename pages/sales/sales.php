@@ -90,6 +90,7 @@
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
            $this->cfg->addJs('/html.php/pages/sales','mdselect.js');
+           $this->cfg->addJs('/html.php/pages/sales','portfolio-summary-charts.js');
            $this->cfg->addJs('/html.php/pages/sales','portfolio-summaries.js');
            $this->cfg->addJs('/html.php/pages/sales','portfolio-snapshot.js');
        } 
