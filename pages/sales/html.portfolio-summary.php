@@ -4,8 +4,13 @@ emptyHeader('Portfolio summary'); ?>
 <div class="container">
 
 <h1>Portfolio summary</h1>
+<?php $a = explode('sales/portfolio-summary/', $this->nav); 
+     if (count($a)>1)
+     {
+  ?>    
 
-<div class="row">
+  
+<div class="row w-portfolio-id" data-id="<?php echo $a[1]; ?>">
      <div class="col-lg-12">
          <table class="table">
              <tbody id="p-options">
@@ -75,6 +80,10 @@ emptyHeader('Portfolio summary'); ?>
         </div>
     </div>
 </div>
+
+<?php
+    }
+?>
 
 
 </div> <!-- /container -->
