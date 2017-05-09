@@ -29,8 +29,7 @@ function updateSummaryView(row_id)
             if (st.metrics!=undefined) metricsAnalysis(st.metrics, d.row.portfolio_id, d.row.comparison_id);
             if (st.esg_metric_id!=undefined) esgAnalysis2(d.row.portfolio_id, st.esg_metric_id, d.row.comparison_id);                    
             if (d.row.descriptions!=undefined)
-            {   console.log(d.row.descriptions);
-                var desc = d.row.descriptions;
+            {   var desc = d.row.descriptions;
                 $('.sum-title').each(function(i, e){
                         if (desc[i]!=undefined)
                         {  $(e).html(desc[i].title);
