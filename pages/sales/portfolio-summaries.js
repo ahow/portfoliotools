@@ -386,14 +386,6 @@ function editPortfolioSummary(selector){
         afterSave:afterSave, edit:edit, addNew:addNew};
 }
 
-function fixSeries(s)
-{ var ser = s;
-  if (ser!=undefined) for (var i=0; i<ser.length; i++)
-  { for (var j=0; j<ser[i].data.length; j++) ser[i].data[j] *= 1.0;
-  }  
-  return ser;
-}
-
 function createSnapshotTab(pf_id)
 {  ajx('/pages/sales/GetPortfolioName',{id:pf_id}, function(d){
         var num = $('ul.w-sumtabs li').length;

@@ -87,4 +87,5 @@ emptyHeader('Portfolio summary'); ?>
 
 
 </div> <!-- /container -->
-<?php emptyFooter(array('portfolio-summary-html.js')); ?>
+<?php emptyFooter(array('stacked.js','stacked-gradient.js',
+'circles-chart.js','circles-best-worst.js','portfolio-summary-charts.js','portfolio-summary-html.js')); ?>

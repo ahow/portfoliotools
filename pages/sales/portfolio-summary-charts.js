@@ -1,3 +1,10 @@
+function fixSeries(s)
+{ var ser = s;
+  if (ser!=undefined) for (var i=0; i<ser.length; i++)
+  { for (var j=0; j<ser[i].data.length; j++) ser[i].data[j] *= 1.0;
+  }  
+  return ser;
+}
 
 function renderBarChart(d)
 {  Highcharts.chart('ch-bar', {
