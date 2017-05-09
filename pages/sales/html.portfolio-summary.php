@@ -2,8 +2,6 @@
 include('empty_page.php');
 emptyHeader('Portfolio summary'); ?>
 <div class="container">
-
-<h1>Portfolio summary</h1>
 <?php $a = explode('sales/portfolio-summary/', $this->nav); 
      if (count($a)>1)
      {
