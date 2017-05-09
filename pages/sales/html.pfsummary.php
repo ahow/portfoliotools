@@ -6,6 +6,9 @@
          </table>
      </div>
 </div>
+ <div class="row" style="padding-bottom:5px">
+     <a class="pull-right w-sum-url" href="#"><span class="glyphicon glyphicon-tags">&nbsp;</span><span class="text">&nbsp;</span></a>
+ </div>
 <div class="row">
      <div class="col-lg-8">         
          <h3 id="p-name"></h3> 

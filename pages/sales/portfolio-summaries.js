@@ -729,6 +729,9 @@ $(function(){
                 var st = settings.getData();
                 views.view('/pages/sales/pfsummary','#pfsummary', function(){
                     var i;
+                    var url = window.location.origin+'<?php echo mkURL("/html.php/pages/sales/portfolio-summary/") ?>'+row_id;
+                    $('#pfsummary .w-sum-url span.text').html(url);
+                    $('#pfsummary a.w-sum-url').attr('href',url);
                     if (d.row.options!=undefined)
                     {  var s = '<tr>';
                         for (i=0; i<d.row.options.length; i++)
