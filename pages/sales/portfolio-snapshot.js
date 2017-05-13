@@ -42,12 +42,14 @@ function portfolioSnapshotChart(div,d)
     var zeroes = [];
     var xmin = Number.MAX_VALUE, xmax=Number.MIN_VALUE;
     var pwmax = xmax;
+    var aminmax = []; // auto-calculated min and max values
     
     // Search of max and min values
     for (var j=0; j<d.rows.length; j++)
     {   var dd = d.rows[j];
         categories.push(dd.metric);
         zeroes.push(0);
+        aminmax[j] = {min:Number.MAX_VALUE, max:Number.MIN_VALUE};
         for (var i=0; i<dd.rows.rows.length; i++)
         {   var r = dd.rows.rows[i];
             dd.rows.rows[i].val*=1.0;            
@@ -55,8 +57,24 @@ function portfolioSnapshotChart(div,d)
             if (p>pwmax) pwmax=p;
             if (r.val>xmax) xmax=r.val;
             if (r.val<xmin) xmin=r.val;
+            if (r.val<aminmax[j].min) aminmax[j].min=r.val;
+            if (r.val>aminmax[j].max) aminmax[j].max=r.val;
+        }
+        var bw = [dd.rows.pfsum, dd.rows.cmsum];
+        for (var i=0; i<bw.length; i++)
+        {  var val =  1*bw[i];
+           if (val<aminmax[j].min) aminmax[j].min=val;
+           if (val>aminmax[j].max) aminmax[j].max=val;
         }
     }
+    
+    for (var j=0; j<aminmax.length; j++)
+    {  var dx = 1*aminmax[j].max-1*aminmax[j].min;
+       aminmax[j].min -= dx*0.2;
+       aminmax[j].max += dx*0.2;
+    }
+    
+    console.log(aminmax);
     
     var dx = xmax-xmin;
       
@@ -114,15 +132,12 @@ function portfolioSnapshotChart(div,d)
      by = addMarginY+delta_y/2;
      for (var j=0; j<data.length; j++)
      {    var dd = d.rows[j];
-         
-          var nzoom = 100/(1.0*dd.max-1.0*dd.min)*zoom_k;
-          var delta_x = -1.0*dd.min*nzoom;
+                   
+          var nzoom = 100/(1.0*aminmax[j].max-1.0*aminmax[j].min)*zoom_k;
+          var delta_x = -1.0*aminmax[j].min*nzoom;
          
           for (var i=0; i<dd.rows.rows.length; i++)
           {  var b = dd.rows.rows[i];
-             
-             
-              
              attr.id=''+i+'-0';
              attr.fill = '#ADD8E6';
              attr['data-value']=b.val;
@@ -138,6 +153,7 @@ function portfolioSnapshotChart(div,d)
          }
          
          var bw = [dd.rows.pfsum, dd.rows.cmsum];
+         
          for (var i=bw.length-1; i>=0; i--)
          {  attr['data-value']=bw[i];
              attr['data-name']=this.options.series[i].name;
