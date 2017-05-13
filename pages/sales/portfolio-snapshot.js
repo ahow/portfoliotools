@@ -73,16 +73,7 @@ function portfolioSnapshotChart(div,d)
        aminmax[j].min -= dx*0.2;
        aminmax[j].max += dx*0.2;
     }
-    
-    console.log(aminmax);
-    
-    var dx = xmax-xmin;
-      
-    xmin -= dx*0.2;
-    xmax += dx*0.2;
-        
-    // options.yAxis.min = xmin;
-    // options.yAxis.max = xmax;
+   
     
     options.xAxis.categories = categories;
     options.series = [{name:'Portfolio', data:zeroes}, {name:'Comparison', data:zeroes}];
@@ -112,18 +103,9 @@ function portfolioSnapshotChart(div,d)
       
       var data = this.options.xdata;   
       var ax = this.yAxis[0];
-      // var zoom_k =  ax.transA;      
-
-      //var pt = [xmin, xmax];
-      // var by = addMarginY+delta_y/2+delta_y*i;
       var by = addMarginY+delta_y/2;
-      
-      // var nzoom = ax.width/(ax.max-ax.min);
-      // var nzoom = ax.transA;
 
       var attr = {"stroke-width":0.75, stroke:"white", fill:'#D0D0D0'};
-            
-     // var delta_x = -ax.min*nzoom;
       
       var kk = 0.15;      
       var zoom_k =  this.axes[1].transA; 
