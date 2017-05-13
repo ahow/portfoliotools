@@ -7,31 +7,51 @@
 <h2 class="uppertitle"><?=$this->cfg->title?></h2>
      
 <div class="row">
- <form id="form" class="col-lg-12" enctype="multipart/form-data" method="POST">
+ <form id="form" class="col-lg-12 form-horizontal" enctype="multipart/form-data" method="POST">
  <h5 class="subscribetext">Select 4 files in CSV format</h5>
   <div class="form-group">
-    <label for="company_list">Company List:</label>
-    <input type="file" class="form-control" name="company_list" id="company_list">
+    <label class="col-md-2" for="company_list">Company List:</label>
+    <input type="file" class="col-md-4" name="company_list" id="company_list">
+    <div class="col-md-3"></div>
+    <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/companies.csv" >Download company list</a>
   </div>
-  <div id="preview_company_list"></div>
+  
+  <div class="form-group">
+        <div id="preview_company_list" class="col-md-12"></div>
+  </div>
 
   <div class="form-group">
-    <label for="sic_desc">SICDesc:</label>
-    <input type="file" class="form-control" id="sic_desc" name="sic_desc">
+    <label class="col-md-2" for="sic_desc">SICDesc:</label>
+    <input type="file" class="col-md-4" id="sic_desc" name="sic_desc">
+    <div class="col-md-3"></div>
+    <a class="btn btn-primary col-md-3" href="">Download SICDEsc</a>
   </div>
-  <div id="preview_sic_desc"></div>
 
   <div class="form-group">
-    <label for="division_details">Division Details:</label>
-    <input type="file" class="form-control" id="division_details" name="division_details">
+    <div id="preview_sic_desc" class="col-md-12"></div>
   </div>
-  <div id="preview_division"></div>
-
+  
   <div class="form-group">
-    <label for="isin_matching">ISIN matching:</label>
-    <input type="file" class="form-control" id="isin_matching" name="isin_matching">
+    <label class="col-md-2" for="division_details">Division Details:</label>
+    <input type="file" id="division_details" class="col-md-4" name="division_details">
+    <div class="col-md-3"></div>
+    <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/datadetails.csv">Download division details</a>
   </div>
-  <div id="preview_isin"></div>
+  
+  <div class="form-group">
+    <div id="preview_division" class="col-md-12"></div>
+  </div>
+  
+  <div class="form-group">
+    <label class="col-md-2" for="isin_matching">ISIN matching:</label>
+    <input type="file" class="col-md-4" id="isin_matching" name="isin_matching">
+    <div class="col-md-3"></div>
+    <a class="btn btn-primary col-md-3" href="">Download ISIN matching</a>
+  </div>
+  
+  <div class="form-group">
+    <div id="preview_isin" class="col-md-12"></div>
+  </div>
   
   <div class="checkbox">
      <label><input type="checkbox" name="clear_data" value="" title="">Clear old data</label>
