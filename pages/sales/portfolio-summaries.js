@@ -138,8 +138,6 @@ function editSnapshotSettings(selector, onloaded)
           $(selector+' .metrics-list').append('<tr>\
          <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
          <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+          
-          '<td><input type="number" /></td>'+
-          '<td><input type="number" /></td>'+
           '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>');
           new mdSelect(selector+' .metrics-list .w-metric:last');
           $(selector+' .metrics-list tr:last .b-del').click(deleteOption);
@@ -155,8 +153,6 @@ function editSnapshotSettings(selector, onloaded)
                     s+='<tr>\
          <td><div class="bs-model-select" data-model="/pages/sales/Model/metric-lookup">\
          <select class="form-control w-metric" data-control-type="basic"></select></div></td>'+
-          '<td><input type="number" value="'+m.min+'"/></td>'+
-          '<td><input type="number" value="'+m.max+'" /></td>'+
           '<td><button class="btn btn-sm b-del btn-danger">Delete</button></td></tr>';
                   }                
                   $(selector+' .metrics-list').html(s);                  
@@ -185,8 +181,7 @@ function editSnapshotSettings(selector, onloaded)
        var rows = $(selector+' .metrics-list tr');
        for (i=0; i<rows.length; i++) 
        {   var tr = $(rows[i]);
-           d.metrics.push({id:tr.find('.w-metric').val(), min:tr.find('input:first').val(),
-           max:tr.find('input:last').val()});
+           d.metrics.push({id:tr.find('.w-metric').val()});
        }
        d.comparison_id = $(selector+' #ss_comparison').val();
        return d; 

@@ -77,7 +77,7 @@
                <div class="row">
                     <div class="col-lg-12">
                         <table class="table-ctrls">
-                         <thead><th>Metric</th><th>Min</th><th>Max</th></thead>
+                         <thead><th>Metric</th></thead>
                          <tbody class="metrics-list" style="padding:20px;"></tbody>
                         </table>
                     </div>
