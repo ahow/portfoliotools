@@ -14,7 +14,7 @@ function portfolioSnapshotChart(div,d)
             min: 1,
             max: 100,
             labels: {
-                 enabled: false
+                 enabled: true
             }
         },
         tooltip: {
@@ -58,13 +58,16 @@ function portfolioSnapshotChart(div,d)
         }
     }
     
+    // xmax += xmax/5;
+    // xmin -= xmin/5;
+    
     var dx = xmax-xmin;
       
     xmin -= dx*0.2;
     xmax += dx*0.2;
         
-    // options.yAxis.min = xmin;
-    // options.yAxis.max = xmax;
+    options.yAxis.min = xmin;
+    options.yAxis.max = xmax;
     
     options.xAxis.categories = categories;
     options.series = [{name:'Portfolio', data:zeroes}, {name:'Comparison', data:zeroes}];
@@ -101,28 +104,19 @@ function portfolioSnapshotChart(div,d)
       var by = addMarginY+delta_y/2;
       
       // var nzoom = ax.width/(ax.max-ax.min);
-      // var nzoom = ax.transA;
+      var nzoom = ax.transA;
 
       var attr = {"stroke-width":0.75, stroke:"white", fill:'#D0D0D0'};
             
-     // var delta_x = -ax.min*nzoom;
+      var delta_x = -ax.min*nzoom;
       
-      var kk = 0.15;      
-      var zoom_k =  this.axes[1].transA; 
 
     
      by = addMarginY+delta_y/2;
      for (var j=0; j<data.length; j++)
      {    var dd = d.rows[j];
-         
-          var nzoom = 100/(1.0*dd.max-1.0*dd.min)*zoom_k;
-          var delta_x = -1.0*dd.min*nzoom;
-         
           for (var i=0; i<dd.rows.rows.length; i++)
           {  var b = dd.rows.rows[i];
-             
-             
-              
              attr.id=''+i+'-0';
              attr.fill = '#ADD8E6';
              attr['data-value']=b.val;
@@ -142,7 +136,7 @@ function portfolioSnapshotChart(div,d)
          {  attr['data-value']=bw[i];
              attr['data-name']=this.options.series[i].name;
              attr.fill = this.series[i].color;         
-             var nx = delta_x+addMarginX+bw[i]*nzoom;
+             var nx = delta_x+addMarginX+bw[i]*nzoom;        
              var cc = chart.renderer.circle(addMarginX, by, rad).attr(attr).add(rectGroup);
              cc.animate({
                    cx: nx
