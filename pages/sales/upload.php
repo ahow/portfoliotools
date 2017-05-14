@@ -24,7 +24,7 @@
     <label class="col-md-2" for="sic_desc">SICDesc:</label>
     <input type="file" class="col-md-4" id="sic_desc" name="sic_desc">
     <div class="col-md-3"></div>
-    <a class="btn btn-primary col-md-3" href="">Download SICDEsc</a>
+    <a class="btn btn-primary col-md-3" href="">Download SICDesc</a>
   </div>
 
   <div class="form-group">
