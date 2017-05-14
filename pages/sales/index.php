@@ -10,7 +10,6 @@
 <p><a href="<?=mkURL('/sales/upload')?>"><?=T('DATA_UPLOADING')?></a></p>
 <p><a href="<?=mkURL('/sales/portfolio-list')?>"><?=T('portfolio-list')?></a></p>
 <p><a href="<?=mkURL('/sales/metric-list')?>"><?=T('metric-list')?></a></p>
-<p><a href="<?=mkURL('/sales/data-export')?>"><?=T('data-export')?></a></p>
 <?php
   }
   if ($cf->inGroup('admin') || $cf->inGroup('editor') )

@@ -1,6 +1,5 @@
 [
 {"a":"/sales/upload","t":"DATA_UPLOADING"},
 {"a":"/sales/portfolio-list","t":"portfolio-list"},
-{"a":"/sales/metric-list","t":"metric-list"},
-{"a":"/sales/data-export","t":"data-export"}
+{"a":"/sales/metric-list","t":"metric-list"}
 ]
