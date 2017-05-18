@@ -63,7 +63,6 @@ emptyHeader('Portfolio summary'); ?>
         <div class="col-lg-3">
                 <div id="ch-by-stakeholder" style="min-width: 210px; height: 350px; margin: 0 auto"></div>
         </div>  
-    </div>
 </div>
 <div class="row" id="stewardship">
         <div class="col-lg-2">
@@ -76,7 +75,6 @@ emptyHeader('Portfolio summary'); ?>
         <div class="col-lg-5">
                 <div id="ch-line" style="min-width: 210px; height: 350px; margin: 0 auto"></div>
         </div>
-    </div>
 </div>
 
 <?php
