@@ -188,10 +188,11 @@
 
             // echo "splitter: $spl<br>";
              
-             if (count($a)!=16)
+             $n_col = count($a);
+             if ($n_col<16 || $n_col>17)
              {  fclose($f);
                 unlink($tmp);
-                echo "<div class=\"alert alert-danger\">Wrong Company format!</div>";
+                echo "<div class=\"alert alert-danger\">Wrong Company format!  ($n_col)</div>";
                 echo ($h);
                 print_r($a);
                 die();
@@ -221,6 +222,7 @@
                 $r->pe = nullable ($a[13] );
                 $r->evebitda = nullable ($a[14] );
                 $r->payout = nullable ($a[15] );
+                if (isset($a[16]) && ($a[16]==1 || $a[16]=='true') ) $r->reviewed=1;
                 
                 try
                 { $db->insertObject('sales_companies',$r);
