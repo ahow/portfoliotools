@@ -69,7 +69,17 @@
        }  
        $this->res->info = T('SAVED');
     }
-    
+
+    function ajxSaveSummaryDescriptions()
+    {  $this->saveSettings('SummaryDescriptions');
+       echo json_encode($this->res);
+    }
+
+    function ajxLoadSummaryDescriptions()
+    {  $this->res->row = $this->loadSettings('PortfolioSummaries');
+       echo json_encode($this->res);
+    }
+  
     function ajxUpdateSummaryDescriptions()
     {  $db = $this->cfg->db;
        $params = (object)$_POST;
@@ -82,6 +92,8 @@
        }
        echo json_encode($this->res);
     }
+    
+    
 
     function ajxLoadPortfolioSummariesSettings()
     {  $this->res->row = $this->loadSettings('PortfolioSummaries');
