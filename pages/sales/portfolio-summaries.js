@@ -530,14 +530,6 @@ $(function(){
                     { $('#p-description').html(d.row.description);
                       $('#pfname').html(d.row.description);      
                     }
-                    if (d.row.bar!=undefined) renderBarChart(d.row.bar);
-                    if (d.row.line!=undefined) renderLineChart(d.row.line);
-                    if (d.row.comparison_id!=undefined) themeExposuresChart(d.row.portfolio_id, d.row.comparison_id);
-                    if (d.row.comparison_id!=undefined && st.metric_id!=undefined)                     
-                        socialChart(d.row.portfolio_id, d.row.comparison_id, st.metric_id);
-                    if (st.metrics!=undefined) metricsAnalysis(st.metrics, d.row.portfolio_id, d.row.comparison_id);
-                    if (st.esg_metric_id!=undefined) esgAnalysis2(d.row.portfolio_id, st.esg_metric_id, d.row.comparison_id); 
-                                       
                     ajx('/pages/sales/LoadSummaryDescriptions', {}, function(d){
                        var desc = d.row;
                         $('#pfsummary .sum-title').each(function(i, e){
@@ -547,6 +539,13 @@ $(function(){
                                 }           
                            });
                     });
+                    if (d.row.bar!=undefined) renderBarChart(d.row.bar);
+                    if (d.row.line!=undefined) renderLineChart(d.row.line);
+                    if (d.row.comparison_id!=undefined) themeExposuresChart(d.row.portfolio_id, d.row.comparison_id);
+                    if (d.row.comparison_id!=undefined && st.metric_id!=undefined)                     
+                        socialChart(d.row.portfolio_id, d.row.comparison_id, st.metric_id);
+                    if (st.metrics!=undefined) metricsAnalysis(st.metrics, d.row.portfolio_id, d.row.comparison_id);
+                    if (st.esg_metric_id!=undefined) esgAnalysis2(d.row.portfolio_id, st.esg_metric_id, d.row.comparison_id); 
                     
                     $('h3.sum-title:first').focus()
                     $('.w-save-desc').click(function(e){
