@@ -76,10 +76,11 @@
     }
 
     function ajxLoadSummaryDescriptions()
-    {  $this->res->row = $this->loadSettings('PortfolioSummaries');
+    {  $this->res->row = $this->loadSettings('SummaryDescriptions');
        echo json_encode($this->res);
     }
   
+    /*
     function ajxUpdateSummaryDescriptions()
     {  $db = $this->cfg->db;
        $params = (object)$_POST;
@@ -92,7 +93,7 @@
        }
        echo json_encode($this->res);
     }
-    
+    */
     
 
     function ajxLoadPortfolioSummariesSettings()
