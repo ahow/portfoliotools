@@ -46,7 +46,7 @@
     <label class="col-md-2" for="isin_matching">ISIN matching:</label>
     <input type="file" class="col-md-4" id="isin_matching" name="isin_matching">
     <div class="col-md-3"></div>
-    <a class="btn btn-primary col-md-3" href="">Download ISIN matching</a>
+    <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/isin-matching.csv">Download ISIN matching</a>
   </div>
   
   <div class="form-group">
