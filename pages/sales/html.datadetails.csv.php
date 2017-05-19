@@ -22,7 +22,7 @@ if ($this->inGroup('admin') || $this->inGroup('editor'))
       
  
       $fp = fopen('php://output', 'w');
-      fputcsv($fp, $h,',');
+      fputcsv($fp, $h,';');
       
       $last = 1;
       $row = array();
@@ -44,7 +44,7 @@ if ($this->inGroup('admin') || $this->inGroup('editor'))
                }
                $n+=3;
              }
-             fputcsv($fp, $row, ','); 
+             fputcsv($fp, $row, ';'); 
              $last = $r->division;
              $row = array();
              $pr = array();             
@@ -72,7 +72,7 @@ if ($this->inGroup('admin') || $this->inGroup('editor'))
        }
        $n+=3;
      }
-     fputcsv($fp, $row, ','); 
+     fputcsv($fp, $row, ';'); 
       
      fclose($fp);
      

@@ -56,7 +56,8 @@
      send_message(++$msg_num, $res);
     
      $ncol = count($a);
-     if ($ncol<7 || (($ncol-4) % 3)!=0)
+     // Support for old and new format
+     if ( $ncol<7 || ( (($ncol-4) % 3)!=0 && (($ncol-3) % 3)!=0) )
      {  fclose($f);
         unlink($tmp);
         $res->errmsg = 'Wrong Division details format!';
