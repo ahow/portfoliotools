@@ -750,13 +750,14 @@ from sales_divdetails d";
         $qr = $db->query($sql);
         $yr = $db->fetchSingle($qr);
         $params = (object)$_POST;
-        $debug = true;
+        $debug = false;
         
         $sql = "select headers from sales_exposure";
         $qr = $db->query($sql);
         $ha = explode(';', $db->fetchSingleValue($qr));
         
         $db->query("set @year=:year;", array('year'=>$yr->maxyear));
+        if ($debug) write_log("set @year=".$yr->maxyear);
         
         // ----- Calc subsector values ---------------------
         $sql = "CREATE TEMPORARY TABLE tmp_subsector_total (subsector  varchar(100), total double, index(subsector)) ENGINE=MEMORY;";
@@ -766,13 +767,12 @@ from sales_divdetails d";
 select c.subsector, sum(d.sales)
 from sales_companies c
 join sales_divdetails d on c.cid = d.cid and d.syear=@year
-group by 1;";
-        if ($debug) $this->res->sql = $sql;
+group by 1;";        
         $db->query($sql);
         
-        $sql = "CREATE TEMPORARY TABLE tmp_subsector_values (subsector  varchar(100), p1 double, p2 double, p3 double, p4 double, index(subsector)) ENGINE=MEMORY;";
-        if ($debug) $this->res->sql = $sql;
+        $sql = "CREATE TEMPORARY TABLE tmp_subsector_values (subsector  varchar(100), p1 double, p2 double, p3 double, p4 double, index(subsector)) ENGINE=MEMORY;";        
         $db->query($sql);
+        if ($debug) write_log(__LINE__);
         
         $sql = "insert into tmp_subsector_values
 select 
@@ -783,9 +783,10 @@ join sales_divdetails d on c.cid = d.cid and d.syear=@year
 join sales_sic s on d.sic=s.id
 join tmp_subsector_total t on c.subsector=t.subsector
 group by 1;";
-       // write_log($sql);
-       if ($debug) $this->res->sql = $sql;
+       // write_log($sql);       
+       if ($debug) write_log($sql);
        $db->query($sql);
+       if ($debug) write_log(__LINE__);
        
         
         
