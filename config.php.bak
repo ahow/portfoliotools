@@ -25,6 +25,7 @@
       public $email_templates = array('signup','evnamegl','vipreserv');
       public $md_conf = 1;
       public $pg_rows = 15;
+      public $csv_delim = ',';  // CSV exporting delimeter
 
   }
 ?>

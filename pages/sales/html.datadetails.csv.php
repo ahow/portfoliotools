@@ -1,12 +1,15 @@
 <?php
 
 include('../lib/mime.php');
-  
+
 if ($this->inGroup('admin') || $this->inGroup('editor'))
 { 
   output_headers('DivisionDetails-'.date('Y-md-His').'.csv');
-  //if ($this->inGroup('admin'))
-  //{  
+  
+  if (isset($this->csv_delim)) 
+    $delim = $this->csv_delim;
+  else $delim=',';
+  
       $db = $this->db;
       $qr=$db->query('select min(syear) as minyear, max(syear) as maxyear from sales_divdetails');
       $yr = $db->fetchSingle($qr); 
@@ -20,9 +23,9 @@ if ($this->inGroup('admin') || $this->inGroup('editor'))
       
       $qr=$db->query('select cid,division,syear,me,sic,sales from sales_divdetails order by 1,2,3 desc');
       
- 
+
       $fp = fopen('php://output', 'w');
-      fputcsv($fp, $h,';');
+      fputcsv($fp, $h, $delim);
       
       $last = 1;
       $row = array();
@@ -44,7 +47,7 @@ if ($this->inGroup('admin') || $this->inGroup('editor'))
                }
                $n+=3;
              }
-             fputcsv($fp, $row, ';'); 
+             fputcsv($fp, $row, $delim); 
              $last = $r->division;
              $row = array();
              $pr = array();             
@@ -72,7 +75,7 @@ if ($this->inGroup('admin') || $this->inGroup('editor'))
        }
        $n+=3;
      }
-     fputcsv($fp, $row, ';'); 
+     fputcsv($fp, $row,  $delim); 
       
      fclose($fp);
      
