@@ -750,6 +750,7 @@ from sales_divdetails d";
         $qr = $db->query($sql);
         $yr = $db->fetchSingle($qr);
         $params = (object)$_POST;
+        $debug = true;
         
         $sql = "select headers from sales_exposure";
         $qr = $db->query($sql);
@@ -766,9 +767,11 @@ select c.subsector, sum(d.sales)
 from sales_companies c
 join sales_divdetails d on c.cid = d.cid and d.syear=@year
 group by 1;";
+        if ($debug) $this->res->sql = $sql;
         $db->query($sql);
         
         $sql = "CREATE TEMPORARY TABLE tmp_subsector_values (subsector  varchar(100), p1 double, p2 double, p3 double, p4 double, index(subsector)) ENGINE=MEMORY;";
+        if ($debug) $this->res->sql = $sql;
         $db->query($sql);
         
         $sql = "insert into tmp_subsector_values
@@ -781,6 +784,7 @@ join sales_sic s on d.sic=s.id
 join tmp_subsector_total t on c.subsector=t.subsector
 group by 1;";
        // write_log($sql);
+       if ($debug) $this->res->sql = $sql;
        $db->query($sql);
        
         
