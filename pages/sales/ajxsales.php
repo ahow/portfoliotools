@@ -501,9 +501,17 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
           $this->res->dbg.="\nSQL: $sql\n\n";
           $this->res->dbg.="Params: ".print_r($prm, true)."\n";
         } 
-
+        
+        $head = true;
+        
         while ($r = $db->fetchSingle($qr))
-        {  if ($debug && $r) $this->res->dbg.=implode("\t",(array)$r)."\n";
+        {  if ($debug) 
+           {   if ($head) 
+               { $this->res->dbg.=implode("\t",array_keys((array)$r))."\n";
+                 $head = false;
+               }
+               $this->res->dbg.=implode("\t",(array)$r)."\n";
+           }
            $ctot = $ctotal[$r->cid];
            if ($ctot==0) $pr = NULL; else
            $pr = $r->pofsale = ($r->dsales / $ctot) * 100.0;           
