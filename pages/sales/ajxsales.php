@@ -305,6 +305,7 @@ order by 3 desc,4 desc";
         $region = '';        
         $wsize = '';
         $region = '';
+        $debug = true;
         
         $prm = new stdClass();
         
@@ -325,6 +326,7 @@ order by 3 desc,4 desc";
            $prm->min_size = $params->min_size;
         }
         
+        if ($debug) $this->res->dbg = '';
         
         // Stability calculations first we will get max and min year
         $sql = 
@@ -335,6 +337,7 @@ join sales_companies c on  d.cid = c.cid
 where d.sic=:sic $region $wsize";
         $qr = $db->query($sql, $prm);
         $yr = $db->fetchSingle($qr);
+        if ($debug) $this->res->dbg.="years: $yr->minyear - $yr->maxyear\n";        
         
       
         

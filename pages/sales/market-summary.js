@@ -68,11 +68,18 @@ $(function(){
     var dsic, dsubsec, last_sic = null;
     var views = new htviewCached();
     
+    function drawDebug(d)
+    {   if (d.dbg!=undefined)
+        { $('#summary').after('<pre>'+d.dbg+'</pre>')
+        }
+    }
+    
     function loadSubsector(sub)
     {  ajx('/pages/sales/MarketSummarySubsector',{subsector:sub, region:$('#region').val(),
             min_size:$('#minsize').val()
         },function(d){
                drawSummary(d);
+               drawDebug(d);
        });
     }
 
@@ -81,6 +88,7 @@ $(function(){
             min_size:$('#minsize').val()
         },function(d){
                drawSIC(d);
+               drawDebug(d);
        });
     }
         
