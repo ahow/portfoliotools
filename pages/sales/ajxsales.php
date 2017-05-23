@@ -326,7 +326,7 @@ order by 3 desc,4 desc";
            $prm->min_size = $params->min_size;
         }
         
-        if ($debug) $this->res->dbg = '';
+        if ($debug) $this->res->dbg = "-------------- Stability ------------------\n";
         
         // Stability calculations first we will get max and min year
         $sql = 
@@ -337,7 +337,7 @@ join sales_companies c on  d.cid = c.cid
 where d.sic=:sic $region $wsize";
         $qr = $db->query($sql, $prm);
         $yr = $db->fetchSingle($qr);
-        if ($debug) $this->res->dbg.="years: $yr->minyear - $yr->maxyear\n";        
+        if ($debug) $this->res->dbg.="years: $yr->minyear - $yr->maxyear\n\n";
         
       
         
@@ -356,11 +356,15 @@ order by d.sales desc
 limit 20";
                 $years[$y] = array();
                 $qr = $db->query($sql, $prm);
-                $i=1;
+                $i=1;                
+                if ($debug) $this->res->dbg.="\nSQL: $sql\n\n";
+                if ($debug) $this->res->dbg.="Params: ".print_r($prm, true)."\n";
                 while ( $r = $db->fetchSingle($qr) )
                 {   $years[$y][$r->cid] = $i;
                     $i++;
+                    if ($debug) $this->res->dbg.=implode("\t",(array)$r)."\n";
                 }
+                
             }
       
                 
@@ -387,9 +391,13 @@ limit 20";
                   $sum+=$df;
                 }
             }
+            if ($debug) $this->res->dbg.="\nChanges: ".print_r($changes, true);
             // log stability 
             // write_log(print_r($years, true));
             // write_log(print_r($changes, true));
+            
+            if ($debug) $this->res->dbg.="n = $n   sum = $sum\n";
+            
             if ($n!=0) $stability = $sum/$n;
             else $stability='NULL';
             //write_log("stability = $stability");
@@ -404,6 +412,14 @@ limit 20";
         $qr = $db->query($sql, $prm);
         $top3sum = $db->fetchSingleValue($qr);
         if (empty($top3sum)) $top3sum = '0';
+        
+        if ($debug)
+        { $this->res->dbg.="\nSQL: $sql\n\n";
+          $this->res->dbg.="Params: ".print_r($prm, true)."\n";
+          $this->res->dbg.="top3sum: $top3sum\n";
+        }
+        
+                
 
         $sql = "select sum(t.sales) from (select d.sales from sales_divdetails d 
         join sales_companies c on  d.cid = c.cid
@@ -412,6 +428,11 @@ limit 20";
         $top5sum = $db->fetchSingleValue($qr);
         if (empty($top5sum)) $top5sum = '0';
         
+        if ($debug)
+        { $this->res->dbg.="\nSQL: $sql\n\n";
+          $this->res->dbg.="Params: ".print_r($prm, true)."\n";
+          $this->res->dbg.="top3sum: $top5sum\n";
+        }        
         
         // get total sales of companies with selected SIC number and max year
         $sql = "select dd.cid, sum(sales) as ctotal
@@ -429,6 +450,13 @@ group by dd.cid";
         while ($r = $db->fetchSingle($qr))
         {  $ctotal[$r->cid] = $r->ctotal;
         }
+        if ($debug)
+        { $this->res->dbg.="----- Get total sales of companies------\n";
+          $this->res->dbg.="\nSQL: $sql\n\n";
+          $this->res->dbg.="Params: ".print_r($prm, true)."\n";
+          $this->res->dbg.="ctotal: ".print_r($ctotal, true)."\n";
+        }        
+
        // write_log(print_r($ctotal, true));
        //  return $this->error("Stability = $stability", true); 
 
@@ -468,8 +496,15 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
  estimate market value attributable to that SIC ie 350, 
  whereas the other measures would be weighted average values. 
          */
+        if ($debug)
+        { $this->res->dbg.="----- Get companies data ------\n";
+          $this->res->dbg.="\nSQL: $sql\n\n";
+          $this->res->dbg.="Params: ".print_r($prm, true)."\n";
+        } 
+
         while ($r = $db->fetchSingle($qr))
-        {  $ctot = $ctotal[$r->cid];
+        {  if ($debug && $r) $this->res->dbg.=implode("\t",(array)$r)."\n";
+           $ctot = $ctotal[$r->cid];
            if ($ctot==0) $pr = NULL; else
            $pr = $r->pofsale = ($r->dsales / $ctot) * 100.0;           
            $fin->ape+= $pr * $r->pe;
@@ -498,6 +533,11 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
             $fin->aevebitda /= $proc_sum;
             $fin->apayout /= $proc_sum;
         }
+
+        if ($debug)
+        {  $this->res->dbg.="\nfin: ".print_r($fin, true)."\n";
+        } 
+
         $fin->stability = $stability;
         $fin->top3sum = $top3sum;
         $fin->top5sum = $top5sum;
