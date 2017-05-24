@@ -505,16 +505,17 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
         $head = true;
         
         while ($r = $db->fetchSingle($qr))
-        {  if ($debug) 
+        {  
+           $ctot = $ctotal[$r->cid];
+           if ($ctot==0) $pr = NULL; else
+           $pr = $r->pofsale = ($r->dsales / $ctot) * 100.0;           
+           if ($debug) 
            {   if ($head) 
                { $this->res->dbg.=implode("\t",array_keys((array)$r))."\n";
                  $head = false;
                }
                $this->res->dbg.=implode("\t",(array)$r)."\n";
            }
-           $ctot = $ctotal[$r->cid];
-           if ($ctot==0) $pr = NULL; else
-           $pr = $r->pofsale = ($r->dsales / $ctot) * 100.0;           
            $fin->ape+= $pr * $r->pe;
            $fin->asales_growth += $pr * $r->sales_growth;
            $fin->aroic += $pr * $r->roic;
