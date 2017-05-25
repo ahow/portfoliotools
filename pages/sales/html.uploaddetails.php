@@ -57,15 +57,23 @@
     
      $ncol = count($a);
      // Support for old and new format
-     if ( $ncol<7 || ( (($ncol-4) % 3)!=0 && (($ncol-3) % 3)!=0) )
+     // if ( $ncol<7 || ( (($ncol-4) % 3)!=0 && (($ncol-3) % 3)!=0) )
+     if ( $ncol<9 || (($ncol-3) % 6)!=0 )
      {  fclose($f);
         unlink($tmp);
-        $res->errmsg = 'Wrong Division details format!';
+        $res->errmsg = 'Wrong Division details format! ('."$ncol)";
         send_message('ERROR', $res);
         die();
      }
      
      $db = $this->db;
+     
+     $qr = $db->query('select count(*) from sales_sic');
+     if ($db->fetchSingleValue($qr)==0)
+     {  $res->errmsg = "SIC Desc is empty! Upload it first!";
+        send_message('ERROR', $res);
+        die();
+     }
 
      $res->stage = 'db set';
      send_message(++$msg_num, $res);
@@ -91,6 +99,7 @@
      $res->stage = 'Import started';
      send_message(++$msg_num, $res);
      
+     
      while ($a = fgetcsv($f,0,$spl) )
      {  $division = trim( $a[0] );
         $cid = trim( $a[1] );
@@ -101,7 +110,7 @@
            send_message(++$msg_num, $res);
         }
         
-        for ($i=3; $i<$ncol; $i+=3)
+        for ($i=3; $i<$ncol; $i+=6)
         {   $r = new stdClass();
            //  $r->div_sale_id = $sale_id;
             $r->division = $division;
@@ -111,7 +120,14 @@
             if ($r->me!='' && isset($a[$i+1]))
             {
                 $r->sic = trim( $a[$i+1] );
-                $r->sales =str_replace(',','.', trim( $a[$i+2] ) );
+                $r->sales =str_replace(',','.', trim( $a[$i+2] ) );                
+                $r->ebit =str_replace(',','.', trim( $a[$i+3] ) );
+                if ($r->ebit=='') $r->ebit=NULL;
+                $r->assets =str_replace(',','.', trim( $a[$i+4] ) );
+                if ($r->assets=='') $r->assets=NULL;
+                $r->capex =str_replace(',','.', trim( $a[$i+5] ) );
+                if ($r->capex=='') $r->capex=NULL;
+                
                 if ($r->sales=='') $r->sales=NULL;
                 try
                 { 
@@ -129,6 +145,7 @@
         }
 
      }
+    
      $res->proc = 100.0;
      send_message(++$msg_num, $res);
      $res->uploaded = $uploaded;     
