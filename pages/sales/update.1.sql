@@ -1,6 +1,5 @@
 alter table sales_divdetails modify sales double;
 
-
 -- SALES;MARKET CAP;Sales growth;ROIC;PE;EVEBITDA;Payout
 ALTER TABLE sales_companies add sales double;
 ALTER TABLE sales_companies add market_cap double;
@@ -103,3 +102,6 @@ CREATE TABLE sales_portfolio_summaries
   foreign key (portfolio_id) references sales_portfolio(id) on delete CASCADE
 ) DEFAULT CHARSET=utf8;
 
+alter table sales_divdetails add ebit double;
+alter table sales_divdetails add assets double;
+alter table sales_divdetails add capex double;
