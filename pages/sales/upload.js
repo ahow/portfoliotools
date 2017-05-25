@@ -3,7 +3,7 @@ function taskProgress(selector, scriptpath)
     var onsuccess = null;
 
     function start() 
-    {   console.log('started: '+selector+' '+scriptpath);
+    {   // console.log('started: '+selector+' '+scriptpath);
         es = new EventSource(scriptpath);
           
         //a message is received
@@ -14,12 +14,15 @@ function taskProgress(selector, scriptpath)
               
             if (e.lastEventId == 'CLOSE') 
             {   $(selector+' .progress-bar').removeClass('active');
-                console.log('Received CLOSE closing');
+                // console.log('Received CLOSE closing');
                 es.close();
                 if (onsuccess!=null) onsuccess();
             } 
             else if (e.lastEventId == 'ERROR')
             {   setError(res.errmsg);
+            }
+            else if (e.lastEventId == 'LINE_ERR')
+            {  console.log(res);
             }
             else 
             {
