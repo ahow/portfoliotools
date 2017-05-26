@@ -120,6 +120,7 @@
             if ($r->me!='' && isset($a[$i+1]))
             {
                 $r->sic = trim( $a[$i+1] );
+                if ($r->sic=='') $r->sic=-1; 
                 $r->sales =str_replace(',','.', trim( $a[$i+2] ) );                
                 $r->ebit =str_replace(',','.', trim( $a[$i+3] ) );
                 if ($r->ebit=='') $r->ebit=NULL;
