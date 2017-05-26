@@ -112,8 +112,8 @@
              
              if ($clear) 
              {  $db->query('delete from sales_divdetails');
-                $db->query('delete from sales_sic');
-                $db->query('delete from sales_industry_groups');
+                $db->query('delete from sales_sic where id>0');
+                $db->query('delete from sales_industry_groups where id>0');
              }
              
              $ha = array_slice($a,7);

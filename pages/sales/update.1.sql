@@ -105,3 +105,12 @@ CREATE TABLE sales_portfolio_summaries
 alter table sales_divdetails add ebit double;
 alter table sales_divdetails add assets double;
 alter table sales_divdetails add capex double;
+
+insert into sales_industry_groups 
+(id, industry_group, division, major_group) values
+(-1, 'Unclassified','Unclassified','Unclassified');
+
+insert into sales_sic (id, name, description, industry_group_id)
+values (-1, 'Unclassified','Unclassified', -1);
+
+
