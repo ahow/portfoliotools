@@ -98,7 +98,10 @@
      
      $res->stage = 'Import started';
      send_message(++$msg_num, $res);
-     
+     $fid = date('YmdHis').'.'.rand(1,10000);
+     $fn = '../uploads/errlog-'.$fid;
+     $fe = fopen($fn, 'w+');
+     $res->errors = 0;
      
      while ($a = fgetcsv($f,0,$spl) )
      {  $division = trim( $a[0] );
@@ -119,8 +122,11 @@
             $r->me = trim( $a[$i] );
             if ($r->me!='' && isset($a[$i+1]))
             {
-                $r->sic = trim( $a[$i+1] );
+                $sic = $a[$i+1];
+                $r->sic = str_replace(',','.', trim( $sic ) );
                 if ($r->sic=='') $r->sic=-1; 
+                else $r->sic=round($r->sic);
+                
                 $r->sales =str_replace(',','.', trim( $a[$i+2] ) );                
                 $r->ebit =str_replace(',','.', trim( $a[$i+3] ) );
                 if ($r->ebit=='') $r->ebit=NULL;
@@ -138,19 +144,31 @@
                 } catch(Exception $e)
                 {    $d = new stdClass();
                      $d->message = $e->getMessage();
+                     $err = 'Unknown';
+                     if (strpos($d->message, 'FOREIGN KEY (`sic`)')!==false) $err = 'SIC not found'; else
+                     if (strpos($d->message, 'Duplicate entry')!==false) $err = 'Duplicate entry';
                      $d->code = $e->getCode();
                      $d->line = $lines;
-                     send_message('LINE_ERR', $d);
+                     $d->row = $r;
+                     
+                     if ($d->code==23000 && ($clear || $err=='SIC not found') )
+                     {  fwrite($fe, "Error: $err, Line: $lines, year: $r->syear, me: $r->me, sic: $sic\n");
+                        $res->errors++;
+                        send_message('LINE_ERR', $d);
+                     }
                 }
             }
         }
 
      }
+     
+     fclose($fe);
     
      $res->proc = 100.0;
      send_message(++$msg_num, $res);
      $res->uploaded = $uploaded;     
-     $res->errors = $total_lines-$uploaded-1;
+     // $res->errors = $total_lines-$uploaded-1;
+     $res->errfile = $fid;
      $res->stage = 'Import finished!';
      send_message('CLOSE', $res);
      unlink($tmp);

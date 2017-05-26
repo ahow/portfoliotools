@@ -17,6 +17,9 @@ function taskProgress(selector, scriptpath)
                 // console.log('Received CLOSE closing');
                 es.close();
                 if (onsuccess!=null) onsuccess();
+                if (res.errors>0)
+                { setError('Errors: '+res.errors+' <a href="/html.php/pages/sales/errors/'+res.errfile+'">Download error log</a>');
+                }
             } 
             else if (e.lastEventId == 'ERROR')
             {   setError(res.errmsg);
