@@ -152,7 +152,7 @@
                      $d->row = $r;
                      
                      if ($d->code==23000 && ($clear || $err=='SIC not found') )
-                     {  fwrite($fe, "Error: $err, Line: $lines, year: $r->syear, me: $r->me, sic: $sic\n");
+                     {  fwrite($fe, "Error: $err, Line: $lines, CID: $cid, year: $r->syear, me: $r->me, sic: $sic\n");
                         $res->errors++;
                         send_message('LINE_ERR', $d);
                      }
