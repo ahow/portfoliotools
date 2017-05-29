@@ -32,7 +32,7 @@
     // afterLoad trigger
     function afterLoadSIC()
     {   $db = $this->cfg->db;
-        $qr = $db->query('select headers from  sales_exposure');
+        $qr = $db->query('select headers from sales_exposure');
         $a = explode(';', $db->fetchSingleValue($qr));
         $cols = array();
         foreach ($a as $k=>$v) $cols[]="e$k";
@@ -41,9 +41,12 @@
         foreach($this->res->rows as $r)
         {  $d = explode(';', $r->exposure);
            foreach ($cols as $k=>$v) 
-           {   $nv = $d[$k];
-               if (is_numeric($nv) && 1*$nv>0) $nv='+'.$nv;
-               $r->$v = $nv;
+           {   $k = trim($k);
+               if (isset($d[$k]))
+               {   $nv = $d[$k];
+                   if (is_numeric($nv) && 1*$nv>0) $nv='+'.$nv;
+                   $r->$v = $nv;
+               }
            }
         }
     }
