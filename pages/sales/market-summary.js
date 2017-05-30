@@ -33,11 +33,11 @@ $(function(){
     {  var selector='#summary';
        var s = '<table class="table table-striped">';
         total = 0.0;
-        s+='<tr><th>SIC</th><th>Name</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
+        s+='<tr><th>SIC</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
         for (var i=0; i<d.rows.length; i++)
         {   var r = d.rows[i];
             if (r!=undefined)
-            {   s+='<tr><td>'+r.sic+'</td><td>'+r.name+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
+            {   s+='<tr><td>'+r.sic+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
                 +toFloat((100.0*r.top3sum)/(1.0*r.tsales), 0)+'</td><td>'
                 +toFloat((100.0*r.top5sum)/(1.0*r.tsales), 0)+'</td><td>'
                 +toFloat(r.stability, 1)+'</td><td>'+toFloat(r.asales_growth,1)+'</td><td>'
