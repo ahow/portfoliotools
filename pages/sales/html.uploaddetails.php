@@ -151,11 +151,16 @@
                      $d->line = $lines;
                      $d->row = $r;
                      
-                     if ($d->code==23000 && ($clear || $err=='SIC not found') )
+                     if ($d->code==23000 && ($clear || $err=='SIC not found'))
                      {  fwrite($fe, "Error: $err, Line: $lines, CID: $cid, year: $r->syear, me: $r->me, sic: $sic\n");
                         $res->errors++;
                         send_message('LINE_ERR', $d);
+                     } else
+                     if ($err=='Unknown')
+                     {  $res->errors++;
+                        fwrite($fe, "Error: $err, Line: $lines, CID: $cid, year: $r->syear, me: $r->me, sic: $sic, Errmsg:$d->message \n");
                      }
+                     
                 }
             }
         }
