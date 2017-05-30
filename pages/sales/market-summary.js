@@ -30,7 +30,8 @@ $(function(){
     }
 
     function drawSIC(d)
-    {  var selector='#summary';
+    {  $('div.p-chart').css('display','');
+       var selector='#summary';
        var s = '<table class="table table-striped">';
         total = 0.0;
         s+='<tr><th>SIC</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
@@ -70,7 +71,7 @@ $(function(){
     
     function drawDebug(d)
     {   if (d.dbg!=undefined)
-        { $('#summary').after('<pre>'+d.dbg+'</pre>')
+        { $('#debug').html('<pre>'+d.dbg+'</pre>')
         }
     }
     
@@ -196,6 +197,8 @@ $(function(){
         });
     });
     
- 
+    $('.b-debug').click(function(){
+            $('#debug').css('display','');
+    });
     
 });

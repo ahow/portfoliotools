@@ -15,8 +15,30 @@
     <div class="row">
         <div class="col-lg-6"><?=$f->search3dot('subsec','subsector')?></div>
     </div>
+    
     <div class="row" id="summary">
     </div>
+    
+    <div class="row p-chart" style="display:none">
+        <?php $list = 'Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed'; ?>
+        <div class="col-lg-4"><?=$f->listSelect('LHS',$list)?></div>
+        <div class="col-lg-4"><?=$f->listSelect('RHS',$list)?></div>
+        <div class="col-lg-4">
+            <div class="btn-group">
+                <button style="margin-top:25px" class="btn btn-primary b-vchart">View Chart</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4"><button style="margin-top:25px" class="btn b-debug pull-right">Debug info ...</button></div>
+    </div>
+        
+    <div class="row" id="debug" style="display:none">
+    </div>
+    
 </div>
 <div id="search_sic"></div>
 <div id="search_subsec"></div>
