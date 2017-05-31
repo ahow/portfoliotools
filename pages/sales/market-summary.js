@@ -29,6 +29,8 @@ $(function(){
         $(selector).html(s);
     }
 
+   
+
     function drawSIC(d)
     {  $('div.p-chart').css('display','');
        var selector='#summary';
@@ -199,6 +201,79 @@ $(function(){
     
     $('.b-debug').click(function(){
             $('#debug').css('display','');
+    });
+    
+    /* ------------------ Chart ---------------------------*/
+    
+     function drawChart(d)
+    {   Highcharts.chart('chart', {
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: d.title
+            },
+            xAxis: [{
+                categories: d.categories,
+                crosshair: true
+           }],
+            yAxis: [{ // Primary yAxis
+                title: {
+                    text: d.nameL,
+                },
+                opposite: false
+
+            }, 
+            { // Secondary yAxis
+                gridLineWidth: 0,
+                title: {
+                    text: d.nameR
+                },
+                labels: {
+                    style: {
+                        color: Highcharts.getOptions().colors[1]
+                    }
+                },
+                opposite: true
+            }],
+            tooltip: {
+                shared: true
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                x: 80,
+                verticalAlign: 'top',
+                y: 55,
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+            },
+            series: [{
+                name: d.nameL,
+                type: 'spline',
+                yAxis: 1,
+                data: d.data[0],
+                marker: {
+                    enabled: true
+                }
+            }, {
+                name: d.nameR,
+                type: 'spline',
+                data: d.data[1],
+                marker: {
+                    enabled: true
+                }
+            }]
+        });
+    }
+    
+    
+    $('.b-vchart').click(function(){
+        var l = (1*$('#LHS').val())-1;
+        var r = (1*$('#RHS').val())-1;
+        var tl = $('#LHS option')[l].innerHTML;
+        var rl = $('#RHS option')[r].innerHTML;
+        drawChart({title:tl+' vs '+rl, nameL:tl, nameR:rl, categories:[2013,2014,2015,2016,2017], data:[[1016, 1016, 1015.9, 1015.5, 1012.3],[7.0, 6.9, 9.5, 14.5, 18.2]] });
     });
     
 });

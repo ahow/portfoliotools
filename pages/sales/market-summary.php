@@ -32,7 +32,7 @@
     
     <div class="row">
         <div class="col-lg-12">
-             <div id="ch-social" style="min-width: 210px; height: 350px; margin: 0 auto"></div>
+             <div id="chart" style="min-width: 210px; height: 350px; margin: 0 auto"></div>
         </div>
     </div>
 
