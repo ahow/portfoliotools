@@ -31,7 +31,7 @@
   {  var $path = null;
      var $cfg = null;
     
-     function wPage($cfg, $path,$seg=null)
+     function __construct($cfg, $path,$seg=null)
      { if (!file_exists($path)) 
        {   header("HTTP/1.0 404 Not Found");
            $cfg->setError('Page not found '.$path, 404);
@@ -60,7 +60,7 @@
     var $path = null;
     var $data = null;
 
-    function wMod($cfg, $path, $data='')
+    function __construct($cfg, $path, $data='')
     { $this->cfg = $cfg;
       $this->path = $path;
       if ($data!='')

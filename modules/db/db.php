@@ -3,7 +3,7 @@
    
    class db extends wMod
    { var $db;
-     function db($cfg, $path, $data='')
+     function __construct($cfg, $path, $data='')
      { $this->cfg = $cfg;
        $this->path = $path;
        $db = null;

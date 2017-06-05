@@ -145,7 +145,7 @@
     { if (isset($_POST['logout']) && ($_POST['logout']==1) ) $this->clearSession();
     }
     
-     function auth($cfg, $path, $data='')
+     function __construct($cfg, $path, $data='')
      { $this->cfg = $cfg;
        $this->path = $path;
        
