@@ -279,7 +279,31 @@ $(function(){
 		   return d;
 		}
 		
-		var calc = [total_sales];
+		function top3()
+		{  var d = [];
+		   return d;
+		}
+		
+				
+		function top5()
+		{  var d = [];
+		   return d;
+		}
+				
+		function stability()
+		{  var d = [];
+		   return d;
+		}
+		
+		function sales_growth()
+		{  var d = [null];
+		   for (var i=1; i<sic_totals.length; i++)
+		   { d.push(100*( ( (1.0*sic_totals[i].tsales) / (1.0*sic_totals[i-1].tsales) )-1 ));
+		   }
+		   return d;
+		}
+			
+		var calc = [total_sales,top3,top5,stability,sales_growth];
 		
 		
 		var d = {l:null, r:null};
