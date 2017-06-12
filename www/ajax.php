@@ -8,8 +8,8 @@
   class wAjax extends wMod
   {  var $res;
      var $seg;
-     function wAjax($cfg, $path,$seg=null)
-     {  parent::wMod($cfg, $path, $seg);
+     function __construct($cfg, $path,$seg=null)
+     {  parent::__construct($cfg, $path, $seg);
         $this->seg = $seg;
         $this->res = new stdClass();
         $this->res->error = false;
