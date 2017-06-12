@@ -295,6 +295,11 @@ $(function(){
 		   return d;
 		}
 		
+		function blank()
+		{  var d = [];
+		   return d;
+		}
+		
 		function sales_growth()
 		{  var d = [null];
 		   for (var i=1; i<sic_totals.length; i++)
@@ -302,8 +307,16 @@ $(function(){
 		   }
 		   return d;
 		}
+		
+		function sales_growth_3yr()
+		{  var d = [null,null,null];
+		   for (var i=3; i<sic_totals.length; i++)
+		   { d.push(100*( Math.pow( (1.0*sic_totals[i].tsales) / (1.0*sic_totals[i-3].tsales), 1/3 )-1 ));
+		   }
+		   return d;
+		}
 			
-		var calc = [total_sales,top3,top5,stability,sales_growth];
+		var calc = [total_sales,top3,top5,stability,sales_growth,blank,blank,blank,sales_growth_3yr];
 		
 		
 		var d = {l:null, r:null};
