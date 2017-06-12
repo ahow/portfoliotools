@@ -36,7 +36,8 @@ function taskProgress(selector, scriptpath)
             }
         });
           
-        es.addEventListener('error', function(e){           
+        es.addEventListener('error', function(e){
+			console.log(e);           
             setError('Import Error occurred!');
             es.close();
         });

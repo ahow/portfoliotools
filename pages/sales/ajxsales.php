@@ -509,7 +509,8 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
         
         while ($r = $db->fetchSingle($qr))
         {  
-           $ctot = $ctotal[$r->cid];
+           $ctot = 0;
+           if (isset($ctotal[$r->cid])) $ctot=$ctotal[$r->cid];
            if ($ctot==0) $pr = NULL; else
            $pr = $r->pofsale = ($r->dsales / $ctot) * 100.0;           
            if ($debug) 
