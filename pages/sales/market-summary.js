@@ -357,8 +357,16 @@ $(function(){
 		   return d;
 		}
 			
+		function asset_growth_3yr()
+		{  var d = [null,null,null];
+		   for (var i=3; i<sic_totals.length; i++)
+		   { d.push(100*( Math.pow( (1.0*sic_totals[i].tassets) / (1.0*sic_totals[i-3].tassets), 1/3 )-1 ));
+		   }
+		   return d;
+		}
+		
 		var calc = [total_sales,top3,top5,stability,sales_growth,blank,blank,blank,sales_growth_3yr,
-		ebit_growth, ebit_growth_3yr, ebit_margin, roa, asset_growth];
+		ebit_growth, ebit_growth_3yr, ebit_margin, roa, asset_growth, asset_growth_3yr];
 		
 		
 		var d = {l:null, r:null};
