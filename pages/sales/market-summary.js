@@ -266,21 +266,57 @@ $(function(){
             }]
         });
     }
+   
+    var sic_totals = null;
     
+    function drawSicTotals(l,r)
+    {   
+		function total_sales()
+		{  var d = [];
+		   for (var i=0; i<sic_totals.length; i++)
+		   { d.push(1.0*sic_totals[i].tsales);
+		   }
+		   return d;
+		}
+		
+		var calc = [total_sales];
+		
+		
+		var d = {l:null, r:null};
+		if (calc[l]!=undefined) d.l = calc[l]();
+		if (calc[r]!=undefined) d.r = calc[r]();
+		
+		var categories = [];
+		
+		for (var i=0; i<sic_totals.length; i++)
+	    {   categories.push(sic_totals[i].syear);
+		}
+	
+		var tl = $('#LHS option')[l].innerHTML;
+        var rl = $('#RHS option')[r].innerHTML;
+        drawChart({title:tl+' vs '+rl, nameL:tl, nameR:rl, categories:categories, data:[d.l, d.r] });
+		console.log(r);	
+	}
     
     $('.b-vchart').click(function(){
 		
-		ajx('/pages/sales/MarketSummarySicTotals',{sic:last_sic, region:$('#region').val(),
-            min_size:$('#minsize').val()
-        },function(d){
-               console.log(d);
-        });
-       
-        var l = (1*$('#LHS').val())-1;
+		var l = (1*$('#LHS').val())-1;
         var r = (1*$('#RHS').val())-1;
-        var tl = $('#LHS option')[l].innerHTML;
-        var rl = $('#RHS option')[r].innerHTML;
-        drawChart({title:tl+' vs '+rl, nameL:tl, nameR:rl, categories:[2013,2014,2015,2016,2017], data:[[1016, 1016, 1015.9, 1015.5, 1012.3],[7.0, 6.9, 9.5, 14.5, 18.2]] });
+        
+		if ($('#sic_code input').val()!='')
+		{	
+			//if (sic_totals==null)
+			//{ 
+				ajx('/pages/sales/MarketSummarySicTotals',{sic:last_sic, region:$('#region').val(),
+					min_size:$('#minsize').val()
+				},function(d){
+					   sic_totals = d.rows;
+					   drawSicTotals(l,r)
+				});
+			//} else drawSicTotals(l,r);
+	    }
+       
+       
     });
     
 });
