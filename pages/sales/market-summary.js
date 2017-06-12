@@ -324,9 +324,25 @@ $(function(){
 		   }
 		   return d;
 		}
+		
+		function ebit_growth_3yr()
+		{  var d = [null,null,null];
+		   for (var i=3; i<sic_totals.length; i++)
+		   { d.push(100*( Math.pow( (1.0*sic_totals[i].tebit) / (1.0*sic_totals[i-3].tebit), 1/3 )-1 ));
+		   }
+		   return d;
+		}
+		
+		function ebit_margin()
+		{  var d = [];
+		   for (var i=0; i<sic_totals.length; i++)
+		   { d.push(100*( ( (1.0*sic_totals[i].tebit) / (1.0*sic_totals[i].tsales) ) ));
+		   }
+		   return d;
+		}
 			
 		var calc = [total_sales,top3,top5,stability,sales_growth,blank,blank,blank,sales_growth_3yr,
-		ebit_growth];
+		ebit_growth, ebit_growth_3yr, ebit_margin];
 		
 		
 		var d = {l:null, r:null};
