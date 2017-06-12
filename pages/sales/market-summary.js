@@ -251,7 +251,7 @@ $(function(){
             series: [{
                 name: d.nameL,
                 type: 'spline',
-                yAxis: 1,
+                yAxis: 0,
                 data: d.data[0],
                 marker: {
                     enabled: true
@@ -259,6 +259,7 @@ $(function(){
             }, {
                 name: d.nameR,
                 type: 'spline',
+                yAxis: 1,
                 data: d.data[1],
                 marker: {
                     enabled: true
@@ -315,8 +316,17 @@ $(function(){
 		   }
 		   return d;
 		}
+		
+		function ebit_growth()
+		{  var d = [null];
+		   for (var i=1; i<sic_totals.length; i++)
+		   { d.push(100*( ( (1.0*sic_totals[i].tebit) / (1.0*sic_totals[i-1].tebit) )-1 ));
+		   }
+		   return d;
+		}
 			
-		var calc = [total_sales,top3,top5,stability,sales_growth,blank,blank,blank,sales_growth_3yr];
+		var calc = [total_sales,top3,top5,stability,sales_growth,blank,blank,blank,sales_growth_3yr,
+		ebit_growth];
 		
 		
 		var d = {l:null, r:null};
