@@ -269,6 +269,13 @@ $(function(){
     
     
     $('.b-vchart').click(function(){
+		
+		ajx('/pages/sales/MarketSummarySicTotals',{sic:last_sic, region:$('#region').val(),
+            min_size:$('#minsize').val()
+        },function(d){
+               console.log(d);
+        });
+       
         var l = (1*$('#LHS').val())-1;
         var r = (1*$('#RHS').val())-1;
         var tl = $('#LHS option')[l].innerHTML;

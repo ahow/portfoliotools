@@ -300,6 +300,21 @@ order by 3 desc,4 desc";
        $this->res->rows= $qr->fetchAll(PDO::FETCH_OBJ);
        echo json_encode($this->res);
     }
+   
+   function ajxMarketSummarySicTotals()
+   {    $params = (object)$_POST;
+        $db = $this->cfg->db;
+        $prm = new stdClass();
+        if (isset($params->sic)) $prm->sic=$params->sic;
+        else $this->error("ERR_SIC_NOT_FOUND", true);
+        
+        $sql = "select syear, sum(sales) as tsales, sum(ebit) as tebit,
+         sum(assets) as tassets,  sum(capex) as tcapex 
+        from sales_divdetails where sic=:sic group by 1";
+        $qr = $db->query($sql, $prm);
+        $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
+        echo json_encode($this->res);
+   }
     
    function ajxMarketSummarySic()
    {   $params = (object)$_POST;
