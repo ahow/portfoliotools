@@ -348,9 +348,17 @@ $(function(){
 		   }
 		   return d;
 		}
+		
+		function asset_growth()
+		{  var d = [null];
+		   for (var i=1; i<sic_totals.length; i++)
+		   { d.push(100*( ( (1.0*sic_totals[i].tassets) / (1.0*sic_totals[i-1].tassets) )-1 ));
+		   }
+		   return d;
+		}
 			
 		var calc = [total_sales,top3,top5,stability,sales_growth,blank,blank,blank,sales_growth_3yr,
-		ebit_growth, ebit_growth_3yr, ebit_margin, roa];
+		ebit_growth, ebit_growth_3yr, ebit_margin, roa, asset_growth];
 		
 		
 		var d = {l:null, r:null};
