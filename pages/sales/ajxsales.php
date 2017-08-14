@@ -323,7 +323,7 @@ order by 3 desc,4 desc";
         $region = '';        
         $wsize = '';
         $region = '';
-        $debug = true;
+        $debug = false;
         
         $prm = new stdClass();
         
@@ -821,7 +821,7 @@ from sales_divdetails d";
         $qr = $db->query($sql);
         $yr = $db->fetchSingle($qr);
         $params = (object)$_POST;
-        $debug = false;
+        $debug = true;
         
         $sql = "select headers from sales_exposure";
         $qr = $db->query($sql);

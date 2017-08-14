@@ -117,6 +117,7 @@
              }
              
              $ha = array_slice($a,7);
+             if (trim($ha[count($ha)-1])=='') array_pop($ha); // remove last empty element
              $db->query('update sales_exposure set headers=:headers',
              array( 'headers'=>implode(';',$ha) ) );
              
