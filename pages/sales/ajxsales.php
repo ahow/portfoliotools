@@ -821,7 +821,7 @@ from sales_divdetails d";
         $qr = $db->query($sql);
         $yr = $db->fetchSingle($qr);
         $params = (object)$_POST;
-        $debug = true;
+        $debug = false;
         
         $sql = "select headers from sales_exposure";
         $qr = $db->query($sql);
