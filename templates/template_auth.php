@@ -13,6 +13,7 @@
   {  $authMenu = $this->newMod('authMenu','user_menu.js');
      $dataMenu = $this->newMod('pMenu','data_menu.js');
      $endmarketsMenu = $this->newMod('pMenu','endmarkets_menu.js');
+     $companiesMenu = $this->newMod('pMenu','companies_menu.js');
      $pfmeasuresMenu = $this->newMod('pMenu','pfmeasures_menu.js');
      $userMenu = $this->newMod('pMenu','user_menu.js');
      // $pRightMenu = $this->newMod('pMenu','main_r_data.js');
@@ -83,11 +84,17 @@
              ?>
               
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">End markets<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Industries<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $endmarketsMenu->display() ?>
                   </ul>
               </li>
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Companies<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <?php $companiesMenu->display() ?>
+                  </ul>
+              </li>              
              <?php 
              }
              if ($cf->inGroup('admin') || $cf->inGroup('editor')  || $cf->inGroup('user'))
