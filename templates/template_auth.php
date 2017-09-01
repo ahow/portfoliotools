@@ -101,7 +101,7 @@
              {
              ?>   
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Portfolio measures<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Portfolio exposures<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $pfmeasuresMenu->display() ?>
                   </ul>
