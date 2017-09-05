@@ -1465,7 +1465,15 @@ join sales_sic s on t.sic=s.id';
         $qr = $db->query('select headers from sales_exposure');        
         $h = $db->fetchSingleValue($qr);
         $a = array();
-        $a[] = (object)array('id'=>$h, 'name'=>$h);
+        $r = explode(';',$h);
+        $id=1;
+        foreach($r as $v)
+        {   $v=trim($v,' "');
+            if (trim($v)!='') 
+            { $a[] = (object)array('id'=>$id, 'name'=>$v);
+              $id++;
+            }
+        }
         $this->res->rows = $a;
         echo json_encode($this->res);
     }
