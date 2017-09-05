@@ -159,9 +159,11 @@
       return $s;
     }
     
-    function modelSelect($name,$model)
+    function modelSelect($name,$model,$option=null)
     {  $label = T($name);
-       $s = '<div class="form-group bs-model-select" data-model="'.$model.'">
+       $opt = '';
+       if ($option!==null) $opt='data-option="'.$option.'" ';
+       $s = '<div class="form-group bs-model-select" '.$opt.'data-model="'.$model.'">
   <label for="'.$name.'">'.$label.'</label>
   <select class="form-control" id="'.$name.'" data-control-type="basic">
   </select>

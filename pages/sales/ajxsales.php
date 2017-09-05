@@ -1459,6 +1459,16 @@ join sales_sic s on t.sic=s.id';
         $this->res->maxyear = $db->fetchSingleValue($qr); 
         echo json_encode($this->res); 
     }
+    
+    function ajxModelThemes()
+    {   $db = $this->cfg->db;
+        $qr = $db->query('select headers from sales_exposure');        
+        $h = $db->fetchSingleValue($qr);
+        $a = array();
+        $a[] = (object)array('id'=>$h, 'name'=>$h);
+        $this->res->rows = $a;
+        echo json_encode($this->res);
+    }
  
  }
 
