@@ -14,6 +14,7 @@
      $dataMenu = $this->newMod('pMenu','data_menu.js');
      $endmarketsMenu = $this->newMod('pMenu','endmarkets_menu.js');
      $companiesMenu = $this->newMod('pMenu','companies_menu.js');
+     $themesMenu = $this->newMod('pMenu','themes_menu.js');
      $pfmeasuresMenu = $this->newMod('pMenu','pfmeasures_menu.js');
      $userMenu = $this->newMod('pMenu','user_menu.js');
      // $pRightMenu = $this->newMod('pMenu','main_r_data.js');
@@ -81,8 +82,13 @@
              }
              if ($cf->inGroup('admin') || $cf->inGroup('editor'))
              {
-             ?>
-              
+             ?>                
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <?php $themesMenu->display() ?>
+                  </ul>
+              </li>
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Industries<span class="caret"></span></a>
                   <ul class="dropdown-menu">
