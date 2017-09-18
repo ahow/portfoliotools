@@ -89,7 +89,7 @@ function modelListController(selector, customView)
    if (customView==undefined) ondraw = modelTableView;
    else  ondraw = customView;
    
-   return {load:load, total:total, click:click, dblclick:dblclick, loaded:loaded, refresh:refresh};
+   return {load:load, total:total, click:click, dblclick:dblclick, loaded:loaded, refresh:refresh };
 }
 
 function modelPagination(selector)

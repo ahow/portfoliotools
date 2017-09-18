@@ -145,10 +145,11 @@ function userlistView()
        var userForm = new modelFormController('#useradd-form');
        var vld = new formValidator('#useradd-form');
         
-        users.click(function(row){
+        users.click(function(row){           
            $('#editform').addClass('disabled-input');
-           $(row.target).parents('table:first').find('tr').removeClass('active');
+           var tr = $(row.target).parents('table:first').find('tr').removeClass('active');           
            var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');
+           users.current_row = id;
            usergroups.load(id);
            usergroups.loaded(function(){ $('#editform').removeClass('hidden').removeClass('disabled-input'); } );
        });
@@ -160,6 +161,19 @@ function userlistView()
        
        $('#btadduser').click(function(){
            $('#useradd-form').modal();
+       });
+       
+       $('#btdelete').click(function(e){
+           if (confirm('Remove selected user?'))
+           {   var model = $('#useradd-form').attr('data-model');
+               ajx(model+'/delete', {id:users.current_row}, function(d){
+                 if (!d.error)                  
+                 {  users.load();
+                    setOk('User deleted!');
+                 }
+               });
+               
+           }
        });
        
        $('button.b-useradd').click(function(){

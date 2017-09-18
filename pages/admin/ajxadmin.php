@@ -164,8 +164,10 @@
        
        function beforeInsertUser(&$row)
        {  $auth = $this->cfg->user;
+           
           $row->pass = $auth->hashPassword($row->pass);
        }
+     
 
     }
 ?>
