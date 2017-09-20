@@ -73,6 +73,19 @@
        $this->res->info = T('SAVED');
     }
 
+    function runSQL($scfile)
+    {   $db = $this->cfg->db;
+        $sqlcleaned =  preg_replace('/--(.)*/i', '', file_get_contents($scfile));
+        $script = explode(';', $sqlcleaned);
+        foreach($script as $q)
+        { if (trim($q)!='')
+          {   $q.=';';              
+              $db->exec($q);              
+          }
+        }
+    }
+       
+   
     function ajxSaveSummaryDescriptions()
     {  $this->saveSettings('SummaryDescriptions');
        echo json_encode($this->res);
