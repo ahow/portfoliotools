@@ -62,10 +62,21 @@
     }
     
     function hidden($name, $value, $type='INTEGER')
-    {  $label = T($name);       
+    {  $label = T($name);
        $this->mkTestFilt($name,$type);
        $this->fa[] = "$name $type";
        return '<input type="hidden" class="form-control" data-control-type="basic" id="'.$name.'">';
+    }
+    
+    function range($name, $min, $max, $step=1, $type='INTEGER')
+    {  $label = T($name);
+       $this->fa[] = $name."_min $type";
+       $this->fa[] = $name."_max $type";
+       return '<div class="form-group"><label for="'.$name.'">'.$label.'</label><div>
+       <b style="padding-right: 10px;">'.$min.'</b><input id="'.$name.'" type="text" 
+       class="span2 bs-range" value="" data-control-type="range" data-slider-min="'.$min.'" 
+       data-slider-max="'.$max.'" data-slider-step="'.$step.'" 
+       data-slider-value="['.$min.','.$max.']"/><b style="padding-left: 10px;">'.$max.'</b></div></div>';
     }
 
     function key($name, $value='')

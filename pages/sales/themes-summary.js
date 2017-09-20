@@ -53,6 +53,8 @@ $(function(){
         $(selector).html(s);
     }
         
+    $("input.bs-range").slider({});
+   
     $('.bs-model-select').each(function(i,e){
         var sel = $(e);
         var model = sel.attr('data-model')+'/load';

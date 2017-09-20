@@ -37,15 +37,15 @@
            $this->cfg->addJs('/html.php/pages/sales','market-ranking.js');            
        }
        else if ($this->nav=='market-summary')
-       {   // $this->cfg->addJs('/bootstrap-3.3.6','bootstrap3-typeahead.min.js');
-           $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
+       {   $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
            $this->cfg->addJs('/html.php/pages/sales','lookup.js');
            $this->cfg->addJs('/html.php/pages/sales','market-summary.js');
        }
        else if ($this->nav=='themes-summary')
-       {   // $this->cfg->addJs('/bootstrap-3.3.6','bootstrap3-typeahead.min.js');
+       {   $this->cfg->addJs('/js','bootstrap-slider.js');
+           $this->cfg->addCSS('/css','bootstrap-slider.css');
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
