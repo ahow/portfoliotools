@@ -52,8 +52,7 @@ $(function(){
         s+='</table>';
         $(selector).html(s);
     }
-        
-    $("input.bs-range").slider({});
+    
    
     $('.bs-model-select').each(function(i,e){
         var sel = $(e);
@@ -83,8 +82,9 @@ $(function(){
     }
     
     function loadSubsector(sub)
-    {  ajx('/pages/sales/MarketSummarySubsector',{subsector:sub, region:$('#region').val(),
-            min_size:$('#minsize').val()
+    {   var range = $('#theme_range').val().split(',');
+        ajx('/pages/sales/MarketSummarySubsector',{subsector:sub, region:$('#region').val(),
+            theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val()
         },function(d){
                drawSummary(d);
                drawDebug(d);
@@ -138,6 +138,36 @@ $(function(){
         if ($('#subsec input').val()!='') loadSubsector( $('#subsec input').val() );
         if (last_sic!=null &&  $('#sic_code input').val()!='') loadSIC( last_sic );
     });
+    
+    // Range slider setup
+ 
+    function onChanheVal(onChange)
+    {   var val = '';
+        var fu = onChange;
+        
+        function check(e)
+        { var v = $(e.target).val();
+          if (v!=val)
+          {  if (fu!=undefined) fu(e.target);
+             val = v;
+          }
+        }
+        return {check:check};
+    }
+           
+    $("input.bs-range").slider({});
+    
+    $("input.bs-range").each(function(i,e){
+                
+         var ch = new onChanheVal(function(e){            
+             if ($('#subsec input').val()!='') loadSubsector( $('#subsec input').val() );
+             if (last_sic!=null &&  $('#sic_code input').val()!='') loadSIC( last_sic );
+         });
+           
+         $(e).change(ch.check);
+    });
+    
+    
     
     $('#sic_id button').click(function(){
         var val = $('#sic').val();
