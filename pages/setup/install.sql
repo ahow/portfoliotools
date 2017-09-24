@@ -16,7 +16,7 @@ CREATE TABLE mc_users
   image varchar(512),
   auth_id varchar(64),
   auth_module varchar(60),
-  chpass_key varchar(100),
+  chpass_key varchar(100),FOREIGN KEY (user_id) references mc_users(id) on delete cascade on update cascade,
   email_checked smallint default 0,
   phone_checked smallint default 0,
   INDEX (auth_module),
