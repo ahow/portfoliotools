@@ -209,9 +209,6 @@ $('.bs-model-select').each(function(i,e){
      });
     
     $('.b-print').click(print);
-    
-    $('.b-comparison').click(function(){
-        reloadChartData();
-    });
+
     
 });
