@@ -81,21 +81,12 @@ $(function(){
         }
     }
     
-    function loadSubsector(sub)
+    function loadThemesSummary()
     {   var range = $('#theme_range').val().split(',');
-        ajx('/pages/sales/MarketSummarySubsector',{subsector:sub, region:$('#region').val(),
+        ajx('/pages/sales/ThemesSummary',{region:$('#region').val(),
             theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val()
         },function(d){
                drawSummary(d);
-               drawDebug(d);
-       });
-    }
-
-    function loadSIC(sic)
-    {  ajx('/pages/sales/MarketSummarySic',{sic:sic, region:$('#region').val(),
-            min_size:$('#minsize').val()
-        },function(d){
-               drawSIC(d);
                drawDebug(d);
        });
     }
@@ -160,8 +151,7 @@ $(function(){
     $("input.bs-range").each(function(i,e){
                 
          var ch = new onChanheVal(function(e){            
-             if ($('#subsec input').val()!='') loadSubsector( $('#subsec input').val() );
-             if (last_sic!=null &&  $('#sic_code input').val()!='') loadSIC( last_sic );
+             loadThemesSummary();             
          });
            
          $(e).change(ch.check);

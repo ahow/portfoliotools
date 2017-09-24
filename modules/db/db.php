@@ -68,9 +68,13 @@
     }
         
     function query($sql, $params=null)
-    {  $sth = $this->db->prepare($sql);
+    {  $GLOBALS['SQLQuery'] = $sql;
+       $GLOBALS['SQLParams'] = $params; 
+       $sth = $this->db->prepare($sql);
        if ($params!=null) foreach ($params as $f => $v) $sth->bindValue(':' . $f, $v);
        $r = $sth->execute();
+       unset($GLOBALS['SQLQuery']);
+       unset($GLOBALS['SQLParams']);
        return $sth;
     }
     

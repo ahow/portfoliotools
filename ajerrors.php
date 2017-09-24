@@ -8,6 +8,8 @@ function log_exception($e)
 {  $r = new stdClass();
    $r->error = true;
    $r->errmsg = $e->getMessage().' line: '.$e->getLine().' in '.$e->getFile();
+   if (isset($GLOBALS['SQLQuery'])) $r->errmsg .= "<br>\nSQL: ".$GLOBALS['SQLQuery'];
+   if (isset($GLOBALS['SQLParams'])) $r->errmsg .= "<br>\nParams: ".print_r($GLOBALS['SQLParams'], true);
    echo json_encode($r);
    exit();
 }

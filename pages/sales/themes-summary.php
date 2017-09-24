@@ -12,9 +12,6 @@
         <div class="col-lg-3"><?=$f->range('theme_range',-2,2)?></div>
         <div class="col-lg-3"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
     </div>
-    <div class="row">
-        <div class="col-lg-6"><?=$f->search3dot('subsec','subsector')?></div>
-    </div>
     
     <div class="row" id="summary">
     </div>
