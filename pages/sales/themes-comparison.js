@@ -28,7 +28,7 @@ $(function(){
         if (minsize!='') prm.min_size = minsize;
         var tnames = [,'SIC','Subsector'];
         
-        ajx('/pages/sales/IndustryAnalysis',prm,function(d){
+        ajx('/pages/sales/ThemesComparison',prm,function(d){
             
             last_data = d;
             
