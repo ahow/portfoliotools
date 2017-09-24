@@ -45,6 +45,7 @@
        }
        else if ($this->nav=='themes-summary')
        {   $this->cfg->addJs('/js','bootstrap-slider.js');
+           $this->cfg->addJs('/js', 'loadingoverlay.min.js');
            $this->cfg->addCSS('/css','bootstrap-slider.css');
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
@@ -63,6 +64,7 @@
        else if ($this->nav=='theme-exposures')
        {   $this->cfg->addJs('/html.php/pages/sales','mdselect.js');
            $this->cfg->addJs('/html.php/pages/sales','theme-exposures.js');
+           $this->cfg->addJs('/js', 'loadingoverlay.min.js');
            $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
        }

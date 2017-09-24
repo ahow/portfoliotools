@@ -83,12 +83,14 @@ $(function(){
     }
     
     function loadThemesSummary()
-    {   var range = $('#theme_range').val().split(',');
+    {   $("#mranking").LoadingOverlay("show");
+        var range = $('#theme_range').val().split(',');
         ajx('/pages/sales/ThemesSummary',{region:$('#region').val(),
             theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val()
         },function(d){
                drawSIC(d);
                drawDebug(d);
+               $("#mranking").LoadingOverlay("hide", true);
        });
     }
         
