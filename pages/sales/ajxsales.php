@@ -866,7 +866,7 @@ where  d.syear=:max_year $region $wsize";
         $fin->top5sum = $top5sum;
         // $sql = "select name from sales_sic where id=:sic";
         // $qr = $db->query($sql, array('sic'=>$prm->sic));
-        $fin->name = 'Theme '.post('theme_id');
+        $fin->theme_id = post('theme_id');
         
         // $fin->sic = $prm->sic;
         if ($rownum==0) $fin->previewed=NULL; 

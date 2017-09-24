@@ -8,15 +8,16 @@ $(function(){
       return n.toFixed(decimals);
     }
     
+    /*
     function drawSummary(d)
     {  var selector='#summary';
        var s = '<table class="table table-striped">';
         total = 0.0;
-        s+='<tr><th>Subsector</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
+        s+='<tr><th>Theme</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
         for (var i=0; i<d.rows.length; i++)
         {   var r = d.rows[i];
             if (r!=undefined)
-            {   s+='<tr><td>'+r.subsector+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
+            {   s+='<tr><td>'+r.name+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
                 +toFloat((100.0*r.top3sum)/(1.0*r.tsales), 0)+'</td><td>'
                 +toFloat((100.0*r.top5sum)/(1.0*r.tsales), 0)+'</td><td>'
                 +toFloat(r.stability,1)+'</td><td>'+toFloat(r.asales_growth,1)+'</td><td>'
@@ -28,7 +29,7 @@ $(function(){
         s+='</table>';
         $(selector).html(s);
     }
-
+*/
    
 
     function drawSIC(d)
@@ -36,11 +37,11 @@ $(function(){
        var selector='#summary';
        var s = '<table class="table table-striped">';
         total = 0.0;
-        s+='<tr><th>SIC</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
+        s+='<tr><th>Theme</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
         for (var i=0; i<d.rows.length; i++)
         {   var r = d.rows[i];
             if (r!=undefined)
-            {   s+='<tr><td>'+r.sic+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
+            {   s+='<tr><td>'+$('#themes option[value="'+r.theme_id+'"]').html()+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
                 +toFloat((100.0*r.top3sum)/(1.0*r.tsales), 0)+'</td><td>'
                 +toFloat((100.0*r.top5sum)/(1.0*r.tsales), 0)+'</td><td>'
                 +toFloat(r.stability, 1)+'</td><td>'+toFloat(r.asales_growth,1)+'</td><td>'
@@ -86,7 +87,7 @@ $(function(){
         ajx('/pages/sales/ThemesSummary',{region:$('#region').val(),
             theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val()
         },function(d){
-               drawSummary(d);
+               drawSIC(d);
                drawDebug(d);
        });
     }
