@@ -317,26 +317,19 @@ $(function(){
 		   return d;
 		}
 		
-		function top3()
-		{  var d = [];
-		   return d;
-		}
-		
-				
-		function top5()
-		{  var d = [];
-		   return d;
-		}
-				
-		function stability()
-		{  var d = [];
-		   return d;
-		}
-		
-		function blank()
-		{  var d = [];
-		   return d;
-		}
+        function defcalc(name)
+        {  function fu()
+           {  setError('Nor realized function: '+name)
+              var d = [];
+              return d;  
+           }
+           return fu;
+        }
+        
+        var top3 = new defcalc('top3');
+        var top5 = new defcalc('top5');
+        var stability = new defcalc('stability');
+        var blank = new defcalc('blank');
 		
 		function sales_growth()
 		{  var d = [null];
