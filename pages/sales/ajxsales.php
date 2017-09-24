@@ -605,6 +605,25 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
         
         $prm = new stdClass();
         
+        function getPostParams($list)
+        { $r = array();
+          $a = explode(',', $list);
+          foreach($a as $v) 
+          { if (isset($_POST[$v])) $r[$v] = $_POST[$v];
+          }
+          return $r;
+        }
+        
+        $db->query('set @theme_min = :theme_min', getPostParams('theme_min') );
+        $db->query('set @theme_max = :theme_max', getPostParams('theme_max') );
+        $db->query('set @theme_id = :theme_id', getPostParams('theme_id') );
+        $db->query('CREATE TEMPORARY TABLE tmp_selected_sics (sic integer NOT NULL)');
+        $db->query('insert into tmp_selected_sics
+select id
+from sales_sic 
+where CSV_DOUBLE(exposure,@theme_id)  between @theme_min and @theme_max
+and id<>9999;');
+        
         if (isset($params->region)) 
         {  if ($params->region!='Global')
            {   $region = '  and c.region=:region ';
@@ -621,12 +640,8 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
         if ($debug) $this->res->dbg = "-------------- Stability ------------------\n";
         
         // Stability calculations first we will get max and min year
-        $sql = 
-"select 
-min(d.syear) as minyear, max(d.syear) as maxyear
-from sales_divdetails d
-join sales_companies c on  d.cid = c.cid
-where d.sic=:sic $region $wsize";
+        $sql = "select max(syear) as maxyear, min(syear) as minyear
+from sales_divdetails";
         $qr = $db->query($sql, $prm);
         $yr = $db->fetchSingle($qr);
         if ($debug) $this->res->dbg.="years: $yr->minyear - $yr->maxyear\n\n";
@@ -642,7 +657,8 @@ where d.sic=:sic $region $wsize";
    c.cid,c.name,sum(d.sales)
 from sales_divdetails d
 join sales_companies c on  d.cid = c.cid
-where d.sic=:sic $region and d.syear=$y $wsize
+join tmp_selected_sics t on d.sic = t.sic
+where true $region and d.syear=$y $wsize
 group by c.cid, c.name
 order by d.sales desc
 limit 20";
@@ -697,10 +713,11 @@ limit 20";
 
         
         $prm->max_year = $yr->maxyear;  
-        
+        // get top3 sum
         $sql = "select sum(t.sales) from (select d.sales from sales_divdetails d 
         join sales_companies c on  d.cid = c.cid
-        where  d.sic=:sic and d.syear=:max_year $region $wsize order by 1 desc limit 3) t";
+        join tmp_selected_sics t on d.sic = t.sic
+        where d.syear=:max_year $region $wsize order by 1 desc limit 3) t";
         $qr = $db->query($sql, $prm);
         $top3sum = $db->fetchSingleValue($qr);
         if (empty($top3sum)) $top3sum = '0';
@@ -712,10 +729,11 @@ limit 20";
         }
         
                 
-
+        // get top 5 sum of max year
         $sql = "select sum(t.sales) from (select d.sales from sales_divdetails d 
         join sales_companies c on  d.cid = c.cid
-        where  d.sic=:sic and d.syear=:max_year $region  $wsize order by 1 desc limit 5) t";
+        join tmp_selected_sics t on d.sic = t.sic
+        where  d.syear=:max_year $region  $wsize order by 1 desc limit 5) t";
         $qr = $db->query($sql, $prm);
         $top5sum = $db->fetchSingleValue($qr);
         if (empty($top5sum)) $top5sum = '0';
@@ -727,14 +745,16 @@ limit 20";
         }        
         
         // get total sales of companies with selected SIC number and max year
-        $sql = "select dd.cid, sum(sales) as ctotal
+        $sql = "-- 748
+select dd.cid, sum(sales) as ctotal
 from sales_divdetails dd
 where dd.syear=:max_year and dd.sales>0 and dd.cid in
 (select 
     d.cid 
  from sales_divdetails d 
  join sales_companies c on  d.cid = c.cid
- where d.sic=:sic and d.syear=:max_year $region $wsize
+ join tmp_selected_sics t on d.sic = t.sic
+ where d.syear=:max_year $region $wsize
 )
 group by dd.cid";
         $qr = $db->query($sql, $prm);
@@ -757,7 +777,8 @@ group by dd.cid";
     c.roic, c.pe, c.evebitda, c.payout, c.reviewed
 from sales_divdetails d 
 join sales_companies c on d.cid=c.cid 
-where d.sic=:sic and d.syear=:max_year $region $wsize";
+join tmp_selected_sics t on d.sic = t.sic
+where  d.syear=:max_year $region $wsize";
         $qr = $db->query($sql, $prm);
         $rows = array();
         $fin = new stdClass();
@@ -843,11 +864,11 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
         $fin->stability = $stability;
         $fin->top3sum = $top3sum;
         $fin->top5sum = $top5sum;
-        $sql = "select name from sales_sic where id=:sic";
-        $qr = $db->query($sql, array('sic'=>$prm->sic));
-        $fin->name = $db->fetchSingleValue($qr);
+        // $sql = "select name from sales_sic where id=:sic";
+        // $qr = $db->query($sql, array('sic'=>$prm->sic));
+        $fin->name = 'Theme '.post('theme_id');
         
-        $fin->sic = $prm->sic;
+        // $fin->sic = $prm->sic;
         if ($rownum==0) $fin->previewed=NULL; 
         else $fin->previewed = ($reviewed/$rownum)*100;
         
