@@ -431,9 +431,10 @@ $(function(){
 		{	
 			//if (sic_totals==null)
 			//{ 
-				ajx('/pages/sales/MarketSummarySicTotals',{sic:last_sic, region:$('#region').val(),
-					min_size:$('#minsize').val()
-				},function(d){
+            var range = $('#theme_range').val().split(',');
+			ajx('/pages/sales/ThemesSummarySicTotals',{region:$('#region').val(),
+            theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val()
+        },function(d){
 					   sic_totals = d.rows;
 					   drawSicTotals(l,r)
 				});

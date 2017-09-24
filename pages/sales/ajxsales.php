@@ -319,8 +319,8 @@ order by 3 desc,4 desc";
         $db = $this->cfg->db;
         $prm = new stdClass();
         if (isset($params->sic)) $prm->sic=$params->sic;
-        else $this->error("ERR_SIC_NOT_FOUND", true);
-        
+        else return $this->error("ERR_SIC_NOT_FOUND", true);        
+        if ($params->sic=='') return $this->error("ERR_SIC_EMPTY", true);        
         $sql = "select syear, sum(sales) as tsales, sum(ebit) as tebit,
          sum(assets) as tassets,  sum(capex) as tcapex 
         from sales_divdetails where sic=:sic group by 1";
@@ -594,6 +594,42 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
        echo json_encode($this->res);
     }
 
+
+   function getPostParams($list)
+   { $r = array();
+      $a = explode(',', $list);
+      foreach($a as $v) 
+      { if (isset($_POST[$v])) $r[$v] = $_POST[$v];
+      }
+      return $r;
+   }
+
+   function ajxThemesSummarySicTotals()
+   {    $params = (object)$_POST;
+        $db = $this->cfg->db;
+        $prm = new stdClass();
+        
+        $db->query('set @theme_min = :theme_min', $this->getPostParams('theme_min') );
+        $db->query('set @theme_max = :theme_max', $this->getPostParams('theme_max') );
+        $db->query('set @theme_id = :theme_id', $this->getPostParams('theme_id') );
+        $db->query('CREATE TEMPORARY TABLE tmp_selected_sics (sic integer NOT NULL)');
+        $db->query('insert into tmp_selected_sics
+select id
+from sales_sic 
+where CSV_DOUBLE(exposure,@theme_id)  between @theme_min and @theme_max
+and id<>9999;');
+        
+        $sql = "select d.syear, sum(d.sales) as tsales, sum(d.ebit) as tebit,
+         sum(d.assets) as tassets,  sum(d.capex) as tcapex 
+        from sales_divdetails d
+        join tmp_selected_sics t on d.sic = t.sic
+        -- where
+         group by 1";
+        $qr = $db->query($sql, $prm);
+        $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
+        echo json_encode($this->res);
+   }
+                      
    function ajxThemesSummary()
    {   $params = (object)$_POST;
         $db = $this->cfg->db;
@@ -605,18 +641,9 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
         
         $prm = new stdClass();
         
-        function getPostParams($list)
-        { $r = array();
-          $a = explode(',', $list);
-          foreach($a as $v) 
-          { if (isset($_POST[$v])) $r[$v] = $_POST[$v];
-          }
-          return $r;
-        }
-        
-        $db->query('set @theme_min = :theme_min', getPostParams('theme_min') );
-        $db->query('set @theme_max = :theme_max', getPostParams('theme_max') );
-        $db->query('set @theme_id = :theme_id', getPostParams('theme_id') );
+        $db->query('set @theme_min = :theme_min', $this->getPostParams('theme_min') );
+        $db->query('set @theme_max = :theme_max', $this->getPostParams('theme_max') );
+        $db->query('set @theme_id = :theme_id', $this->getPostParams('theme_id') );
         $db->query('CREATE TEMPORARY TABLE tmp_selected_sics (sic integer NOT NULL)');
         $db->query('insert into tmp_selected_sics
 select id
