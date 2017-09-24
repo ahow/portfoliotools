@@ -93,6 +93,17 @@
            $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
            $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
        } 
+       else if ($this->nav=='themes-comparison')
+       {   $this->cfg->addJs('/js','bootstrap-slider.js');
+           $this->cfg->addJs('/js', 'loadingoverlay.min.js');
+           $this->cfg->addCSS('/css','bootstrap-slider.css');
+           $this->cfg->addJs('/html.php/pages/sales','lookup.js');
+           $this->cfg->addJs('/html.php/pages/sales','download.js');
+           $this->cfg->addJs('/html.php/pages/sales','themes-comparison.js');
+           $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
+           $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
+           $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
+       } 
        else if ($this->nav=='portfolio-summaries')
        {   $this->cfg->addJs('/js', 'loadingoverlay.min.js');
            $this->cfg->addJs('/html.php/pages/sales','stacked.js');
