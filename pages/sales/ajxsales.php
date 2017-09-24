@@ -1966,7 +1966,8 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
         $wh = array();
         $wp = array();
         
-        if ($params->mode==1) $axis = $axis1;
+        $params->mode=1; // SIC mode
+        if ($params->mode==1) $axis = $axis1;        
         
         if (isset($axis[$params->xaxis]) && $axis[$params->xaxis]!=null) 
             $flds[]=$axis[$params->xaxis].' as x ';

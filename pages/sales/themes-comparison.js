@@ -19,16 +19,16 @@ $(function(){
    }
    
     function reloadChartData()
-    {   var prm = {};
-        prm.mode = $('#sic_subsector').val();
-        prm.region = $('#region').val();
-        prm.xaxis = $('#x-axis').val();
-        prm.yaxis = $('#y-axis').val();
-        var minsize = $('#minsize').val();
-        if (minsize!='') prm.min_size = minsize;
+    { 
+        var range = $('#theme_range').val().split(',');
         var tnames = [,'SIC','Subsector'];
         
-        ajx('/pages/sales/ThemesComparison',prm,function(d){
+        ajx('/pages/sales/ThemesComparison',{region:$('#region').val(),
+            theme_min:range[0], theme_max:range[1],
+            theme_id:$('#themes').val(),
+            xaxis:$('#x-axis').val(),
+            yaxis:$('#y-axis').val()
+        }, function(d){
             
             last_data = d;
             
@@ -209,5 +209,9 @@ $('.bs-model-select').each(function(i,e){
      });
     
     $('.b-print').click(print);
+    
+    $('.b-comparison').click(function(){
+        reloadChartData();
+    });
     
 });
