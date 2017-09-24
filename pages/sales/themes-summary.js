@@ -122,14 +122,20 @@ $(function(){
     $('#year').val(new Date().getFullYear()-1);
     
     $('#region').click(function(){
-        if ($('#subsec input').val()!='') loadSubsector( $('#subsec input').val() );
-        if (last_sic!=null &&  $('#sic_code input').val()!='') loadSIC( last_sic );
+        // if ($('#subsec input').val()!='') loadSubsector( $('#subsec input').val() );
+        // if (last_sic!=null &&  $('#sic_code input').val()!='') loadSIC( last_sic );
     });
-    
+
+    $('.b-summary').click(function(){
+        loadThemesSummary();
+    });
+
+/*    
     $('#minsize').click(function(){
         if ($('#subsec input').val()!='') loadSubsector( $('#subsec input').val() );
         if (last_sic!=null &&  $('#sic_code input').val()!='') loadSIC( last_sic );
     });
+    */
     
     // Range slider setup
  
@@ -149,15 +155,18 @@ $(function(){
            
     $("input.bs-range").slider({});
     
+    /* Disabled. Calculations too slow.
+     
     $("input.bs-range").each(function(i,e){
-                
+        
          var ch = new onChanheVal(function(e){            
              loadThemesSummary();             
          });
            
          $(e).change(ch.check);
+        
     });
-    
+    */
     
     
     $('#sic_id button').click(function(){
