@@ -29,7 +29,7 @@ CREATE TABLE mc_usergroups
 ( user_id integer NOT NULL AUTO_INCREMENT,
   group_id integer NOT NULL,
   PRIMARY KEY (user_id , group_id ),
-  FOREIGN KEY (user_id) references mc_users(id) on update cascade,
+  FOREIGN KEY (user_id) references mc_users(id) on delete cascade on update cascade,
   FOREIGN KEY (group_id) references mc_groups(id) on update cascade
 ) DEFAULT CHARSET=utf8;
 
