@@ -604,12 +604,8 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
       return $r;
    }
 
-   function ajxThemesSummarySicTotals()
-   {    $params = (object)$_POST;
-        $db = $this->cfg->db;
-        $prm = new stdClass();
-        
-        $db->query('set @theme_min = :theme_min', $this->getPostParams('theme_min') );
+   function selectSicsByThemeRange($db)
+   {    $db->query('set @theme_min = :theme_min', $this->getPostParams('theme_min') );
         $db->query('set @theme_max = :theme_max', $this->getPostParams('theme_max') );
         $db->query('set @theme_id = :theme_id', $this->getPostParams('theme_id') );
         $db->query('CREATE TEMPORARY TABLE tmp_selected_sics (sic integer NOT NULL)');
@@ -618,6 +614,14 @@ select id
 from sales_sic 
 where CSV_DOUBLE(exposure,@theme_id)  between @theme_min and @theme_max
 and id<>9999;');
+   }
+
+   function ajxThemesSummarySicTotals()
+   {    $params = (object)$_POST;
+        $db = $this->cfg->db;
+        $prm = new stdClass();
+                
+        $this->selectSicsByThemeRange($db);
         
         $sql = "select d.syear, sum(d.sales) as tsales, sum(d.ebit) as tebit,
          sum(d.assets) as tassets,  sum(d.capex) as tcapex 
@@ -641,15 +645,7 @@ and id<>9999;');
         
         $prm = new stdClass();
         
-        $db->query('set @theme_min = :theme_min', $this->getPostParams('theme_min') );
-        $db->query('set @theme_max = :theme_max', $this->getPostParams('theme_max') );
-        $db->query('set @theme_id = :theme_id', $this->getPostParams('theme_id') );
-        $db->query('CREATE TEMPORARY TABLE tmp_selected_sics (sic integer NOT NULL)');
-        $db->query('insert into tmp_selected_sics
-select id
-from sales_sic 
-where CSV_DOUBLE(exposure,@theme_id)  between @theme_min and @theme_max
-and id<>9999;');
+        $this->selectSicsByThemeRange($db);
         
         if (isset($params->region)) 
         {  if ($params->region!='Global')
@@ -1785,6 +1781,7 @@ join sales_sic s on t.sic=s.id';
         $params = (object)$_POST;  
         $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
         
+        $this->selectSicsByThemeRange($db);
         
         // Subsector mode
         $axis = array(null,'sum(sales)',null,null,null,'avg(sales_growth)', 'avg(roic)', 'avg(pe)','avg(evebitda)', 'avg(payout)', 'sum(reviewed)/count(*)');
@@ -1802,6 +1799,7 @@ join sales_sic s on t.sic=s.id';
     c.cid,c.name,sum(d.sales)
     from sales_divdetails d
     join sales_companies c on  d.cid = c.cid
+    join tmp_selected_sics t on d.sic = t.sic
     where ".implode(' and ', $wh)."  and d.syear=$y 
     group by c.cid, c.name
     order by d.sales desc
@@ -1841,57 +1839,8 @@ join sales_sic s on t.sic=s.id';
             else $stability='NULL';
             return $stability;
        }
-           
-
-       function getStabilityBySubsector($db, $wp, $wh, $minyear, $maxyear)
-       {    $years = array();
-            for ($y=$minyear; $y<=$maxyear; $y++)
-            {  
-                $sql = "select 
-   c.cid,c.name,sum(d.sales)
-from sales_companies c
-join sales_divdetails d on c.cid = d.cid
-where ".implode(' and ', $wh)."  and d.syear=$y 
-group by c.cid, c.name
-order by d.sales desc
-limit 20";
-                $years[$y] = array();
-                $qr = $db->query($sql, $wp);
-                $i=1;
-                while ( $r = $db->fetchSingle($qr) )
-                {   $years[$y][$r->cid] = $i;
-                    $i++;
-                }
-            }
-      
-            $changes = array();
-            $n = 0;
-            $sum = 0;
-                        
-            for ($y=$maxyear; $y>$minyear; $y--)
-            {  $yd = ''.$y.'-'.($y-1);
-                $changes[$yd]= array();
-                foreach($years[$y] as $k=>$v)
-                { if (!isset($years[$y-1][$k])) 
-                  {
-                     $df = 5;
-                  }
-                  else 
-                  {  $df = $years[$y][$k] - $years[$y-1][$k];                      
-                  }
-                  $changes[$yd][$k]=$df;
-                  $n++;
-                  $df = abs($df);
-                  if ($df>5) $df=5;
-                  $sum+=$df;
-                }
-            }
-            if ($n!=0) $stability = $sum/$n;
-            else $stability='NULL';
-            return $stability;
-       }
-           
-           
+            
+       /*    
         function setSubsectorValue($db, $name, $no, $wp, $wh, $minyear, $maxyear)
         {   if ($no==2 || $no==3) // top 3  and top 5 (%)
             {   $wh[] = " c.subsector=:subsector ";
@@ -1911,14 +1860,11 @@ limit 20";
                $wp['subsector'] = $name;
                 
                $stab = getStabilityBySubsector($db,$wp, $wh,$minyear,$maxyear);
-               /*
-                if ($sic=='781') 
-                {    write_log("Stability = $stab");
-                }*/
-                return $stab;
+               return $stab;
             }
             return 0;
         }
+        */
         
         function setSICValue($db, $sic, $no, $wp, $wh, $minyear, $maxyear)
         {   if ($no==2 || $no==3) // top 3  and top 5 (%)
@@ -1928,17 +1874,20 @@ limit 20";
                 
                 $sql = "select sum(d.sales) 
 from sales_divdetails d 
- join sales_companies c on  d.cid = c.cid
+join sales_companies c on  d.cid = c.cid
+join tmp_selected_sics t on d.sic = t.sic
 where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum";
                 $qr = $db->query($sql, $wp);
                 
                 if ($no==2) // get total sales of companies with selected SIC number and max year
                    $sql = "select sum(t.sales)/@ssum from (select d.sales from sales_divdetails d 
         join sales_companies c on  d.cid = c.cid
+        join tmp_selected_sics t on d.sic = t.sic
         where  ".implode(' and ', $wh)." and d.syear=@maxyear  order by 1 desc limit 3) t";
                 else 
                    $sql = "select sum(t.sales)/@ssum from (select d.sales from sales_divdetails d 
         join sales_companies c on  d.cid = c.cid
+        join tmp_selected_sics t on d.sic = t.sic
         where  ".implode(' and ', $wh)." and d.syear=@maxyear  order by 1 desc limit 3) t";
                 // write_log("no = $no");
                 $qr = $db->query($sql, $wp);
@@ -1992,7 +1941,7 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
         }
         
         // write_log(print_r($flds, true));        
-        if (true || count($flds)==2)
+        if (count($flds)==2)
         {    
              $db->query('select max(syear), min(syear) from sales_divdetails into @maxyear, @minyear');
              $qr = $db->query('select @maxyear as maxyear, @minyear as minyear;');
@@ -2027,6 +1976,7 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
                 $db->query('insert into tmp_cid_sales
 select d.cid, sum(d.sales)
 from sales_divdetails d
+join tmp_selected_sics t on d.sic = t.sic
 where d.syear=@maxyear
 group by 1');
                 $db->query('CREATE TEMPORARY TABLE tmp_cid_sic_proc (cid varchar(16) not null, sic integer NOT NULL, proc double, primary key (cid,sic)) ENGINE=MEMORY;');
