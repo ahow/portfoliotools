@@ -614,6 +614,7 @@ select id
 from sales_sic 
 where CSV_DOUBLE(exposure,@theme_id)  between @theme_min and @theme_max
 and id<>9999;');
+       // id in (116,119,131) 
    }
 
    function ajxThemesSummarySicTotals()
@@ -1952,7 +1953,7 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
             
              if ($params->mode==2) // Subsector mode
              {   $flds[]='subsector as name';
-                 $sql = "select ".implode(',',$flds).' from sales_companies ';
+                 $sql = "sselect ".implode(',',$flds).' from sales_companies ';
                  if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
                  $sql.=' group by subsector ';
                  $qr = $db->query($sql, $wp);
@@ -1979,6 +1980,11 @@ from sales_divdetails d
 join tmp_selected_sics t on d.sic = t.sic
 where d.syear=@maxyear
 group by 1');
+                // ---- debug
+                $qr = $db->query('select * from tmp_cid_sales'); 
+                $this->res->cid_sales = $qr->fetchAll(PDO::FETCH_OBJ);
+                
+                
                 $db->query('CREATE TEMPORARY TABLE tmp_cid_sic_proc (cid varchar(16) not null, sic integer NOT NULL, proc double, primary key (cid,sic)) ENGINE=MEMORY;');
                 $db->query('insert into tmp_cid_sic_proc
 select d.cid, d.sic, sum(d.sales)/t.tsales
@@ -1986,6 +1992,11 @@ from sales_divdetails d
 join tmp_cid_sales t on d.cid=t.cid
 where d.syear=@maxyear
 group by 1,2');
+
+                // ---- debug
+                $qr = $db->query('select * from tmp_cid_sic_proc'); 
+                $this->res->tmp_cid_sic_proc = $qr->fetchAll(PDO::FETCH_OBJ);
+
                 $flds[]='s.name';
                 $flds[]='s.id as sic';
                 $sql = "select ".implode(',',$flds).' from sales_companies c
@@ -1994,6 +2005,10 @@ join sales_sic s on t.sic=s.id';
                 if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
                 $sql.=' group by s.name, s.id';
                 $qr = $db->query($sql, $wp);
+                
+                // ---- debug                
+                $this->res->query = $sql;
+                
                 $data = array();
                 
                 while ($r=$db->fetchSingle($qr)) 
@@ -2005,11 +2020,14 @@ join sales_sic s on t.sic=s.id';
                   if (!isset($r->y)) 
                     $r->y = setSICValue($db, $r->sic, $params->yaxis, $wp, $wh, $minyear, $maxyear);
                   else  $r->y *= 1.0;
-                  unset($r->sic);
+                  // unset($r->sic);
                   $data[] = $r;
                 }
                 $this->res->xdata = $data;
              }
+             $qr = $db->query('select count(*) from tmp_selected_sics');             
+             $this->res->tmpcount = $db->fetchSingleValue($qr);
+             
              $this->res->xtitle = $titles[$params->xaxis];
              $this->res->ytitle = $titles[$params->yaxis];
         }
