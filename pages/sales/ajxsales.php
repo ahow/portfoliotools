@@ -328,19 +328,20 @@ order by 3 desc,4 desc";
         $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
         echo json_encode($this->res);
    }
-    
-   function ajxMarketSummarySic()
-   {   $params = (object)$_POST;
+
+   function getMarketSummaryBySic($sic=null, $debug=false)
+   {    $params = (object)$_POST;
         $db = $this->cfg->db;
         $prm = new stdClass();
         $region = '';        
         $wsize = '';
-        $region = '';
-        $debug = false;
+        $region = '';        
         
         $prm = new stdClass();
+        $res = new stdClass();
         
-        if (isset($params->sic)) $prm->sic=$params->sic;
+        if ($sic!=null) $prm->sic=$sic; 
+        else if (isset($params->sic)) $prm->sic=$params->sic;
         else $this->error("ERR_SIC_NOT_FOUND", true);
         
         
@@ -357,7 +358,7 @@ order by 3 desc,4 desc";
            $prm->min_size = $params->min_size;
         }
         
-        if ($debug) $this->res->dbg = "-------------- Stability ------------------\n";
+        if ($debug) $res->dbg = "-------------- Stability ------------------\n";
         
         // Stability calculations first we will get max and min year
         $sql = 
@@ -368,7 +369,7 @@ join sales_companies c on  d.cid = c.cid
 where d.sic=:sic $region $wsize";
         $qr = $db->query($sql, $prm);
         $yr = $db->fetchSingle($qr);
-        if ($debug) $this->res->dbg.="years: $yr->minyear - $yr->maxyear\n\n";
+        if ($debug) $res->dbg.="years: $yr->minyear - $yr->maxyear\n\n";
         
       
         
@@ -388,12 +389,12 @@ limit 20";
                 $years[$y] = array();
                 $qr = $db->query($sql, $prm);
                 $i=1;                
-                if ($debug) $this->res->dbg.="\nSQL: $sql\n\n";
-                if ($debug) $this->res->dbg.="Params: ".print_r($prm, true)."\n";
+                if ($debug) $res->dbg.="\nSQL: $sql\n\n";
+                if ($debug) $res->dbg.="Params: ".print_r($prm, true)."\n";
                 while ( $r = $db->fetchSingle($qr) )
                 {   $years[$y][$r->cid] = $i;
                     $i++;
-                    if ($debug) $this->res->dbg.=implode("\t",(array)$r)."\n";
+                    if ($debug) $res->dbg.=implode("\t",(array)$r)."\n";
                 }
                 
             }
@@ -422,12 +423,12 @@ limit 20";
                   $sum+=$df;
                 }
             }
-            if ($debug) $this->res->dbg.="\nChanges: ".print_r($changes, true);
+            if ($debug) $res->dbg.="\nChanges: ".print_r($changes, true);
             // log stability 
             // write_log(print_r($years, true));
             // write_log(print_r($changes, true));
             
-            if ($debug) $this->res->dbg.="n = $n   sum = $sum\n";
+            if ($debug) $res->dbg.="n = $n   sum = $sum\n";
             
             if ($n!=0) $stability = $sum/$n;
             else $stability='NULL';
@@ -445,9 +446,9 @@ limit 20";
         if (empty($top3sum)) $top3sum = '0';
         
         if ($debug)
-        { $this->res->dbg.="\nSQL: $sql\n\n";
-          $this->res->dbg.="Params: ".print_r($prm, true)."\n";
-          $this->res->dbg.="top3sum: $top3sum\n";
+        { $res->dbg.="\nSQL: $sql\n\n";
+          $res->dbg.="Params: ".print_r($prm, true)."\n";
+          $res->dbg.="top3sum: $top3sum\n";
         }
         
                 
@@ -460,9 +461,9 @@ limit 20";
         if (empty($top5sum)) $top5sum = '0';
         
         if ($debug)
-        { $this->res->dbg.="\nSQL: $sql\n\n";
-          $this->res->dbg.="Params: ".print_r($prm, true)."\n";
-          $this->res->dbg.="top3sum: $top5sum\n";
+        { $res->dbg.="\nSQL: $sql\n\n";
+          $res->dbg.="Params: ".print_r($prm, true)."\n";
+          $res->dbg.="top3sum: $top5sum\n";
         }        
         
         // get total sales of companies with selected SIC number and max year
@@ -482,10 +483,10 @@ group by dd.cid";
         {  $ctotal[$r->cid] = $r->ctotal;
         }
         if ($debug)
-        { $this->res->dbg.="----- Get total sales of companies------\n";
-          $this->res->dbg.="\nSQL: $sql\n\n";
-          $this->res->dbg.="Params: ".print_r($prm, true)."\n";
-          $this->res->dbg.="ctotal: ".print_r($ctotal, true)."\n";
+        { $res->dbg.="----- Get total sales of companies------\n";
+          $res->dbg.="\nSQL: $sql\n\n";
+          $res->dbg.="Params: ".print_r($prm, true)."\n";
+          $res->dbg.="ctotal: ".print_r($ctotal, true)."\n";
         }        
 
        // write_log(print_r($ctotal, true));
@@ -528,9 +529,9 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
  whereas the other measures would be weighted average values. 
          */
         if ($debug)
-        { $this->res->dbg.="----- Get companies data ------\n";
-          $this->res->dbg.="\nSQL: $sql\n\n";
-          $this->res->dbg.="Params: ".print_r($prm, true)."\n";
+        { $res->dbg.="----- Get companies data ------\n";
+          $res->dbg.="\nSQL: $sql\n\n";
+          $res->dbg.="Params: ".print_r($prm, true)."\n";
         } 
         
         $head = true;
@@ -543,10 +544,10 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
            $pr = $r->pofsale = ($r->dsales / $ctot) * 100.0;           
            if ($debug) 
            {   if ($head) 
-               { $this->res->dbg.=implode("\t",array_keys((array)$r))."\n";
+               { $res->dbg.=implode("\t",array_keys((array)$r))."\n";
                  $head = false;
                }
-               $this->res->dbg.=implode("\t",(array)$r)."\n";
+               $res->dbg.=implode("\t",(array)$r)."\n";
            }
            $fin->ape+= $pr * $r->pe;
            $fin->asales_growth += $pr * $r->sales_growth;
@@ -576,12 +577,12 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
         }
 
         if ($debug)
-        {  $this->res->dbg.="\nfin: ".print_r($fin, true)."\n";
+        {  $res->dbg.="\nfin: ".print_r($fin, true)."\n";
         } 
 
         $fin->stability = $stability;
-        $fin->top3sum = $top3sum;
-        $fin->top5sum = $top5sum;
+        $fin->top3sum = 1.0*$top3sum;
+        $fin->top5sum = 1.0*$top5sum;
         $sql = "select name from sales_sic where id=:sic";
         $qr = $db->query($sql, array('sic'=>$prm->sic));
         $fin->name = $db->fetchSingleValue($qr);
@@ -590,10 +591,16 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
         if ($rownum==0) $fin->previewed=NULL; 
         else $fin->previewed = ($reviewed/$rownum)*100;
         
-       $this->res->rows = array($fin);
-       echo json_encode($this->res);
+       $res->rows = array($fin);
+       return $res;       
     }
 
+   function ajxMarketSummarySic()
+   {  $r =  $this->getMarketSummaryBySic();
+      $this->res->rows = $r->rows;
+      if (isset($r->dbg)) $this->res->dbg = $r->dbg;
+      echo json_encode($this->res);        
+   }
 
    function getPostParams($list)
    { $r = array();
