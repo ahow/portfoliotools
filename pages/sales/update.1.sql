@@ -114,3 +114,5 @@ insert into sales_sic (id, name, description, industry_group_id)
 values (-1, 'Unclassified','Unclassified', -1);
 
 
+
+

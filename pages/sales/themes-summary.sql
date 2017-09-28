@@ -74,4 +74,189 @@ join tmp_selected_sics t on d.sic = t.sic
 where d.syear=@maxyear
 group by 1, 2;
 
+delimiter //
+create procedure update_sales_totals_with_negative()
+begin
 
+    drop table if exists sales_companies_totals;
+    drop table if exists sales_sic_companies_totals;
+    
+    -- create totals table
+    CREATE TABLE IF NOT EXISTS sales_companies_totals
+    ( cid varchar(16) NOT NULL,
+      sales double precision not null,
+      primary key (cid)
+    );
+
+    CREATE TABLE IF NOT EXISTS sales_sic_companies_totals
+    ( cid varchar(16) NOT NULL,
+      sic integer NOT NULL,
+      psale double precision not null,
+      index (sic),
+      primary key (cid,sic)
+    );
+    
+
+
+    select max(syear) from sales_divdetails into @max_year;
+
+    insert into sales_companies_totals
+    select 
+       c.cid, sum(d.sales)
+    from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    where d.syear=@max_year 
+    group by 1;
+    
+    insert into sales_sic_companies_totals
+    select 
+        d.cid, d.sic, d.sales/t.sales*100 as psale
+    from sales_divdetails d 
+    join sales_companies c on d.cid=c.cid 
+    join sales_companies_totals t on d.cid=t.cid 
+    where d.syear=@max_year
+    group by 1,2
+    having psale is not null;
+
+end//
+delimiter ;
+
+delimiter //
+create procedure update_sales_totals()
+begin
+
+    drop table if exists sales_companies_totals;
+    drop table if exists sales_sic_companies_totals;
+    
+    -- create totals table
+    CREATE TABLE IF NOT EXISTS sales_companies_totals
+    ( cid varchar(16) NOT NULL,
+      sales double precision not null,
+      primary key (cid)
+    );
+
+    CREATE TABLE IF NOT EXISTS sales_sic_companies_totals
+    ( cid varchar(16) NOT NULL,
+      sic integer NOT NULL,
+      psale double precision not null,
+      index (sic),
+      primary key (cid,sic)
+    );
+    
+
+
+    select max(syear) from sales_divdetails into @max_year;
+
+    insert into sales_companies_totals
+    select 
+       c.cid, sum(d.sales)
+    from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    where d.syear=@max_year and d.sales>0 
+    group by 1;
+    
+    insert into sales_sic_companies_totals
+    select 
+        d.cid, d.sic, d.sales/t.sales*100 as psale
+    from sales_divdetails d 
+    join sales_companies c on d.cid=c.cid 
+    join sales_companies_totals t on d.cid=t.cid 
+    where d.syear=@max_year and d.sales>0
+    group by 1,2
+    having psale is not null;
+
+end//
+delimiter ;
+
+
+
+--, c.market_cap,c.sales_growth,
+--c.roic, c.pe, c.evebitda, c.payout, c.reviewed
+
+select 
+  p.sic,
+  sum(d.sales) as tsales,
+  sum(c.roic*p.psale)/sum(p.psale) as aroic,
+  sum(c.pe*p.psale)/sum(p.psale) as ape,
+  sum(c.evebitda*p.psale)/sum(p.psale) as aevebitda,
+  sum(c.payout*p.psale)/sum(p.psale) as apayout
+from sales_divdetails d
+join sales_companies c on  d.cid = c.cid
+join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+where d.syear=@max_year and d.sic<300 and d.sic>0
+group by d.sic;
+
+
+select 
+  sum(d.sales) as tsales,
+  sum(c.roic*p.psale)/sum(p.psale) as aroic,
+  sum(c.pe*p.psale)/sum(p.psale) as ape,
+  sum(c.evebitda*p.psale)/sum(p.psale) as aevebitda,
+  sum(c.payout*p.psale)/sum(p.psale) as apayout
+from sales_divdetails d
+join sales_companies c on  d.cid = c.cid
+join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+where d.syear=@max_year and  d.sic in (116,119,131);
+;
+
+
+-- Это правильный запрос:
+select 
+  p.sic,
+  sum(d.sales) as tsales,
+  sum(c.roic*p.psale)/sum(p.psale) as aroic,
+  sum(c.pe*p.psale)/sum(p.psale) as ape,
+  sum(c.evebitda*p.psale)/sum(p.psale) as aevebitda,
+  sum(c.payout*p.psale)/sum(p.psale) as apayout
+from sales_divdetails d
+join sales_companies c on  d.cid = c.cid
+join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+where d.syear=@max_year and d.sales>0 and d.sic in (116,119,131)
+group by d.sic;
+
+
+select 
+  p.sic,
+  sum(d.sales) as tsales,
+  sum(c.roic*p.psale)/sum(p.psale) as aroic,
+  sum(c.pe*p.psale)/sum(p.psale) as ape,
+  sum(c.evebitda*p.psale)/sum(p.psale) as aevebitda,
+  sum(c.payout*p.psale)/sum(p.psale) as apayout
+from sales_divdetails d
+join sales_companies c on  d.cid = c.cid
+join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+where d.syear=@max_year and d.sales>0 and d.sic 
+group by d.sic;
+
+-- Теперь мы можем вычислить по теме
+set @theme_min = 2;
+set @theme_max = 2;
+set @theme_max = 1;
+set @max_year = 2015;
+CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
+insert into tmp_selected_sics
+select id
+from sales_sic 
+where CSV_DOUBLE(exposure,@theme_id)  between @theme_min and @theme_max
+and id<>9999;
+
+select 
+  sum(st.tsales*st.aroic)/sum(st.tsales) as roic,
+  sum(st.tsales*st.ape)/sum(st.tsales) as pe,
+  sum(st.tsales*st.aevebitda)/sum(st.tsales) as evebitda,
+  sum(st.tsales*st.apayout)/sum(st.tsales) as payout
+from (
+select 
+  p.sic,
+  sum(d.sales) as tsales,
+  sum(c.roic*p.psale)/sum(p.psale) as aroic,
+  sum(c.pe*p.psale)/sum(p.psale) as ape,
+  sum(c.evebitda*p.psale)/sum(p.psale) as aevebitda,
+  sum(c.payout*p.psale)/sum(p.psale) as apayout
+from sales_divdetails d
+join sales_companies c on  d.cid = c.cid
+join tmp_selected_sics ss on d.sic=ss.sic
+join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+where d.syear=@max_year and d.sales>0
+group by d.sic
+) as st;
