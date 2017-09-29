@@ -130,7 +130,8 @@ function userlistView()
     }
 
 /* ---------------- User Groups Init    ----------------------*/
-    var users = new tableList('#users-table','users',['name','firstname','lastname','email']);
+    // var users = new tableList('#users-table','users',['name','firstname','lastname','email']);
+    var users = new modelListController('.model-list');
     var usergroups = new groupsList('#user-groups','usergroups');
     
     // 
@@ -145,10 +146,11 @@ function userlistView()
        var userForm = new modelFormController('#useradd-form');
        var vld = new formValidator('#useradd-form');
         
-        users.click(function(row){           
+        users.click(function(id, row){           
            $('#editform').addClass('disabled-input');
-           var tr = $(row.target).parents('table:first').find('tr').removeClass('active');           
-           var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');
+           var tr = $(row.target).parents('table:first').find('tr').removeClass('active');    
+           var id = row.id;       
+           // var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');
            users.current_row = id;
            usergroups.load(id);
            usergroups.loaded(function(){ $('#editform').removeClass('hidden').removeClass('disabled-input'); } );

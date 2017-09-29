@@ -9,14 +9,12 @@
     <span class="input-group-btn"><button id="btsearch" class="btn btn-default w-search" type="button"><?=T('Search')?></button> </span>
 </div>
 
-<div id="users-list">
-    <table id="users-table" class="table table-striped selectable">
-    <thead>
-        <tr><th>Name</th><th>First name</th><th>Last name</th><th>Email</th></tr>
-    </thead>
-    <tbody>
-    </tbody>    
+<div id="users-list"class="model-list" data-model="/pages/admin/Model/users">
+    <table class="table table-striped selectable">
+            <thead></thead>
+            <tbody></tbody>
     </table>
+    <div class="model-pager"></div>
     <fieldset id="editform" class="hidden">
         <div id="user-groups"></div>
         <div class="form-group" style="margin-bottom:10px">
