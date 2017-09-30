@@ -75,21 +75,58 @@
 
     function runSQL($scfile)
     {   $db = $this->cfg->db;
-        $sqlcleaned =  preg_replace('/--(.)*/i', '', file_get_contents($scfile));
-        $script = explode(';', $sqlcleaned);
-        foreach($script as $q)
-        { if (trim($q)!='')
-          {   $q.=';';              
-              $db->exec($q);              
-          }
+        $f = fopen($scfile,'r');
+        $delim = ';'; 
+        $sql = '';
+        $a = array();
+
+        while ($s = fgets($f))
+        {   $s = trim($s);
+            if ($s!='')
+            {  // remove comments
+               $uncom = preg_replace('/--(.)*/i', '', $s);
+               
+               if (trim($uncom!=''))
+               { if (($p=stripos($uncom,'DELIMITER'))!==false)
+                 {  $arg = substr($uncom,$p+10);
+                    $d = trim($arg);
+                    $uncom='';
+                    $l = strlen($d);
+                    if ($l>0 && $l<3) $delim=$d;
+                 }
+                 
+                 if ( ($p=strpos($uncom, $delim)) !==false)                  
+                 {  $ds = strlen($delim);
+                    $sql.=substr($uncom, 0, $p);
+                    $a[] = $sql;
+                    $sql = ''; //
+                    $uncom = substr($uncom, $p+$ds);                    
+                  }
+               }
+               $sql.=$uncom;               
+            }
         }
+        fclose($f);
+
+        $this->res->queries = $a;
+        $this->res->cfg = $this->cfg;
     }
        
-   
+ 
+ /*   
+    function ajxSQlScript()
+    {   $file = post('file');
+        $this->res->file = $file;
+        $this->runSQL($file);
+        echo json_encode($this->res);
+    }
+*/
+  
     function ajxSaveSummaryDescriptions()
     {  $this->saveSettings('SummaryDescriptions');
        echo json_encode($this->res);
     }
+ 
 
     function ajxLoadSummaryDescriptions()
     {  $this->res->row = $this->loadSettings('SummaryDescriptions');

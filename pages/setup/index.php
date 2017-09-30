@@ -13,8 +13,53 @@ function alert($msg, $type='info')
 { echo "<div class=\"alert alert-$type\">$msg</div>";
 }
 
- 
-function runSQL($db,$scfile)
+
+function runSQL($dp, $scfile)
+{   $db = $this->cfg->db;
+    $f = fopen($scfile,'r');
+    $delim = ';'; 
+    $sql = '';
+
+    while ($s = fgets($f))
+    {   $s = trim($s);
+        if ($s!='')
+        {  // remove comments
+           $uncom = preg_replace('/--(.)*/i', '', $s);
+           
+           if (trim($uncom!=''))
+           { if (($p=stripos($uncom,'DELIMITER'))!==false)
+             {  $arg = substr($uncom,$p+10);
+                $d = trim($arg);
+                $uncom='';
+                $l = strlen($d);
+                if ($l>0 && $l<3) $delim=$d;
+             }
+             
+             if ( ($p=strpos($uncom, $delim)) !==false)                  
+             {  $ds = strlen($delim);
+                $sql.=substr($uncom, 0, $p);
+                
+                try 
+                { $db->exec($sql);
+                } catch (Exception $e)
+                { alert($sql.'<br />'.$e->getMessage(), 'danger');
+                  return false;
+                }
+               
+                $sql = ''; //
+                $uncom = substr($uncom, $p+$ds);                    
+              }
+           }
+           $sql.=$uncom;               
+        }
+    }
+    fclose($f);
+
+    return true;
+}
+       
+
+function runSQL_obsolete($db,$scfile)
 {   // if (!file_exists($scfile)) return false;
     // echo "Run: $scfile<br>";
     // Remove comments
@@ -33,7 +78,8 @@ function runSQL($db,$scfile)
     }
     return true;
 }
-   
+
+
 function InstallPages($db)
 {   // alert(T('PAGES_SETUP'), 'info');
     $error = false;

@@ -204,6 +204,7 @@ where d.syear=@max_year and  d.sic in (116,119,131);
 select 
   p.sic,
   sum(d.sales) as tsales,
+  sum(c.sales_growth*p.psale)/sum(p.psale) as asales_growth,
   sum(c.roic*p.psale)/sum(p.psale) as aroic,
   sum(c.pe*p.psale)/sum(p.psale) as ape,
   sum(c.evebitda*p.psale)/sum(p.psale) as aevebitda,
@@ -214,24 +215,26 @@ join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
 where d.syear=@max_year and d.sales>0 and d.sic in (116,119,131)
 group by d.sic;
 
-
+-- Новый вариант расчёта
 select 
   p.sic,
   sum(d.sales) as tsales,
-  sum(c.roic*p.psale)/sum(p.psale) as aroic,
-  sum(c.pe*p.psale)/sum(p.psale) as ape,
-  sum(c.evebitda*p.psale)/sum(p.psale) as aevebitda,
-  sum(c.payout*p.psale)/sum(p.psale) as apayout
+  sum(c.roic*p.psale*t.sales)/sum(p.psale*t.sales) as aroic,
+  sum(c.pe*p.psale*t.sales)/sum(p.psale*t.sales) as ape,
+  sum(c.evebitda*p.psale*t.sales)/sum(p.psale*t.sales) as aevebitda,
+  sum(c.payout*p.psale*t.sales)/sum(p.psale*t.sales) as apayout
 from sales_divdetails d
 join sales_companies c on  d.cid = c.cid
 join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
-where d.syear=@max_year and d.sales>0 and d.sic 
+join sales_companies_totals t on d.cid=t.cid
+where d.syear=@max_year and d.sales>0 and d.sic in (116,119,131)
 group by d.sic;
+
 
 -- Теперь мы можем вычислить по теме
 set @theme_min = 2;
 set @theme_max = 2;
-set @theme_max = 1;
+set @theme_id = 1;
 set @max_year = 2015;
 CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
 insert into tmp_selected_sics

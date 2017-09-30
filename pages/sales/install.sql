@@ -1,4 +1,5 @@
-CREATE TABLE sales_industry_groups
+-- SMega
+CREATE TABLE sales_industry_groups -- Super table
 ( id integer NOT NULL AUTO_INCREMENT,
   industry_group varchar(220) not null,
   division  varchar(220),
