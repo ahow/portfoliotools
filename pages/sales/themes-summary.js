@@ -32,7 +32,7 @@ $(function(){
 */
    
 
-    function drawSIC(d)
+    function drawThemes(d)
     {  $('div.p-chart').css('display','');
        var selector='#summary';
        var s = '<table class="table table-striped">';
@@ -89,7 +89,7 @@ $(function(){
         ajx('/pages/sales/ThemesSummary',{region:$('#region').val(),
             theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val()
         },function(d){
-               drawSIC(d);
+               drawThemes(d);
                drawDebug(d);
                $("#mranking").LoadingOverlay("hide", true);
        });
