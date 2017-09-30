@@ -7,7 +7,7 @@
    $nav='';
    if (isset($a[0])) $nav=$a[0];
    unset($a);
-   if ($nav!='login' && $nav!='oauth' && empty($this->user->user)) header('Location: '.mkURL('/login'));
+   if ($nav!='login' &&  $nav!='setup' && $nav!='oauth' && empty($this->user->user)) header('Location: '.mkURL('/login'));
   
   // After init modules
   if (method_exists($this->page,'afterInit')) $this->page->afterInit();

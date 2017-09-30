@@ -18,9 +18,11 @@ function runSQL($db, $scfile)
 {   $f = fopen($scfile,'r');
     $delim = ';'; 
     $sql = '';
+    $line = 0;
 
     while ($s = fgets($f))
     {   $s = trim($s);
+        $line++;
         if ($s!='')
         {  // remove comments
            $uncom = preg_replace('/--(.)*/i', '', $s);
@@ -41,7 +43,7 @@ function runSQL($db, $scfile)
                 try 
                 { $db->exec($sql);
                 } catch (Exception $e)
-                { alert($sql.'<br />'.$e->getMessage(), 'danger');
+                { alert($sql.'<br />'.$e->getMessage()."<br>Line: $line<br>File: $scfile", 'danger');
                   return false;
                 }
                
