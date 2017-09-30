@@ -14,9 +14,8 @@ function alert($msg, $type='info')
 }
 
 
-function runSQL($dp, $scfile)
-{   $db = $this->cfg->db;
-    $f = fopen($scfile,'r');
+function runSQL($db, $scfile)
+{   $f = fopen($scfile,'r');
     $delim = ';'; 
     $sql = '';
 
@@ -37,7 +36,7 @@ function runSQL($dp, $scfile)
              
              if ( ($p=strpos($uncom, $delim)) !==false)                  
              {  $ds = strlen($delim);
-                $sql.=substr($uncom, 0, $p);
+                $sql.="\n".substr($uncom, 0, $p);
                 
                 try 
                 { $db->exec($sql);
@@ -50,7 +49,7 @@ function runSQL($dp, $scfile)
                 $uncom = substr($uncom, $p+$ds);                    
               }
            }
-           $sql.=$uncom;               
+           $sql.="\n".$uncom;               
         }
     }
     fclose($f);
