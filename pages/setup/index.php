@@ -116,7 +116,12 @@ function InstallPages($db)
                                    }
                                }
                             } else $start = $row->update_no;                                            
-                            // If updates exists then start them                     
+                            // If updates exists then start them   
+                            $st=get($file,-1);
+                            if ($st>=0)
+                            {   alert("External update No = $st on $file");
+                                $start=$st;
+                            }
                             if ($pm->database->update_no>0)
                             for ($i=$start; $i < $pm->database->update_no; $i++)
                             {   $n = $i+1;
