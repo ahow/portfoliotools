@@ -81,7 +81,7 @@ begin
     select 
       @theme_id as name,
       @previewed as previewed,
-      st.tsales,
+      sum(st.tsales) as tsales,
       sum(st.tsales*st.asales_growth)/sum(st.tsales) as asales_growth,
       sum(st.tsales*st.aroic)/sum(st.tsales) as aroic,
       sum(st.tsales*st.ape)/sum(st.tsales) as ape,
