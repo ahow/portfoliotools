@@ -1,4 +1,5 @@
 -- for update: update  mc_pages set update_no=1 where name='sales'
+-- or open URL http://sales.loc/setup?sales=1
 drop procedure if exists update_sales_totals;
 drop procedure if exists select_themes_summary;
 
@@ -126,4 +127,4 @@ end$$
 
 delimiter ;
 
-
+call update_sales_totals;

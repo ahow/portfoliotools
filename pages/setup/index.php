@@ -1,6 +1,8 @@
 <h1><?=T('DATABASE_SETUP')?></h1>
 <?php
 
+$no_connection = true;
+   
 function getRaw($cfg)
 {  $dbconn = "$cfg->dbtype:host=$cfg->dbhost";       
    $db = new PDO($dbconn, $cfg->dbuser, $cfg->dbpass );
@@ -81,7 +83,7 @@ function runSQL_obsolete($db,$scfile)
 }
 
 
-function InstallPages($db)
+function InstallPages($db, $admin=false)
 {   // alert(T('PAGES_SETUP'), 'info');    
     $error = false;
     $pnum = 0;
@@ -116,11 +118,13 @@ function InstallPages($db)
                                    }
                                }
                             } else $start = $row->update_no;                                            
-                            // If updates exists then start them   
-                            $st=get($file,-1);
-                            if ($st>=0)
-                            {   alert("External update No = $st on $file");
-                                $start=$st;
+                            // If updates exists then start them 
+                            if ($admin)
+                            {   $st=get($file,-1);
+                                if ($st>=0)
+                                {   alert("External update No = $st on $file");
+                                    $start=$st;
+                                }
                             }
                             if ($pm->database->update_no>0)
                             for ($i=$start; $i < $pm->database->update_no; $i++)
@@ -201,11 +205,13 @@ function installSystem($db, $cfg, $create_db = true)
       if (!empty($row) && $row->tables==0)
       {  installSystem($cfg->db->db, $cfg, false);
       }
-      installPages($cfg->db->db);
+      $is_admin = $cfg->inGroup('admin');
+      installPages($cfg->db->db, $is_admin);
+      $no_connection = false;
    }
    
    
-   die();
+   if ($no_connection) die();
    // global $_TRANSLATIONS;
    // print_r($_TRANSLATIONS);   
 ?>
