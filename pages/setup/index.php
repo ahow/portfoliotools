@@ -82,7 +82,7 @@ function runSQL_obsolete($db,$scfile)
 
 
 function InstallPages($db)
-{   // alert(T('PAGES_SETUP'), 'info');
+{   // alert(T('PAGES_SETUP'), 'info');    
     $error = false;
     $pnum = 0;
     // Create pages scripts
@@ -104,31 +104,32 @@ function InstallPages($db)
                             $st->execute(array(':name'=>$file));
                             $row = $st->fetch(PDO::FETCH_OBJ);
                             $st->closeCursor();                            
+                            $start=0;
                             if (empty($row))
-                            {  alert("New module: <b>$file</b>  $pm->author (c) $pm->created", 'warning');
-                               
-                               if ($pm->database->install)
-                               {   $install =  "$dir/install.sql";
+                            {  if ($pm->database->install)
+                               {   alert("New module: <b>$file</b>  $pm->author (c) $pm->created", 'warning');
+                                   $install =  "$dir/install.sql";
                                    if ( runSQL($db, $install) )
                                    {   $st = $db->prepare('insert into mc_pages (name,update_no) values (:name,:no)');
                                        $st->execute(array(':name'=>$file,':no'=>$pm->database->update_no));
                                        $pnum++;
                                    }
                                }
-                            } else
-                            {   $start = $row->update_no;                                
-                                if ($pm->database->update_no>0)
-                                for ($i=$start; $i < $pm->database->update_no; $i++)
-                                {   $n = $i+1;
-                                    $fn = "$dir/update.$n.sql";
-                                    if (!file_exists($fn))
-                                    {  alert(T('FILE_NOT_FOUND').' '.$fn);
-                                    } else if (runSQL($db, $fn))
-                                    {  $st = $db->prepare('update mc_pages set update_no=:no where name=:name');
-                                       $st->execute(array(':name'=>$file,':no'=>$n));
-                                    }
+                            } else $start = $row->update_no;                                            
+                            // If updates exists then start them                     
+                            if ($pm->database->update_no>0)
+                            for ($i=$start; $i < $pm->database->update_no; $i++)
+                            {   $n = $i+1;
+                                $fn = "$dir/update.$n.sql";
+                                if (!file_exists($fn))
+                                {  alert(T('FILE_NOT_FOUND').' '.$fn);
+                                } else if (runSQL($db, $fn))
+                                {  alert("Update successful: <b>$fn</b>");
+                                   $st = $db->prepare('update mc_pages set update_no=:no where name=:name');
+                                   $st->execute(array(':name'=>$file,':no'=>$n));
                                 }
                             }
+                            
                         } catch (Exception $e)
                         {  alert(T('CAN_NOT_CREATE').' '.$e->getMessage()." $file database", 'danger');
                            $error = true;
@@ -150,7 +151,7 @@ function InstallPages($db)
  
 
 function installSystem($db, $cfg, $create_db = true) 
-{   
+{   alert(T('INSTALL_SYSTEM'));
     try
     {  try
         {
