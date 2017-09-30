@@ -50,21 +50,38 @@ begin
 end$$
 
 
-create procedure select_themes_summary()
-begin
 /*
     set @theme_min = 2;
     set @theme_max = 2;
     set @theme_id = 1;
     set @max_year = 2015;
+    set @region = 'MENA';
 */
+create procedure select_themes_summary()
+begin
+
+    DROP TABLE IF EXISTS tmp_selected_sics;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
-    insert into tmp_selected_sics
-    select id
-    from sales_sic 
-    where CSV_DOUBLE(exposure,@theme_id)  between @theme_min and @theme_max
-    and id<>9999;
-    
+
+    IF @region='' or @region='Global' THEN
+        insert into tmp_selected_sics
+        select id
+        from sales_sic 
+        where CSV_DOUBLE(exposure,@theme_id)  between @theme_min and @theme_max
+        and id<>9999;
+    ELSE
+      insert into tmp_selected_sics
+        select distinct s.id
+          from sales_divdetails d
+        join sales_companies c on  d.cid = c.cid
+        join sales_sic s on d.sic=s.id
+        where d.syear=@max_year and d.sales>0 
+        and CSV_DOUBLE(s.exposure,@theme_id) between @theme_min and @theme_max 
+        and s.id<>9999
+        and c.region=@region
+        order by s.id;
+    END IF;
+  
     select 
        100*sum(ct.reviewed)/count(*) as prewiewed
     from 

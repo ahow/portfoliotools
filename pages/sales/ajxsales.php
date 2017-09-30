@@ -685,6 +685,7 @@ and id<>9999;');
       $db->query('set @theme_min = :theme_min', $this->getPostParams('theme_min') );
       $db->query('set @theme_max = :theme_max', $this->getPostParams('theme_max') );
       $db->query('set @theme_id = :theme_id', $this->getPostParams('theme_id') );
+      $db->query('set @region = :region', $this->getPostParams('region') );
       $db->query('select max(syear) from sales_divdetails into @max_year');
       $qr = $db->query('call select_themes_summary');
       $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
