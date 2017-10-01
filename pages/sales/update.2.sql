@@ -2,6 +2,7 @@
 -- or open URL http://sales.loc/setup?sales=1
 drop procedure if exists update_sales_totals;
 drop procedure if exists select_themes_summary;
+drop procedure if exists test_proc;
 
 delimiter $$
 -- This procedure must be loaded after uploading of divdetails
@@ -60,7 +61,10 @@ end$$
 */
 create procedure select_themes_summary()
 begin
-
+    DECLARE top3sum DOUBLE;
+    DECLARE top5sum DOUBLE;
+    DECLARE previeved DOUBLE;
+    
     DROP TABLE IF EXISTS tmp_selected_sics;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
 
@@ -83,6 +87,7 @@ begin
         order by s.id;
     END IF;
   
+    -- select procent of revieved
     select 
        100*sum(ct.reviewed)/count(*) as prewiewed
     from 
@@ -93,11 +98,35 @@ begin
         join tmp_selected_sics ss on d.sic=ss.sic
         where d.syear=@max_year
         group by 1,2
-    ) as ct into @previewed;
+    ) as ct into previeved;
+    
+     -- select top 3
+     select sum(t3.sales) from
+     (select 
+        d.cid, d.sales
+        from sales_divdetails d
+        join sales_companies c on  d.cid = c.cid
+        join tmp_selected_sics ss on d.sic=ss.sic
+        where d.syear=@max_year
+     order by 2 desc
+     limit 3) as t3 into top3sum;
+
+     -- select top 5
+     select sum(t5.sales) from
+     (select 
+        d.cid, d.sales
+        from sales_divdetails d
+        join sales_companies c on  d.cid = c.cid
+        join tmp_selected_sics ss on d.sic=ss.sic
+        where d.syear=@max_year
+     order by 2 desc
+     limit 5) as t5 into top5sum;    
 
     -- select theme values
     select 
       @theme_id as name,
+      top3sum,
+      top5sum,
       @previewed as previewed,
       sum(st.tsales) as tsales,
       sum(st.tsales*st.asales_growth)/sum(st.tsales) as asales_growth,
@@ -123,6 +152,25 @@ begin
     group by d.sic
     ) as st;
 
+end$$
+
+create procedure test_proc()
+begin
+    DECLARE i INT;
+    
+    select 
+        min(d.syear) as minyear, max(d.syear) as maxyear
+    from sales_divdetails d
+    into @min_year, @max_year;
+    SET i =  @min_year;
+    DROP TABLE IF EXISTS tmp_all_years;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_all_years (syear integer NOT NULL);
+    WHILE i<=@max_year DO
+        insert into tmp_all_years values (i);
+        SET i=i+1;
+    END WHILE;
+    -- select @min_year, @max_year;
+    select * from tmp_all_years;
 end$$
 
 delimiter ;
