@@ -114,7 +114,7 @@ begin
     
     set @n = 0; 
     set @gr=null;
-    
+    -- inserting data for the rank calculation
     insert into tmp_companies_rank1 
     select r.syear, r.cid, r.rank from
     (
@@ -127,10 +127,12 @@ begin
     order by 2,1 desc
     ) as r;
   
- 
+    -- create the copy of rank because MySQL can't use join to
+    -- the temporary table itself
     insert into tmp_companies_rank2
     select r.syear, r.cid, r.rank from tmp_companies_rank1 r;
     
+    -- getting stability
     select avg(r.cdif) from
     (   select 
            t.cid, t.syear, t.rank as rank, p.rank as prank,
