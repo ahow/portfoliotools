@@ -682,12 +682,14 @@ and id<>9999;');
    function ajxThemesSummary()
    {  $params = (object)$_POST;
       $db = $this->cfg->db;
-      $db->query('set @theme_min = :theme_min', $this->getPostParams('theme_min') );
-      $db->query('set @theme_max = :theme_max', $this->getPostParams('theme_max') );
-      $db->query('set @theme_id = :theme_id', $this->getPostParams('theme_id') );
-      $db->query('set @region = :region', $this->getPostParams('region') );
       $db->query('select max(syear) from sales_divdetails into @max_year');
-      $qr = $db->query('call select_themes_summary');
+      
+      $db->query('call select_sics_by_theme_range(@max_year,:theme_id,:theme_min,:theme_max,:region)', 
+        $this->getPostParams('theme_min,theme_max,theme_id,region'));
+        
+      $qr = $db->query('call summary_by_sics(@max_year,:theme_id,:region)',
+        $this->getPostParams('theme_id,region'));
+        
       $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
       /*
       
