@@ -125,9 +125,9 @@ begin
     -- select theme values
     select 
       @theme_id as name,
-      L_top3sum,
-      L_top5sum,
-      L_previewed,
+      L_top3sum as top3sum,
+      L_top5sum as top5sum,
+      L_previewed as previewed,
       sum(st.tsales) as tsales,
       sum(st.tsales*st.asales_growth)/sum(st.tsales) as asales_growth,
       sum(st.tsales*st.aroic)/sum(st.tsales) as aroic,
