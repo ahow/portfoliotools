@@ -63,7 +63,7 @@ create procedure select_themes_summary()
 begin
     DECLARE top3sum DOUBLE;
     DECLARE top5sum DOUBLE;
-    DECLARE previeved DOUBLE;
+    DECLARE previewed DOUBLE;
     
     DROP TABLE IF EXISTS tmp_selected_sics;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
@@ -98,7 +98,7 @@ begin
         join tmp_selected_sics ss on d.sic=ss.sic
         where d.syear=@max_year
         group by 1,2
-    ) as ct into previeved;
+    ) as ct into previewed;
     
      -- select top 3
      select sum(t3.sales) from
@@ -127,7 +127,7 @@ begin
       @theme_id as name,
       top3sum,
       top5sum,
-      @previewed as previewed,
+      previewed,
       sum(st.tsales) as tsales,
       sum(st.tsales*st.asales_growth)/sum(st.tsales) as asales_growth,
       sum(st.tsales*st.aroic)/sum(st.tsales) as aroic,
