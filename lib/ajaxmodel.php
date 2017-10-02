@@ -88,6 +88,10 @@
            { if (isset($fp->$k)) $this->where_parts[] = $fp->$k;
            }
        }
+       
+       if (isset($this->model->permanent_filter))
+       {   $this->where_parts[] = $this->model->permanent_filter;
+       }
 
        $this->modelTotal($params);
        

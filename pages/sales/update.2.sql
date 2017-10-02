@@ -114,7 +114,7 @@ begin
     
     set @n = 0; 
     set @gr=null;
-    -- inserting data for the rank calculation
+    -- inserting data for
     insert into tmp_companies_rank1 
     select r.syear, r.cid, r.rank from
     (
