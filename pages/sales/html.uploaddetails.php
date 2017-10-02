@@ -174,6 +174,7 @@
      $res->uploaded = $uploaded;     
      // $res->errors = $total_lines-$uploaded-1;
      $res->errfile = $fid;
+     $db->query('call update_sales_totals');
      $res->stage = 'Import finished!';
      send_message('CLOSE', $res);
      unlink($tmp);
