@@ -418,8 +418,8 @@ $(function(){
     
     $('.b-vchart').click(function(){
 		
-		var l = (1*$('#LHS').val())-1;
-        var r = (1*$('#RHS').val())-1;
+		// var l = (1*$('#LHS').val())-1;
+        // var r = (1*$('#RHS').val())-1;
         
 		if ($('#sic_code input').val()!='')
 		{	
@@ -427,10 +427,12 @@ $(function(){
 			//{ 
             var range = $('#theme_range').val().split(',');
 			ajx('/pages/sales/ThemesSummarySicTotals',{region:$('#region').val(),
-            theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val()
+            theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val(),
+            lhs:$('#LHS').val(),
+            rhs:$('#RHS').val()
         },function(d){
 					   sic_totals = d.rows;
-					   drawSicTotals(l,r)
+					   drawSicTotals2()
 				});
 			//} else drawSicTotals(l,r);
 	    }

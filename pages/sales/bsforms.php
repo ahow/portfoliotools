@@ -189,7 +189,10 @@
   <label for="'.$name.'">'.$label.'</label>
   <select class="form-control" id="'.$name.'" data-control-type="basic">';
        foreach($a as $k=>$v)
-       { $s.='<option value="'.($k+1).'">'.$v.'</option>';
+       {   if (strpos($v,':')>0)
+           {   $a = explode(':',$v);
+               $s.='<option value="'.$a[0].'">'.$a[1].'</option>';
+           } else $s.='<option value="'.($k+1).'">'.$v.'</option>';
        }
        $s.='</select>
 </div>';

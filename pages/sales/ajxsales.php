@@ -658,6 +658,7 @@ select id
 from sales_sic 
 where CSV_DOUBLE(exposure,@theme_id)  between @theme_min and @theme_max
 and id<>9999;');
+
        // id in (116,119,131) 
    }
 

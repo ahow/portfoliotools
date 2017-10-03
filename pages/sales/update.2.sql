@@ -3,8 +3,10 @@
 drop procedure if exists update_sales_totals;
 drop procedure if exists select_sics_by_theme_range;
 drop procedure if exists summary_by_sics;
+drop procedure if exists summary_by_sics_by_years;
 drop procedure if exists test_proc;
 drop procedure if exists get_stability;
+drop procedure if exists get_stability_by_years;
 
 delimiter $$
 -- This procedure must be loaded after uploading of divdetails
@@ -147,6 +149,115 @@ begin
 end$$
 
 
+-- input:  tmp_selected_sics must exists before call it
+create procedure get_stability_by_years(I_region varchar(255))
+begin
+    DECLARE i,r,gr INT;
+    DECLARE L_min_year, L_max_year INT;
+        
+    DROP TABLE IF EXISTS tmp_companies_totals_by_year;    
+
+    CREATE TEMPORARY TABLE tmp_companies_totals_by_year 
+    (syear integer, cid varchar(16) NOT NULL,
+    tsum double, PRIMARY KEY (cid, syear));
+
+    DROP TABLE IF EXISTS tmp_companies_rank1;
+    DROP TABLE IF EXISTS tmp_companies_rank2;
+
+    CREATE TEMPORARY TABLE tmp_companies_rank1
+    (syear integer, cid varchar(16) NOT NULL,
+    rank integer, PRIMARY KEY (cid, syear));
+
+    CREATE TEMPORARY TABLE tmp_companies_rank2
+    (syear integer, cid varchar(16) NOT NULL,
+    rank integer, PRIMARY KEY (cid, syear));
+
+      
+    select 
+        min(d.syear) as minyear, max(d.syear) as maxyear
+    from sales_divdetails d
+    into L_min_year, L_max_year;
+    
+    
+    SET i = L_min_year;
+ 
+    WHILE i<=L_max_year DO
+        set @n = 1;
+        IF I_region='' or I_region='Global' THEN
+            insert into tmp_companies_totals_by_year
+            select 
+            d.syear, d.cid, sum(d.sales)
+            from sales_divdetails d
+            join tmp_selected_sics ss on d.sic=ss.sic              
+            where d.syear=i and d.sales is not null
+            group by 1,2
+            order by 1, 3 desc
+            limit 20;
+        ELSE
+            insert into tmp_companies_totals_by_year
+            select 
+            d.syear, d.cid, sum(d.sales)
+            from sales_divdetails d        
+            join tmp_selected_sics ss on d.sic=ss.sic
+            join sales_companies c on  d.cid = c.cid
+            where d.syear=i and d.sales is not null and c.region=I_region
+            group by 1,2
+            order by 1, 3 desc
+            limit 20;
+        END IF;
+       SET i=i+1; 
+    END WHILE;
+    
+    set @n = 0; 
+    set @gr=null;
+    -- inserting data for
+    insert into tmp_companies_rank1 
+    select r.syear, r.cid, r.rank from
+    (
+    select 
+        cid, 
+        syear,
+        (@n:=if(@gr=syear,@n+1,1)) as rank,
+        @gr:=syear 
+    from tmp_companies_totals_by_year
+    order by 2,1 desc
+    ) as r;
+  
+    -- create the copy of rank because MySQL can't use join to
+    -- the temporary table itself
+    insert into tmp_companies_rank2
+    select r.syear, r.cid, r.rank from tmp_companies_rank1 r;
+    
+    -- getting stability
+    
+    select r.syear, avg(r.cdif) as v from
+    (   select 
+           t.cid, t.syear, t.rank as rank, p.rank as prank,
+           (t.rank-p.rank) as diff,
+           if(abs(t.rank-p.rank)>5,5,abs(t.rank-p.rank)) as cdif
+        from tmp_companies_rank1 t
+        left outer join tmp_companies_rank2 p on t.cid=p.cid 
+            and p.syear=(t.syear-1)
+        order by t.cid, t.syear desc
+    ) as r 
+    group by 1
+    order by 1;
+    
+end$$
+
+
+
+create procedure summary_by_sics_by_years(I_funct VARCHAR(20), I_region varchar(255))
+begin
+    CASE I_funct
+    WHEN 'stability' THEN call get_stability_by_years(I_region);      
+    ELSE
+      BEGIN
+        set @n=1;
+      END;
+    END CASE;    
+end$$
+
 create procedure select_sics_by_theme_range(I_max_year integer,
  I_theme_id integer, I_theme_min integer, I_theme_max integer,
  I_region varchar(255))
@@ -182,14 +293,14 @@ before using
 set @year = 2015;
 -- Theme A
 set @theme_id = 1;
-set @theme_min = -2;
-set @theme_max = -2;
+set @theme_min = -1;
+set @theme_max = -0;
 -- Global region
 set @region = '';
 call select_sics_by_theme_range(@year, @theme_id, @theme_min, @theme_max, @region);
 
 -- Selected SICs:
-select * from tmp_selected_sics;
+-- select * from tmp_selected_sics;
 
 call get_stability(@year, @region, @stab);
 select @stab;
