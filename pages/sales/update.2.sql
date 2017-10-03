@@ -58,7 +58,7 @@ create procedure get_stability(I_max_year int, I_region varchar(255),
 OUT stability DOUBLE)
 begin
     DECLARE i,r,gr INT;
-    DECLARE L_min_year, L_max_year INT;
+    /* DECLARE L_min_year, L_max_year INT; */
         
     DROP TABLE IF EXISTS tmp_companies_totals_by_year;    
 
@@ -77,13 +77,14 @@ begin
     (syear integer, cid varchar(16) NOT NULL,
     rank integer, PRIMARY KEY (cid, syear));
 
-      
+    /*  
     select 
         min(d.syear) as minyear, max(d.syear) as maxyear
     from sales_divdetails d
     into L_min_year, L_max_year;
+    */
     
-    SET i = L_min_year;
+    SET i = I_max_year-1;
  
     WHILE i<=I_max_year DO
         set @n = 1;
@@ -177,6 +178,35 @@ end$$
 /*
 call selected_sics_by...
 before using
+
+set @year = 2015;
+-- Theme A
+set @theme_id = 1;
+set @theme_min = -2;
+set @theme_max = -2;
+-- Global region
+set @region = '';
+call select_sics_by_theme_range(@year, @theme_id, @theme_min, @theme_max, @region);
+
+-- Selected SICs:
+select * from tmp_selected_sics;
+
+call get_stability(@year, @region, @stab);
+select @stab;
+
+-- Debug stability:
+select 
+   t.cid, t.syear, t.rank as rank, p.rank as prank,
+   (t.rank-p.rank) as diff,
+   if(abs(t.rank-p.rank)>5,5,abs(t.rank-p.rank)) as cdif
+from tmp_companies_rank1 t
+left outer join tmp_companies_rank2 p on t.cid=p.cid 
+    and p.syear=(t.syear-1)
+where t.syear = @year
+order by t.cid, t.syear desc;
+        
+
+call summary_by_sics(@year, @name, @region);
 */
 create procedure summary_by_sics(I_max_year integer, I_name varchar(255),
 I_region varchar(255))
