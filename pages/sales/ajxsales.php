@@ -665,18 +665,24 @@ and id<>9999;');
    function ajxThemesSummarySicTotals()
    {    $params = (object)$_POST;
         $db = $this->cfg->db;
-        $prm = new stdClass();
-                
-        $this->selectSicsByThemeRange($db);
+        $db->query('select max(syear) from sales_divdetails into @max_year');
+      
+        $db->query('call select_sics_by_theme_range(@max_year,:theme_id,:theme_min,:theme_max,:region)', 
+          $this->getPostParams('theme_min,theme_max,theme_id,region'));
         
-        $sql = "select d.syear, sum(d.sales) as tsales, sum(d.ebit) as tebit,
-         sum(d.assets) as tassets,  sum(d.capex) as tcapex 
-        from sales_divdetails d
-        join tmp_selected_sics t on d.sic = t.sic
-        -- where
-         group by 1";
-        $qr = $db->query($sql, $prm);
-        $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
+        
+        $qr = $db->query('call summary_by_sics_by_years(:lhs,:region)',  
+          $this->getPostParams('lhs,region'));
+        
+        $this->res->lrows = $qr->fetchAll(PDO::FETCH_OBJ);
+        $qr->closeCursor();
+
+        $qr = $db->query('call summary_by_sics_by_years(:rhs,:region)',  
+          $this->getPostParams('rhs,region'));
+        $this->res->rrows = $qr->fetchAll(PDO::FETCH_OBJ);
+        
+        $qr->closeCursor();
+        
         echo json_encode($this->res);
    }
                       

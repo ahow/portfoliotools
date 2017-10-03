@@ -253,7 +253,7 @@ begin
     WHEN 'stability' THEN call get_stability_by_years(I_region);      
     ELSE
       BEGIN
-        set @n=1;
+        select -1 as syear, null as v;
       END;
     END CASE;    
 end$$

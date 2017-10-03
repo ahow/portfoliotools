@@ -308,6 +308,41 @@ $(function(){
    
     var sic_totals = null;
     
+    function drawSicTotals2(dd)
+    {   var d = {l:[],r:[]};
+        var categories = [];
+        var yr;
+        
+        if (dd.lrows.length>=dd.rrows.length ) 
+            yr=dd.lrows;
+        else yr=dd.rrows;
+        
+        
+        for (var i=0; i<yr.length;i++) 
+        {  var r = yr[i];
+           if (1*r.syear > 0) categories.push(r.syear);   
+        }
+        
+		// Нужно исправить  возможные смещения по годам
+		for (var i=0; i<dd.lrows.length; i++)
+	    {   var r = dd.lrows[i];
+            if (1*r.syear > 0) d.l.push(1.0*r.v);            
+		}
+
+		for (var i=0; i<dd.rrows.length; i++)
+	    {   var r = dd.rrows[i];
+            if (1*r.syear > 0) d.r.push(1.0*r.v);            
+		}
+        	
+        var lv = $('#LHS').val();
+        var rv = $('#RHS').val();
+        
+		var tl = $('#LHS [value="'+lv+'"]').html();
+        var tr = $('#LHS [value="'+rv+'"]').html();
+        
+        drawChart({title:tl+' vs '+tr, nameL:tl, nameR:tr, categories:categories, data:[d.l, d.r] });		
+    }
+    
     function drawSicTotals(l,r)
     {   
 		function total_sales()
@@ -432,7 +467,7 @@ $(function(){
             rhs:$('#RHS').val()
         },function(d){
 					   sic_totals = d.rows;
-					   drawSicTotals2()
+					   drawSicTotals2(d)
 				});
 			//} else drawSicTotals(l,r);
 	    }
