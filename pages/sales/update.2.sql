@@ -2,6 +2,7 @@
 -- or open URL http://sales.loc/setup?sales=1
 drop procedure if exists update_sales_totals;
 drop procedure if exists select_sics_by_theme_range;
+drop procedure if exists select_single_sic;
 drop procedure if exists summary_by_sics;
 drop procedure if exists summary_by_sics_by_years;
 drop procedure if exists test_proc;
@@ -256,6 +257,13 @@ begin
         select -1 as syear, null as v;
       END;
     END CASE;    
+end$$
+
+create procedure select_single_sic(I_sic integer)
+begin
+    DROP TABLE IF EXISTS tmp_selected_sics;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
+    insert into tmp_selected_sics values (I_sic);
 end$$
 
 create procedure select_sics_by_theme_range(I_max_year integer,
