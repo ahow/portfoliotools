@@ -633,9 +633,16 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
    }
 
    function ajxMarketSummarySic()
-   {  $r =  $this->getMarketSummaryBySic();
-      $this->res->rows = $r->rows;
-      if (isset($r->dbg)) $this->res->dbg = $r->dbg;
+   {  // $r =  $this->getMarketSummaryBySic();
+      // Min Size not used now
+      $db = $this->cfg->db;
+      $db->query('call select_single_sic(:sic)', $this->getPostParams('sic') );
+      $db->query('select max(syear) from sales_divdetails into @max_year');
+      $qr = $db->query('call summary_by_sics(@max_year,:sic,:region);', $this->getPostParams('sic,region') );
+      $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
+      $qr->closeCursor();        
+      // $this->res->rows = $r->rows;
+      // if (isset($r->dbg)) $this->res->dbg = $r->dbg;
       echo json_encode($this->res);        
    }
 
@@ -649,7 +656,8 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
    }
 
    function selectSicsByThemeRange($db)
-   {    $db->query('set @theme_min = :theme_min', $this->getPostParams('theme_min') );
+   {    $db = $this->cfg->db; 
+        $db->query('set @theme_min = :theme_min', $this->getPostParams('theme_min') );
         $db->query('set @theme_max = :theme_max', $this->getPostParams('theme_max') );
         $db->query('set @theme_id = :theme_id', $this->getPostParams('theme_id') );
         $db->query('CREATE TEMPORARY TABLE tmp_selected_sics (sic integer NOT NULL)');
