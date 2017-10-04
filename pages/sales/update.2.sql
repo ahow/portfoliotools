@@ -221,7 +221,7 @@ begin
         (@n:=if(@gr=syear,@n+1,1)) as rank,
         @gr:=syear 
     from tmp_companies_totals_by_year
-    order by 2,1 desc
+    order by syear desc, tsum desc
     ) as r;
   
     -- create the copy of rank because MySQL can't use join to
