@@ -365,7 +365,8 @@ order by 3 desc,4 desc";
         $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
         echo json_encode($this->res);
    }
-
+ 
+   // Code obsolete. should be removed
    function getMarketSummaryBySic($sic=null, $debug=false)
    {    $params = (object)$_POST;
         $db = $this->cfg->db;
