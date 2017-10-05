@@ -33,7 +33,8 @@ Capex growth (year over year change in capex)
 3yr Capex growth
 Capex intensity (capex/assets)*/
 
-        $list = 'Total sales;% top 3;% top 5;stability:Stability;Sales growth;ROIC;PE;EVBIDTA;3yr Sales growth;EBIT growth;3yr EBIT growth;EBIT margin;ROA;Asset growth;3yr Asset growth;Asset turnover;Capex growth;3yr Capex growth;Capex intensity'; 
+        //$list = 'tsales:Total sales;% top 3;% top 5;stability:Stability;Sales growth;ROIC;PE;EVBIDTA;3yr Sales growth;EBIT growth;3yr EBIT growth;EBIT margin;ROA;Asset growth;3yr Asset growth;Asset turnover;Capex growth;3yr Capex growth;Capex intensity'; 
+        $list = 'tsales:Total sales;top3:% top 3;top5:% top 5;stability:Stability';
         ?>
         <div class="col-lg-4"><?=$f->listSelect('LHS',$list)?></div>
         <div class="col-lg-4"><?=$f->listSelect('RHS',$list)?></div>

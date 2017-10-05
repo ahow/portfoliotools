@@ -356,7 +356,7 @@ $(function(){
         for (var i=0; i<dd.rrows.length;i++) 
         {  var r = dd.rrows[i];
            if (1*r.syear > 0) 
-           {   d.l[ yr_idx[r.syear] ] = to_n(r.v);
+           {   d.r[ yr_idx[r.syear] ] = to_n(r.v);
            }
         }
 

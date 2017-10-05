@@ -276,14 +276,18 @@ create procedure summary_by_sics_by_years(I_funct VARCHAR(20), I_region varchar(
 begin
     CASE I_funct
     WHEN 'stability' THEN call get_stability_by_years(I_region);  
-    WHEN 'totals' THEN 
+    WHEN 'tsales' THEN 
         BEGIN    
             select 
                 d.syear, sum(d.sales) as v
             from sales_divdetails d
-            join sales_companies c on  d.cid = c.ci
-            join tmp_selected_sics ss on d.sic=ss.sic            
-            group by 1;
+              join sales_companies c on  d.cid = c.cid
+              join tmp_selected_sics ss on d.sic=ss.sic           
+            where 
+                d.sales is not null 
+                and (I_region='' or I_region='Global' or c.region=I_region)
+           group by 1
+           order by 1;
         END;
     ELSE
       BEGIN
