@@ -311,29 +311,55 @@ $(function(){
     function drawSicTotals2(dd)
     {   var d = {l:[],r:[]};
         var categories = [];
+        var yr_idx = {};
         var yr;
+        var min = Number.MAX_VALUE;
+        var max = Number.MIN_VALUE;        
         
-        if (dd.lrows.length>=dd.rrows.length ) 
-            yr=dd.lrows;
-        else yr=dd.rrows;
-        
-        
-        for (var i=0; i<yr.length;i++) 
-        {  var r = yr[i];
-           if (1*r.syear > 0) categories.push(r.syear);   
+        for (var i=0; i<dd.lrows.length;i++) 
+        {  var r = dd.lrows[i];
+           var y = 1*r.syear;
+           if (y > 0)  
+           {  if (min>y) min=y;
+              if (max<y) max=y;
+           }
+        }
+        for (var i=0; i<dd.rrows.length;i++) 
+        {  var r = dd.rrows[i];
+           var y = 1*r.syear;
+           if (y > 0)  
+           {  if (min>y) min=y;
+              if (max<y) max=y;
+           }
+        }
+        var n=0;
+        for (var i=min; i<=max;i++)
+        { categories.push(i);
+          yr_idx[i]=n;
+          d.l[n]=null;
+          d.r[n]=null;
+          n++;
         }
         
-		// Нужно исправить  возможные смещения по годам
-		for (var i=0; i<dd.lrows.length; i++)
-	    {   var r = dd.lrows[i];
-            if (1*r.syear > 0) d.l.push(1.0*r.v);            
-		}
+        function to_n(v)
+        { if (v==null) return v;
+          return 1.0*v;
+        }
 
-		for (var i=0; i<dd.rrows.length; i++)
-	    {   var r = dd.rrows[i];
-            if (1*r.syear > 0) d.r.push(1.0*r.v);            
-		}
-        	
+        for (var i=0; i<dd.lrows.length;i++) 
+        {  var r = dd.lrows[i];
+           if (1*r.syear > 0) 
+           {   d.l[ yr_idx[r.syear] ] = to_n(r.v);
+           }
+        }
+        
+        for (var i=0; i<dd.rrows.length;i++) 
+        {  var r = dd.rrows[i];
+           if (1*r.syear > 0) 
+           {   d.l[ yr_idx[r.syear] ] = to_n(r.v);
+           }
+        }
+
         var lv = $('#LHS').val();
         var rv = $('#RHS').val();
         

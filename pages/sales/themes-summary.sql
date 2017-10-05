@@ -263,3 +263,31 @@ join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
 where d.syear=@max_year and d.sales>0
 group by d.sic
 ) as st;
+
+
+
+-- Aggregated stability
+set @year = 2015;
+-- Theme A
+set @theme_id = 1;
+set @theme_min = 2;
+set @theme_max = 2;
+-- Global region
+set @region = '';
+
+call get_sics_stabilities(@year,@region);
+
+select
+  sum(astab)/sum(tsale) as astab, sum(tsale) as tsales
+from
+(
+    select
+        d.sic, 
+        sum(sales) as tsale,
+        s.stability*sum(sales) as astab
+    from sales_divdetails d 
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join tmp_stabilities s on d.sic = s.sic 
+    where d.syear=@year
+    group by 1
+) as r;

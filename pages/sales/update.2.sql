@@ -163,6 +163,7 @@ begin
    
 
     set @gr=null;
+    set @yr=null;
     set @n=0;
 
     insert into tmp_companies_sic_rank1
@@ -177,8 +178,9 @@ begin
             s.syear,
             s.cid,
             s.tsales,
-            (@n:=if(@gr=s.sic,@n+1,1)) as rank,    
-            @gr:=s.sic as sic
+            (@n:=if(@gr=s.sic and @yr=s.syear,@n+1,1)) as rank,  
+            @gr:=s.sic as sic,
+            @yr:=s.syear as yr
         from 
         (select 
            d.syear, d.sic, d.cid, sum(d.sales) as tsales
@@ -213,7 +215,7 @@ begin
            (t.rank-p.rank) as diff,
            if(abs(t.rank-p.rank)>5,5,abs(t.rank-p.rank)) as cdif
         from tmp_companies_sic_rank1 t
-        left outer join tmp_companies_sic_rank2 p on t.sic=p.sic and t.cid=p.cid  
+        left outer join tmp_companies_sic_rank2 p on t.sic=p.sic and t.cid=p.cid              
             and p.syear=(t.syear-1)
         order by t.cid, t.syear desc
     ) as r 
@@ -225,96 +227,47 @@ end$$
 -- rewrite it
 create procedure get_stability_by_years(I_region varchar(255))
 begin
-    DECLARE i,r,gr INT;
+    DECLARE i INT;
     DECLARE L_min_year, L_max_year INT;
         
-    DROP TABLE IF EXISTS tmp_companies_totals_by_year;    
+    DROP TABLE IF EXISTS tmp_stab_by_years;    
 
-    CREATE TEMPORARY TABLE tmp_companies_totals_by_year 
-    (syear integer, cid varchar(16) NOT NULL,
-    tsum double, PRIMARY KEY (cid, syear));
-
-    DROP TABLE IF EXISTS tmp_companies_rank1;
-    DROP TABLE IF EXISTS tmp_companies_rank2;
-
-    CREATE TEMPORARY TABLE tmp_companies_rank1
-    (syear integer, cid varchar(16) NOT NULL,
-    rank integer, PRIMARY KEY (cid, syear));
-
-    CREATE TEMPORARY TABLE tmp_companies_rank2
-    (syear integer, cid varchar(16) NOT NULL,
-    rank integer, PRIMARY KEY (cid, syear));
-
-      
-    select 
-        min(d.syear) as minyear, max(d.syear) as maxyear
-    from sales_divdetails d
-    into L_min_year, L_max_year;
+    CREATE TEMPORARY TABLE tmp_stab_by_years
+    (syear integer, v double, PRIMARY KEY (syear));
     
+    select max(d.syear),min(d.syear) 
+        from sales_divdetails d
+        join sales_companies c on  d.cid = c.cid
+        join tmp_selected_sics ss on d.sic=ss.sic
+    where d.sales is not null and (I_region='' or I_region='Global' or c.region=I_region)
+    into L_max_year, L_min_year;
     
     SET i = L_min_year;
  
     WHILE i<=L_max_year DO
-        set @n = 1;
-        IF I_region='' or I_region='Global' THEN
-            insert into tmp_companies_totals_by_year
-            select 
-            d.syear, d.cid, sum(d.sales)
-            from sales_divdetails d
-            join tmp_selected_sics ss on d.sic=ss.sic              
-            where d.syear=i and d.sales is not null
-            group by 1,2
-            order by 1, 3 desc
-            limit 20;
-        ELSE
-            insert into tmp_companies_totals_by_year
-            select 
-            d.syear, d.cid, sum(d.sales)
-            from sales_divdetails d        
-            join tmp_selected_sics ss on d.sic=ss.sic
-            join sales_companies c on  d.cid = c.cid
-            where d.syear=i and d.sales is not null and c.region=I_region
-            group by 1,2
-            order by 1, 3 desc
-            limit 20;
-        END IF;
-       SET i=i+1; 
+        call get_sics_stabilities(i,I_region);
+        
+        insert into tmp_stab_by_years
+        select
+          i as syear, sum(astab)/sum(tsale) as v
+        from
+        (
+            select
+                d.sic, 
+                sum(d.sales) as tsale,
+                s.stability*sum(d.sales) as astab
+            from sales_divdetails d 
+              join sales_companies c on  d.cid = c.cid
+              join tmp_selected_sics ss on d.sic=ss.sic
+              join tmp_stabilities s on d.sic = s.sic             
+            where d.syear=i and d.sales is not null 
+                and (I_region='' or I_region='Global' or c.region=I_region)
+            group by 1
+        ) as r;
+        
+        SEt i = i+1;
     END WHILE;
-    
-    set @n = 0; 
-    set @gr=null;
-    -- inserting data for
-    insert into tmp_companies_rank1 
-    select r.syear, r.cid, r.rank from
-    (
-    select 
-        cid, 
-        syear,
-        (@n:=if(@gr=syear,@n+1,1)) as rank,
-        @gr:=syear 
-    from tmp_companies_totals_by_year
-    order by syear desc, tsum desc
-    ) as r;
-  
-    -- create the copy of rank because MySQL can't use join to
-    -- the temporary table itself
-    insert into tmp_companies_rank2
-    select r.syear, r.cid, r.rank from tmp_companies_rank1 r;
-    
-    -- getting stability
-    
-    select r.syear, avg(r.cdif) as v from
-    (   select 
-           t.cid, t.syear, t.rank as rank, p.rank as prank,
-           (t.rank-p.rank) as diff,
-           if(abs(t.rank-p.rank)>5,5,abs(t.rank-p.rank)) as cdif
-        from tmp_companies_rank1 t
-        left outer join tmp_companies_rank2 p on t.cid=p.cid 
-            and p.syear=(t.syear-1)
-        order by t.cid, t.syear desc
-    ) as r 
-    group by 1
-    order by 1;
+    select * from tmp_stab_by_years;
 end$$
 
 
