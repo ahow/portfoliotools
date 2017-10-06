@@ -507,25 +507,6 @@ begin
 
 end $$
 
-create procedure test_proc()
-begin
-    DECLARE i INT;
-    
-    select 
-        min(d.syear) as minyear, max(d.syear) as maxyear
-    from sales_divdetails d
-    into @min_year, @max_year;
-    SET i =  @min_year;
-    DROP TABLE IF EXISTS tmp_all_years;
-    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_all_years (syear integer NOT NULL);
-    WHILE i<=@max_year DO
-        insert into tmp_all_years values (i);
-        SET i=i+1;
-    END WHILE;
-    -- select @min_year, @max_year;
-    select * from tmp_all_years;
-end $$
-
 delimiter ;
 
 call update_sales_totals;

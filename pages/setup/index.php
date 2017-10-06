@@ -23,9 +23,8 @@ function runSQL($db, $scfile)
     $line = 0;
 
     while ($s = fgets($f))
-    {   $s = trim($s);
-        $line++;
-        if ($s!='')
+    {   $line++;
+        if (trim($s)!='')
         {  // remove comments
            $uncom = preg_replace('/--(.)*/i', '', $s);
            
@@ -40,7 +39,7 @@ function runSQL($db, $scfile)
              
              if ( ($p=strpos($uncom, $delim)) !==false)                  
              {  $ds = strlen($delim);
-                $sql.="\n".substr($uncom, 0, $p);
+                $sql.=substr($uncom, 0, $p);
                 
                 try 
                 { $db->exec($sql);
@@ -53,7 +52,7 @@ function runSQL($db, $scfile)
                 $uncom = substr($uncom, $p+$ds);                    
               }
            }
-           $sql.="\n".$uncom;               
+           $sql.=$uncom;               
         }
     }
     fclose($f);
@@ -61,27 +60,6 @@ function runSQL($db, $scfile)
     return true;
 }
        
-
-function runSQL_obsolete($db,$scfile)
-{   // if (!file_exists($scfile)) return false;
-    // echo "Run: $scfile<br>";
-    // Remove comments
-    $sqlcleaned =  preg_replace('/--(.)*/i', '', file_get_contents($scfile));
-    $script = explode(';', $sqlcleaned);
-    foreach($script as $q)
-    { if (trim($q)!='')
-      {   $q.=';';
-          try 
-          { $db->exec($q);
-          } catch (Exception $e)
-          { alert($q.'<br />'.$e->getMessage(), 'danger');
-            return false;
-          }
-      }         
-    }
-    return true;
-}
-
 
 function InstallPages($db, $admin=false)
 {   // alert(T('PAGES_SETUP'), 'info');    
