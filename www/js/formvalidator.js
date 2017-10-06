@@ -106,11 +106,19 @@ function redlineErrors()
 }
 
 
+
+   
 // form validator
 function formValidator(selector)
-{   var hints = {req:'Required value!', minlen:'Value is too short!', 
-    email:'Wrong e-mail format!', equalto:'Confirmation field is not match!',
-    maxlen:'Value is too long!',reqradio:'No one option is selected!'}
+{   var locale = new localeLoader('lang/formvalidator');
+    var hints = {};
+    
+    locale.onload(function(){
+       var T = locale.T;
+       hints = {req:T('REQ_VAL'), minlen:T('TOO_SHORT'), 
+       email:T('WRONG_EMAIL_FMT'), equalto:T('CNFRM_FIELD'),
+       maxlen:T('TOO_LONG'),reqradio:T('NO_OPTIONS_SELECTED')}
+    });
     
     var vErrors = null;
         
