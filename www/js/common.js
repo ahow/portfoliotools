@@ -1,3 +1,30 @@
+// path exampe lang/js 
+function localeLoader(path) 
+{   var lc = {};
+    var p = path;
+    var _onload = null;
+
+    function load(path)
+    {   if (path!=undefined) p = path;    
+        ajx('/lang/lang/Locale',{path:p}, function(d){ 
+            lc = $.extend(lc, d.locale);
+            if (_onload!=null) _onload();
+        })
+    }
+    
+    
+    function T(name)
+    {  if (lc[name]!=undefined) return lc[name];
+       return name;
+    }
+    
+    function onload(fu)
+    {  _onload = fu; 
+    }
+    
+    load();
+    return {T:T, onload:onload};
+}
 
 function ajx(path, param, onOk, onErr)
 {  $.post('/ajax.php'+path, param , function(d)
@@ -8,6 +35,7 @@ function ajx(path, param, onOk, onErr)
       } else if (onOk!=undefined) onOk(d);
    }, 'json');
 }
+
 
 function htview(path, selector, onOk)
 {  $.post('/html.php'+path, function(d)
