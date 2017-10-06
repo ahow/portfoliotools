@@ -65,7 +65,7 @@ end $$
 create procedure get_stability(I_max_year int, I_region varchar(255),
 OUT stability DOUBLE)
 begin
-    DECLARE i,r,gr INT;
+    DECLARE i,r INT;
     /* DECLARE L_min_year, L_max_year INT; */
         
     DROP TABLE IF EXISTS tmp_companies_totals_by_year;    
@@ -290,11 +290,11 @@ end$$
 
 create procedure get_sics_totals_tmp(I_region varchar(255))
 begin    
-    DROP TABLE IF EXISTS tmp_tsales_by_years;   
-    CREATE TEMPORARY TABLE tmp_tsales_by_years
+    DROP TABLE IF EXISTS tmp_total_tsales_by_years;   
+    CREATE TEMPORARY TABLE tmp_total_tsales_by_years
         (syear integer, tsum double, PRIMARY KEY (syear));
      
-    insert into tmp_tsales_by_years 
+    insert into tmp_total_tsales_by_years 
     select 
         d.syear, sum(d.sales) as v
     from sales_divdetails d
@@ -309,8 +309,11 @@ end $$
 
 create procedure get_topN_by_years(I_N integer, I_region varchar(255))
 begin
+    set @n=0;
+    set @gr=NULL;
+    
     call get_sics_totals_tmp(I_region);
-    select r2.syear, 100.0*t.tsum/sum(r2.tsum) as v
+    select r2.syear, sum(r2.tsum)*100/t.tsum as v
     from
     (  select
            @n:=if(@gr=r.syear,@n+1,1) as rank,
@@ -330,9 +333,9 @@ begin
         order by d.syear, tsum desc
         ) as r
     ) as r2
-    join tmp_tsales_by_years t on r2.syear=t.syear
+        join tmp_total_tsales_by_years t on r2.syear=t.syear
     where rank<=I_N
-    group by r2.syear;
+    group by r2.syear, t.tsum;
 end $$
 
 

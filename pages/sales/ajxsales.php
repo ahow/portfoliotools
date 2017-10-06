@@ -689,10 +689,10 @@ and id<>9999;');
         if (post('lhs')==post('rgs')) $this->res->rrows = $this->res->lrows;
         else 
         {
-            $qr = $db->query('call summary_by_sics_by_years(:rhs,:region)',  
+            $qr2 = $db->query('call summary_by_sics_by_years(:rhs,:region)',  
               $this->getPostParams('rhs,region'));
-            $this->res->rrows = $qr->fetchAll(PDO::FETCH_OBJ);
-            $qr->closeCursor();
+            $this->res->rrows = $qr2->fetchAll(PDO::FETCH_OBJ);
+            $qr2->closeCursor();
         }
         echo json_encode($this->res);
    }
