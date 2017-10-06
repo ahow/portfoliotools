@@ -10,6 +10,9 @@ drop procedure if exists get_stability;
 drop procedure if exists get_stability_by_years;
 drop procedure if exists get_sics_stabilities;
 drop procedure if exists get_top3_by_years;
+drop procedure if exists get_sics_totals;
+drop procedure if exists get_topN_by_years;
+drop procedure if exists get_sics_totals_tmp;
 
 delimiter $$
 -- This procedure must be loaded after uploading of divdetails
@@ -56,7 +59,7 @@ begin
     group by 1,2
     having psale is not null;
 
-end$$
+end $$
 
 -- input:  tmp_selected_sics must exists before call it
 create procedure get_stability(I_max_year int, I_region varchar(255),
@@ -142,7 +145,7 @@ begin
             and p.syear=(t.syear-1)
         order by t.cid, t.syear desc
     ) as r into stability;
-end$$
+end $$
 
 -- The function working with group of selected sics
 -- OUT: tmp_stabilities table
@@ -222,7 +225,7 @@ begin
     ) as r 
     group by r.sic;
     
-end$$
+end $$
 
 -- input:  tmp_selected_sics must exists before call it
 -- rewrite it
@@ -269,74 +272,90 @@ begin
         SEt i = i+1;
     END WHILE;
     select * from tmp_stab_by_years;
+end $$
+
+create procedure get_sics_totals(I_region varchar(255))
+begin    
+    select 
+        d.syear, sum(d.sales) as v
+    from sales_divdetails d
+      join sales_companies c on  d.cid = c.cid
+      join tmp_selected_sics ss on d.sic=ss.sic           
+    where 
+        d.sales>0
+        and (I_region='' or I_region='Global' or c.region=I_region)
+   group by 1
+   order by 1;
 end$$
 
+create procedure get_sics_totals_tmp(I_region varchar(255))
+begin    
+    DROP TABLE IF EXISTS tmp_tsales_by_years;   
+    CREATE TEMPORARY TABLE tmp_tsales_by_years
+        (syear integer, tsum double, PRIMARY KEY (syear));
+     
+    insert into tmp_tsales_by_years 
+    select 
+        d.syear, sum(d.sales) as v
+    from sales_divdetails d
+      join sales_companies c on  d.cid = c.cid
+      join tmp_selected_sics ss on d.sic=ss.sic           
+    where 
+        d.sales>0
+        and (I_region='' or I_region='Global' or c.region=I_region)
+   group by 1
+   order by 1;
+end $$
 
-create procedure get_top3_by_years(I_region varchar(255))
+create procedure get_topN_by_years(I_N integer, I_region varchar(255))
 begin
- 
- DROP TABLE IF EXISTS tmp_selected_sics2;  
- CREATE TEMPORARY TABLE tmp_selected_sics2
- (sic integer not null, primary key (sic));
- 
- insert into tmp_selected_sics2
- select * from tmp_selected_sics;
- 
- select 
-    @y=d.syear as syear, 100*(
-        select sum(t3.sales) from
-         (select 
-            dd.cid, dd.sales
-            from sales_divdetails dd
-            join sales_companies cc on  dd.cid = cc.cid
-            join tmp_selected_sics2 sss on dd.sic=sss.sic
-            where dd.syear=@y
-         order by 2 desc
-         limit 3) as t3
-    )/sum(d.sales) as v
- from sales_divdetails d
-   join sales_companies c on  d.cid = c.cid
-   join tmp_selected_sics ss on d.sic=ss.sic           
- where 
-    d.sales is not null 
-   and (I_region='' or I_region='Global' or c.region=I_region)
- group by 1
- order by 1;
-           
-end$$
+    call get_sics_totals_tmp(I_region);
+    select r2.syear, 100.0*sum(r2.tsum)/t.tsum as v
+    from
+    (  select
+           @n:=if(@gr=r.syear,@n+1,1) as rank,
+           @gr:=r.syear as syear,
+           r.cid,
+           r.tsum
+        from
+        (select     
+           d.syear,
+           d.cid,
+           sum(d.sales) as tsum
+            from sales_divdetails d
+            join sales_companies c on  d.cid=c.cid
+            join tmp_selected_sics s on d.sic=s.sic
+        where d.sales>0 and (I_region='' or I_region='Global' or c.region=I_region)
+        group by d.syear,d.cid
+        order by d.syear, tsum desc
+        ) as r
+    ) as r2
+    join tmp_tsales_by_years t on r2.syear=t.syear
+    where rank<=I_N
+    group by r2.syear;
+end $$
 
 
 create procedure summary_by_sics_by_years(I_funct VARCHAR(20), I_region varchar(255))
 begin
     CASE I_funct
     WHEN 'stability' THEN call get_stability_by_years(I_region);  
-    WHEN 'tsales' THEN 
-        BEGIN    
-            select 
-                d.syear, sum(d.sales) as v
-            from sales_divdetails d
-              join sales_companies c on  d.cid = c.cid
-              join tmp_selected_sics ss on d.sic=ss.sic           
-            where 
-                d.sales>0
-                and (I_region='' or I_region='Global' or c.region=I_region)
-           group by 1
-           order by 1;
-        END;
-    WHEN 'top3' THEN call get_top3_by_years(I_region);
+    WHEN 'tsales' THEN call get_sics_totals(I_region);
+    WHEN 'top3' THEN call get_topN_by_years(3, I_region);
+    WHEN 'top5' THEN call get_topN_by_years(5, I_region);
     ELSE
       BEGIN
         select -1 as syear, null as v;
       END;
     END CASE;    
-end$$
+end $$
 
 create procedure select_single_sic(I_sic integer)
 begin
     DROP TABLE IF EXISTS tmp_selected_sics;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
     insert into tmp_selected_sics values (I_sic);
-end$$
+end $$
 
 create procedure select_sics_by_theme_range(I_max_year integer,
  I_theme_id integer, I_theme_min integer, I_theme_max integer,
@@ -364,7 +383,7 @@ begin
         and c.region=I_region
         order by s.id;
     END IF;
-end$$
+end $$
 
 /*
 call selected_sics_by...
@@ -483,7 +502,7 @@ begin
     group by d.sic, st.stability
     ) as st;
 
-end$$
+end $$
 
 create procedure test_proc()
 begin
@@ -502,7 +521,7 @@ begin
     END WHILE;
     -- select @min_year, @max_year;
     select * from tmp_all_years;
-end$$
+end $$
 
 delimiter ;
 
