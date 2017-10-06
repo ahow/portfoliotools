@@ -39,6 +39,10 @@
     {  $sql = str_replace('$table',$this->model->table, $sql);
        $sql = str_replace('$where',$this->mkWhereSQL(), $sql);
        $sql = str_replace('$order',$this->mkOrderSQL(), $sql);
+       $sql = str_replace('$limit',$this->mkLimitSQL(), $sql);       
+       if (isset($this->cfg->user->user))
+       {  $sql = str_replace('$UID',$this->cfg->user->user->id, $sql);
+       }
        $sql = str_replace('$limit',$this->mkLimitSQL(), $sql);
        return $sql;
     }
@@ -225,7 +229,7 @@
         echo json_encode($this->res);
     }
     
-       /* 
+    /* 
     function ajxSave()
     {   $db = $this->cfg->db;        
         $id = $this->cfg->user->user->id;
@@ -240,7 +244,7 @@
         echo json_encode($this->res);
     }
     */
-    
+
  }
 
 ?>
