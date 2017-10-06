@@ -310,7 +310,7 @@ end $$
 create procedure get_topN_by_years(I_N integer, I_region varchar(255))
 begin
     call get_sics_totals_tmp(I_region);
-    select r2.syear, 100.0*sum(r2.tsum)/t.tsum as v
+    select r2.syear, 100.0*t.tsum/sum(r2.tsum) as v
     from
     (  select
            @n:=if(@gr=r.syear,@n+1,1) as rank,
