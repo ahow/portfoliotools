@@ -174,6 +174,7 @@ function modelFormController(selector)
                  }
               }
            }
+           if (onloaded!=null) onloaded(d);
        }
        
        function getData(is_insert)
@@ -243,6 +244,7 @@ function modelFormController(selector)
        
        function update()
        {  var r = getData();           
+          if (!$.isEmptyObject(r))
           ajx(model+'/update', r, function(d){
                  if (!d.error) 
                  {   setOk(d.info);
