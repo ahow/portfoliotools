@@ -17,8 +17,8 @@ $(function(){
         {   var r = d.rows[i];
             if (r!=undefined)
             {   s+='<tr><td>'+r.subsector+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
-                +toFloat((100.0*r.top3sum)/(1.0*r.tsales), 0)+'</td><td>'
-                +toFloat((100.0*r.top5sum)/(1.0*r.tsales), 0)+'</td><td>'
+                +toFloat(1.0*r.top3sum, 0)+'</td><td>'
+                +toFloat(1.0*r.top5sum, 0)+'</td><td>'
                 +toFloat(r.stability,1)+'</td><td>'+toFloat(r.asales_growth,1)+'</td><td>'
                 +toFloat(r.aroic,1)+'</td><td>'+toFloat(r.ape,1)+'</td><td>'
                 +toFloat(r.aevebitda,1)+'</td><td>'+toFloat(r.apayout,1)+'</td><td>'
