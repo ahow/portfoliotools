@@ -308,7 +308,7 @@ $(function(){
    
     var sic_totals = null;
     
-    function drawSicTotals2(dd)
+    function drawSicTotals2(dd,lp,rp)
     {   var d = {l:[],r:[]};
         var categories = [];
         var yr_idx = {};
@@ -319,6 +319,7 @@ $(function(){
         for (var i=0; i<dd.lrows.length;i++) 
         {  var r = dd.lrows[i];
            var y = 1*r.syear;
+           if (r[lp]!=undefined) dd.lrows[i].v = r[lp];
            if (y > 0)  
            {  if (min>y) min=y;
               if (max<y) max=y;
@@ -327,6 +328,7 @@ $(function(){
         for (var i=0; i<dd.rrows.length;i++) 
         {  var r = dd.rrows[i];
            var y = 1*r.syear;
+           if (r[rp]!=undefined) dd.rrows[i].v = r[rp];
            if (y > 0)  
            {  if (min>y) min=y;
               if (max<y) max=y;
@@ -486,14 +488,15 @@ $(function(){
 		{	
 			//if (sic_totals==null)
 			//{ 
+            var lp= $('#LHS').val();
+            var rp= $('#RHS').val();
             var range = $('#theme_range').val().split(',');
 			ajx('/pages/sales/ThemesSummarySicTotals',{region:$('#region').val(),
             theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val(),
-            lhs:$('#LHS').val(),
-            rhs:$('#RHS').val()
-        },function(d){
+            lhs:lp, rhs:rp},
+                function(d){
 					   sic_totals = d.rows;
-					   drawSicTotals2(d)
+					   drawSicTotals2(d,lp,rp)
 				});
 			//} else drawSicTotals(l,r);
 	    }

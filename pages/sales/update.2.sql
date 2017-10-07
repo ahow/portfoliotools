@@ -12,6 +12,7 @@ drop procedure if exists get_sics_totals;
 drop procedure if exists get_topN_by_years;
 drop procedure if exists get_sics_totals_tmp;
 drop procedure if exists get_topN_by_sic_years;
+drop procedure if exists get_calc_by_years;
 
 delimiter $$
 -- This procedure must be loaded after uploading of divdetails
@@ -362,6 +363,39 @@ begin
     group by p.syear;
 end$$
 
+create procedure get_calc_by_years(I_year int, I_region varchar(255))
+begin
+   select 
+      st.syear,
+      sum(st.tsales) as tsales,
+      sum(st.tsales*st.asales_growth)/sum(st.tsales) as sales_growth,
+      sum(st.tsales*st.aroic)/sum(st.tsales) as roic,
+      sum(st.tsales*st.ape)/sum(st.tsales) as pe,
+      sum(st.tsales*st.aevebitda)/sum(st.tsales) as evebitda,
+      sum(st.tsales*st.apayout)/sum(st.tsales) as payout
+    from (
+    select 
+      d.syear,
+      p.sic,
+      sum(d.sales) as tsales,
+      sum(c.sales_growth*p.psale*t.sales)/sum(p.psale*t.sales) as asales_growth,
+      sum(c.roic*p.psale*t.sales)/sum(p.psale*t.sales) as aroic,
+      sum(c.pe*p.psale*t.sales)/sum(p.psale*t.sales) as ape,
+      sum(c.evebitda*p.psale*t.sales)/sum(p.psale*t.sales) as aevebitda,
+      sum(c.payout*p.psale*t.sales)/sum(p.psale*t.sales) as apayout
+    from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+    where d.sales>0
+     and (I_region='' or I_region='Global' or c.region=I_region) 
+     and (I_year is null or d.syear=I_year)
+    group by d.syear, d.sic
+    ) as st
+    group by st.syear;
+end$$
+
 create procedure summary_by_sics_by_years(I_funct VARCHAR(20), I_region varchar(255))
 begin
     CASE I_funct
@@ -369,6 +403,11 @@ begin
     WHEN 'tsales' THEN call get_sics_totals(I_region);
     WHEN 'top3' THEN call get_topN_by_years(3, NULL, I_region);
     WHEN 'top5' THEN call get_topN_by_years(5, NULL, I_region);
+    WHEN 'sales_growth' THEN call get_calc_by_years(NULL, I_region);
+    WHEN 'roic' THEN call get_calc_by_years(NULL, I_region);
+    WHEN 'pe' THEN call get_calc_by_years(NULL, I_region);
+    WHEN 'evebitda' THEN call get_calc_by_years(NULL, I_region);
+    WHEN 'payout' THEN call get_calc_by_years(NULL, I_region);
     ELSE
       BEGIN
         select -1 as syear, null as v;
@@ -473,18 +512,6 @@ begin
     join tmp_total_sic_tsales_by_years t
         on p.syear=t.syear and p.sic=t.sic
     group by p.syear into L_top3sum;
-    
-    /*
-     select sum(t3.sales) from
-     (select 
-        d.cid, d.sales
-        from sales_divdetails d
-        join sales_companies c on  d.cid = c.cid
-        join tmp_selected_sics ss on d.sic=ss.sic
-        where d.syear=I_max_year
-           and (I_region='' or I_region='Global' or c.region=I_region)
-     order by 2 desc
-     limit 3) as t3 into L_top3sum; */
 
      -- select top 5
    call get_topN_by_sic_years(5,I_max_year,I_region);
