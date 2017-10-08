@@ -294,6 +294,38 @@ where  d.sales>0
 --    and (I_region='' or I_region='Global' or c.region=I_region)
 group by d.syear, d.sic, d3.syear, d3.sic limit 10;
 
+=100*
+    (
+        (
+            (
+                SUMIFS(F:F;E:E;$AO$2;F:F;"<"&1000000000000;X:X;"<"&1000000000000)/
+                SUMIFS(X:X;W:W;$AO$2;F:F;"<"&1000000000000;X:X;"<"&1000000000000)
+            )
+            ^
+            (1/3)
+        )-1
+    )
+    
+    
+=100*
+    (
+        (
+            SUMIFS(I:I;E:E;$AO$2;I:I;"<"&1000000000000;AA:AA;"<"&1000000000000)/
+            SUMIFS(AA:AA;K:K;$AO$2;I:I;"<"&1000000000000;AA:AA;"<"&1000000000000)
+        )
+        -1
+    )
+    
+= 100*
+    (
+        (
+            (SUMIFS(I:I;E:E;$AO$2;I:I;"<"&1000000000000;AA:AA;"<"&1000000000000)
+            /SUMIFS(AA:AA;W:W;$AO$2;I:I;"<"&1000000000000;AA:AA;"<"&1000000000000)
+        )
+        ^(1/3)
+        
+        )-1
+    )
 
 select 
       d.syear,
@@ -320,3 +352,5 @@ join tmp_selected_sics ss on d.sic=ss.sic
 join sales_companies_totals t on d.cid=t.cid
 where d.sic=119 and d.sales>0
 group by d.syear, d.sic;
+
+=100*(((SUMIFS(F:F;E:E;$AO$2;F:F;"<"&1000000000000;X:X;"<"&1000000000000)/SUMIFS(X:X;W:W;$AO$2;F:F;"<"&1000000000000;X:X;"<"&1000000000000))^(1/3))-1)

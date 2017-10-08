@@ -753,6 +753,85 @@ group by d.syear, d.sic",
       return false;       
    }
 
+   function growthCalculation($hs)
+   {  if (strpos($hs,'grw')===0)
+      {  $db = $this->cfg->db;
+         $f =  substr($hs,3); // ebit sales capex assets         
+         $qr=$db->query("select 
+      d.syear,
+      p.sic,
+      sum(d.sales) as tsales,
+      sum(d.$f) as v
+from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+where  d.sales>0
+--    and (I_region='' or I_region='Global' or c.region=:region)
+group by d.syear, d.sic",
+        $this->getPostParams('region'));
+        $data = array();
+        $max_year = -2000000;
+        $min_year =  2000000;
+        $totals = array(); // total values
+        while ($r=$db->fetchSingle($qr))
+        {  if (!isset($data[$r->syear])) $data[$r->syear]=array();
+           if (!isset($data[$r->syear][$r->sic])) $data[$r->syear][$r->sic]=$r;
+           if ($max_year<$r->syear) $max_year = 1*$r->syear; 
+           if ($min_year>$r->syear) $min_year = 1*$r->syear;
+           if (!isset($totals[$r->syear]))
+           {   $tt = new stdClass();
+                $tt->tsales = 0; // sum of tsales
+                $tt->tpval = 0;  // sale of SIC * calculated value
+                $totals[$r->syear] = $tt;
+                $tt->has_data = false;
+           }
+           // sum of all SIC tsales
+           $totals[$r->syear]->tsales+=$r->tsales;           
+        }
+             
+        for ($i=$max_year; $i>=($min_year-1); $i--)
+        {   $y = ''.$i;            
+            if (isset($data[$y]))
+            foreach($data[$y] as $sic=>$r1)
+            { if (isset($data[$y-1]) && isset($data[$y-1][$sic]))
+              { $r2 = $data[$y-1][$sic];
+                $r = new stdClass();
+                $r->syear = 1*$y;
+                $r->sic = $sic;
+                if (1.0*$r2->v!=0.0)
+                {  $r->v = 100.0*(1.0*$r1->v/1.0*$r2->v-1);
+                   if (is_nan($r->v)) $r->v=NULL;
+                }
+                else $r->v = NULL; 
+                if ($r->v!==NULL && $r1->tsales!==NULL)
+                {   // Sum prodact of 3 yr value and total sales of SIC
+                    $totals[$y]->tpval+=$r->v * $r1->tsales;
+                    $totals[$y]->has_data = true;
+                }                
+              }
+            }
+        }
+        
+        $result = array();
+        foreach ($totals as $y=>$r)
+        {  $rr = new stdClass();
+           $rr->syear = $y;
+           if ($r->has_data)
+           {
+             if ($r->tsales>0) $rr->v = $r->tpval / $r->tsales;
+             else  $rr->v = 0;
+           } else  $rr->v = NULL;
+           $result[] = $rr;
+        }
+        
+        return $result;
+      }
+      return false;       
+   }
+
+
    function ajxThemesSummarySicTotals()
    {    $params = (object)$_POST;
         $db = $this->cfg->db;
@@ -760,7 +839,9 @@ group by d.syear, d.sic",
         $db->query('call select_sics_by_themes(:theme_id,:theme_min,:theme_max)', 
           $this->getPostParams('theme_min,theme_max,theme_id'));
         
-        if ( ($this->res->lrows=$this->y3calculation(post('lhs')))===false )
+        if ( ($this->res->lrows=$this->y3calculation(post('lhs')))===false &&
+             ($this->res->lrows=$this->growthCalculation(post('lhs')))===false
+           )
         {   $qr = $db->query('call summary_by_sics_by_years(:lhs,:region)',  
               $this->getPostParams('lhs,region'));
             
