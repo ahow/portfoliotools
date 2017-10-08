@@ -579,6 +579,15 @@ begin
 
 end $$
 
+procedure selectCustomSics()
+begin
+   DROP TABLE IF EXISTS tmp_selected_sics;
+   CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
+   insert into tmp_selected_sics values (1311),(2821),(2911),(4612),(4922),(5331),(9999);
+);
+
+end $$
+
 delimiter ;
 
 call update_sales_totals;

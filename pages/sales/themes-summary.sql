@@ -354,3 +354,166 @@ where d.sic=119 and d.sales>0
 group by d.syear, d.sic;
 
 =100*(((SUMIFS(F:F;E:E;$AO$2;F:F;"<"&1000000000000;X:X;"<"&1000000000000)/SUMIFS(X:X;W:W;$AO$2;F:F;"<"&1000000000000;X:X;"<"&1000000000000))^(1/3))-1)
+
+select 
+      d.syear,
+      p.sic,
+      sum(d.sales) as tsales,
+      sum(d.capex) as v
+from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+where  d.sales>0
+--    and (I_region='' or I_region='Global' or c.region=:region)
+group by d.syear, d.sic
+
+select 
+      d.syear,
+      d.cid,
+      p.sic,
+      sum(d.sales) as tsales,
+      sum(d.capex) as capex1,
+      sum(d2.capex) as capex2
+from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+    join sales_divdetails d2 on d.cid=d2.cid and d.sic=d2.sic and d2.syear=d.syear-1
+where  d.sales>0
+--    and (I_region='' or I_region='Global' or c.region=:region)
+group by d.syear, d.cid, d.sic, d2.syear, d2.cid, d2.sic
+having capex1>0 and capex2>0
+
+-- Green rect
+select 
+      d.syear,
+      d.cid,
+      p.sic,
+      100*(sum(d.capex)/sum(d2.capex)-1),
+      sum(d.capex),
+      sum(d2.capex),
+      sum(d.sales) as tsales,
+      count(*)
+from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+    join sales_divdetails d2 on d.cid=d2.cid and d.sic=d2.sic and d2.syear=d.syear-1
+where  d.sales>0 and d.capex is not null and d2.capex is not null
+       and  d.sic=9999 and d.syear=2015 and d.cid='905039'
+
+--    and (I_region='' or I_region='Global' or c.region=:region)
+group by d.syear, d.cid, d.sic
+having sum(d.capex)>0 and sum(d2.capex)>0;
+
+
+-- checking 
+select 
+      d.syear,
+      d.cid,
+      p.sic,
+      d.capex,
+      d2.capex
+from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+    join sales_divdetails d2 on d.cid=d2.cid and d.sic=d2.sic and d2.syear=d.syear-1
+where  d.sales>0 and  d.sic=9999 and d.syear=2015 and d.cid='905039'
+having sum(d.capex)>0 and sum(d2.capex)>0;
+
+
+
+-- Orange rect
+select
+  r.syear,
+  r.sic,
+  sum(r.capex*r.tsales)/sum(tsales),
+  sum(r.capex*r.tsales),
+  sum(tsales)
+from
+   (select 
+          d.syear,
+          d.cid,
+          d.sic,
+          sum(d.sales) as tsales,
+          100*(sum(d.capex)/sum(d2.capex)-1) as capex
+    from sales_divdetails d
+        join sales_companies c on  d.cid = c.cid
+        join tmp_selected_sics ss on d.sic=ss.sic
+        join sales_companies_totals t on d.cid=t.cid
+        join sales_divdetails d2 on d.cid=d2.cid and d.sic=d2.sic and d2.syear=d.syear-1
+    where  d.sales>0 
+          and d.capex is not null and d2.capex is not null
+    --    and (I_region='' or I_region='Global' or c.region=:region)
+    group by d.syear, d.cid, d.sic
+    having sum(d.capex)>0 and sum(d2.capex)>0
+) as r
+group by r.syear, r.sic
+order by r.sic, r.syear desc;
+
+select
+  s.syear,
+  s.sic,
+  sum(s.capex*s.tsales)/sum(s.tsales)
+from
+(    select
+        r.syear,
+        r.cid,
+        r.sic,
+        r.capex,
+        sum(d3.sales) as tsales
+    from
+    (select 
+          d.syear,
+          d.cid,
+          d.sic,
+          sum(d.sales) as tsales,
+          100*(sum(d.capex)/sum(d2.capex)-1) as capex
+    from sales_divdetails d
+        join sales_companies c on  d.cid = c.cid
+        join tmp_selected_sics ss on d.sic=ss.sic
+        join sales_companies_totals t on d.cid=t.cid
+        join sales_divdetails d2 on d.cid=d2.cid and d.sic=d2.sic and d2.syear=d.syear-1
+    where  d.capex is not null and d2.capex is not null
+    --    and (I_region='' or I_region='Global' or c.region=:region)
+    group by d.syear, d.cid, d.sic
+    having sum(d.capex)>0 and sum(d2.capex)>0
+    order by syear desc,cid,sic
+    ) as r
+    join sales_divdetails d3 on r.syear=d3.syear and r.cid=d3.cid and r.sic=d3.sic
+    group by r.syear, r.cid, r.sic, r.capex
+) as s
+group by 1,2;
+
+SET @@sql_mode = "ONLY_FULL_GROUP_BY";
+
+select 
+      d.syear,
+      d.cid,
+      d.sic,
+      sum(d.capex),
+      sum(d2.capex),
+      count(*)
+from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join sales_companies_totals t on d.cid=t.cid
+    join sales_divdetails d2 on d.cid=d2.cid and d.sic=d2.sic and d2.syear=d.syear-1
+where d.syear<=2012
+--      and d.capex is not null and d2.capex is not null
+     and d.sic=1311 and d.syear=2012
+--    and (I_region='' or I_region='Global' or c.region=:region)
+group by d.syear, d.cid, d.sic
+having sum(d.capex)>0 and sum(d2.capex)>0
+order by d.syear desc,d.cid,d.sic;
+
+
+select syear, sum(capex) from sales_divdetails where syear in (2012,2011)
+ and cid='905039' and sic=1311 group by 1;
+
