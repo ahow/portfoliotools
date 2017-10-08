@@ -13,12 +13,13 @@ drop procedure if exists get_topN_by_years;
 drop procedure if exists get_sics_totals_tmp;
 drop procedure if exists get_topN_by_sic_years;
 drop procedure if exists get_calc_by_years;
+drop procedure if exists select_sics_by_themes;
 
 delimiter $$
 -- This procedure must be loaded after uploading of divdetails
 create procedure update_sales_totals()
 begin
-
+    DECLARE max_year INT;
     drop table if exists sales_companies_totals;
     drop table if exists sales_sic_companies_totals;
     
@@ -39,14 +40,14 @@ begin
     
 
 
-    select max(syear) from sales_divdetails into @max_year;
+    select max(syear) from sales_divdetails into max_year;
 
     insert into sales_companies_totals
     select 
        c.cid, sum(d.sales)
     from sales_divdetails d
     join sales_companies c on  d.cid = c.cid
-    where d.syear=@max_year and d.sales>0 
+    where d.syear=max_year and d.sales>0 
     group by 1;
     
     insert into sales_sic_companies_totals
@@ -55,7 +56,7 @@ begin
     from sales_divdetails d 
     join sales_companies c on d.cid=c.cid 
     join sales_companies_totals t on d.cid=t.cid 
-    where d.syear=@max_year and d.sales>0
+    where d.syear=max_year and d.sales>0
     group by 1,2
     having psale is not null;
 
@@ -363,6 +364,7 @@ begin
     group by p.syear;
 end$$
 
+-- calculations of: sales_growth, ROIC, PE, EVEBITDA, Payout
 create procedure get_calc_by_years(I_year int, I_region varchar(255))
 begin
    select 
@@ -425,17 +427,18 @@ end $$
 create procedure select_sics_by_theme_range(I_max_year integer,
  I_theme_id integer, I_theme_min integer, I_theme_max integer,
  I_region varchar(255))
- 
+
 begin
     DROP TABLE IF EXISTS tmp_selected_sics;
     CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
 
     IF I_region='' or I_region='Global' THEN
         insert into tmp_selected_sics
-        select id
+        select distinct id
         from sales_sic 
         where CSV_DOUBLE(exposure,I_theme_id)  between I_theme_min and I_theme_max
-        and id<>9999;
+        and id<>9999
+        order by id;
     ELSE
       insert into tmp_selected_sics
         select distinct s.id
@@ -450,6 +453,21 @@ begin
     END IF;
 end $$
 
+create procedure select_sics_by_themes(I_theme_id integer, I_theme_min integer, I_theme_max integer)
+begin
+    DROP TABLE IF EXISTS tmp_selected_sics;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
+      insert into tmp_selected_sics
+        select distinct s.id
+          from sales_divdetails d
+        join sales_sic s on d.sic=s.id
+        where d.sales>0 
+        and CSV_DOUBLE(s.exposure,I_theme_id) between I_theme_min and I_theme_max 
+        and s.id<>9999
+        order by s.id;
+end $$
+
+
 /*
 call selected_sics_by...
 before using
@@ -457,8 +475,8 @@ before using
 set @year = 2015;
 -- Theme A
 set @theme_id = 1;
-set @theme_min = -1;
-set @theme_max = -0;
+set @theme_min = 2;
+set @theme_max = 2;
 -- Global region
 set @region = '';
 call select_sics_by_theme_range(@year, @theme_id, @theme_min, @theme_max, @region);

@@ -274,20 +274,49 @@ set @theme_min = 2;
 set @theme_max = 2;
 -- Global region
 set @region = '';
+call select_sics_by_theme_range(@year, @theme_id, @theme_min, @theme_max, @region);
 
-call get_sics_stabilities(@year,@region);
 
-select
-  sum(astab)/sum(tsale) as astab, sum(tsale) as tsales
-from
-(
-    select
-        d.sic, 
-        sum(sales) as tsale,
-        s.stability*sum(sales) as astab
-    from sales_divdetails d 
+select 
+      d.syear,
+      p.sic,
+      sum(d.sales) as tsales,
+      sum(d.ebit) as tebit,
+      sum(d.assets) as tassets,
+      sum(d.capex) as tcapex
+from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
     join tmp_selected_sics ss on d.sic=ss.sic
-    join tmp_stabilities s on d.sic = s.sic 
-    where d.syear=@year
-    group by 1
-) as r;
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+    join sales_divdetails d3 on d.cid=d3.cid and d.sic=d3.sic and d3.syear=(d.syear-3)
+where  d.sales>0
+--    and (I_region='' or I_region='Global' or c.region=I_region)
+group by d.syear, d.sic, d3.syear, d3.sic limit 10;
+
+
+select 
+      d.syear,
+      p.sic,
+      sum(d.sales) as tsales,
+      sum(d.ebit) as tebit,
+      sum(d.assets) as tassets,
+      sum(d.capex) as tcapex
+from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+where  d.sales>0
+--    and (I_region='' or I_region='Global' or c.region=I_region)
+group by d.syear, d.sic;
+
+select 
+    d.syear,
+    d.sic,
+    sum(d.sales) 
+from sales_divdetails d 
+join tmp_selected_sics ss on d.sic=ss.sic 
+join sales_companies_totals t on d.cid=t.cid
+where d.sic=119 and d.sales>0
+group by d.syear, d.sic;
