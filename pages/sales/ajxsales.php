@@ -851,7 +851,9 @@ group by d.syear, d.sic",
 
         if (post('lhs')==post('rgs')) $this->res->rrows = $this->res->lrows;
         else 
-        {   if ( ($this->res->rrows=$this->y3calculation(post('rhs')))===false )
+        {   if ( ($this->res->rrows=$this->y3calculation(post('rhs')))===false &&
+                 ($this->res->rrows=$this->growthCalculation(post('rhs')))===false
+            )
             {
                 $qr2 = $db->query('call summary_by_sics_by_years(:rhs,:region)',  
                   $this->getPostParams('rhs,region'));
