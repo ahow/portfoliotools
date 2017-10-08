@@ -694,8 +694,8 @@ where  d.sales>0
 group by d.syear, d.sic",
         $this->getPostParams('region'));
         $data = array();
-        $max_year = PHP_INT_MIN;
-        $min_year = PHP_INT_MAX;
+        $max_year = -2000000;
+        $min_year =  2000000;
         $totals = array(); // total values
         while ($r=$db->fetchSingle($qr))
         {  if (!isset($data[$r->syear])) $data[$r->syear]=array();
