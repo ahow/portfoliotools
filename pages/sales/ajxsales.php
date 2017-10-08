@@ -770,11 +770,13 @@ group by d.syear, d.sic",
 
         if (post('lhs')==post('rgs')) $this->res->rrows = $this->res->lrows;
         else 
-        {
-            $qr2 = $db->query('call summary_by_sics_by_years(:rhs,:region)',  
-              $this->getPostParams('rhs,region'));
-            $this->res->rrows = $qr2->fetchAll(PDO::FETCH_OBJ);
-            $qr2->closeCursor();
+        {   if ( ($this->res->rrows=$this->y3calculation(post('rhs')))===false )
+            {
+                $qr2 = $db->query('call summary_by_sics_by_years(:rhs,:region)',  
+                  $this->getPostParams('rhs,region'));
+                $this->res->rrows = $qr2->fetchAll(PDO::FETCH_OBJ);
+                $qr2->closeCursor();
+            }
         }
         echo json_encode($this->res);
    }
