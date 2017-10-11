@@ -14,6 +14,7 @@ drop procedure if exists get_sics_totals_tmp;
 drop procedure if exists get_topN_by_sic_years;
 drop procedure if exists get_calc_by_years;
 drop procedure if exists select_sics_by_themes;
+drop procedure if exists selectCustomSics;
 
 delimiter $$
 -- This procedure must be loaded after uploading of divdetails
@@ -579,13 +580,11 @@ begin
 
 end $$
 
-procedure selectCustomSics()
+create procedure selectCustomSics()
 begin
    DROP TABLE IF EXISTS tmp_selected_sics;
    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL);
    insert into tmp_selected_sics values (1311),(2821),(2911),(4612),(4922),(5331),(9999);
-);
-
 end $$
 
 delimiter ;

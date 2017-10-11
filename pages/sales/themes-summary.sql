@@ -391,7 +391,7 @@ having capex1>0 and capex2>0
 select 
       d.syear,
       d.cid,
-      p.sic,
+      d.sic,
       100*(sum(d.capex)/sum(d2.capex)-1),
       sum(d.capex),
       sum(d2.capex),
@@ -400,12 +400,10 @@ select
 from sales_divdetails d
     join sales_companies c on  d.cid = c.cid
     join tmp_selected_sics ss on d.sic=ss.sic
-    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
     join sales_companies_totals t on d.cid=t.cid
     join sales_divdetails d2 on d.cid=d2.cid and d.sic=d2.sic and d2.syear=d.syear-1
 where  d.sales>0 and d.capex is not null and d2.capex is not null
-       and  d.sic=9999 and d.syear=2015 and d.cid='905039'
-
+       and  d.sic=1311 and d.syear=2012 
 --    and (I_region='' or I_region='Global' or c.region=:region)
 group by d.syear, d.cid, d.sic
 having sum(d.capex)>0 and sum(d2.capex)>0;
@@ -460,7 +458,8 @@ order by r.sic, r.syear desc;
 select
   s.syear,
   s.sic,
-  sum(s.capex*s.tsales)/sum(s.tsales)
+  sum(s.capex*s.tsales),
+  sum(s.tsales)
 from
 (    select
         r.syear,
@@ -481,6 +480,7 @@ from
         join sales_companies_totals t on d.cid=t.cid
         join sales_divdetails d2 on d.cid=d2.cid and d.sic=d2.sic and d2.syear=d.syear-1
     where  d.capex is not null and d2.capex is not null
+           and d.sic=1311
     --    and (I_region='' or I_region='Global' or c.region=:region)
     group by d.syear, d.cid, d.sic
     having sum(d.capex)>0 and sum(d2.capex)>0
@@ -489,31 +489,93 @@ from
     join sales_divdetails d3 on r.syear=d3.syear and r.cid=d3.cid and r.sic=d3.sic
     group by r.syear, r.cid, r.sic, r.capex
 ) as s
-group by 1,2;
+group by 1,2
+order by sic, syear desc;
 
 SET @@sql_mode = "ONLY_FULL_GROUP_BY";
 
+-- It's WORKS!!!!
+
+DROP TABLE IF EXISTS tmp_vsum_by_cid_sic_year;
+CREATE TEMPORARY TABLE
+IF NOT EXISTS tmp_vsum_by_cid_sic_year 
+(syear integer not null,
+cid varchar(16) NOT NULL, 
+sic integer NOT NULL,
+v double not null);
+
+insert into tmp_vsum_by_cid_sic_year
 select 
-      d.syear,
-      d.cid,
-      d.sic,
-      sum(d.capex),
-      sum(d2.capex),
-      count(*)
+    d.syear,
+    d.cid,
+    d.sic,
+    sum(d.capex)
 from sales_divdetails d
-    join sales_companies c on  d.cid = c.cid
-    join tmp_selected_sics ss on d.sic=ss.sic
-    join sales_companies_totals t on d.cid=t.cid
-    join sales_divdetails d2 on d.cid=d2.cid and d.sic=d2.sic and d2.syear=d.syear-1
-where d.syear<=2012
---      and d.capex is not null and d2.capex is not null
-     and d.sic=1311 and d.syear=2012
+   join sales_companies c on  d.cid = c.cid
+   join tmp_selected_sics ss on d.sic=ss.sic
+where  d.capex is not null
 --    and (I_region='' or I_region='Global' or c.region=:region)
 group by d.syear, d.cid, d.sic
-having sum(d.capex)>0 and sum(d2.capex)>0
-order by d.syear desc,d.cid,d.sic;
+having sum(d.capex)>0;
+
+DROP TABLE IF EXISTS tmp_values_by_sic_year;
+
+CREATE TEMPORARY TABLE
+    IF NOT EXISTS tmp_values_by_sic_year
+    (syear integer not null, sic integer NOT NULL,
+    v double not null);
+
+insert into tmp_values_by_sic_year
+select 
+    r2.syear,
+    r2.sic,
+    sum(gv*r2.v)/sum(r2.v) as v
+from
+(   select 
+      r.syear,
+      r.cid,
+      r.sic,
+      r.v,
+      100*(r.v/t.v-1) as gv
+    from
+    (select 
+        d.syear,
+        d.cid,
+        d.sic,
+        sum(d.capex) as v    
+    from sales_divdetails d
+       join sales_companies c on  d.cid = c.cid
+       join tmp_selected_sics ss on d.sic=ss.sic
+    where  d.capex is not null
+    --    and (I_region='' or I_region='Global' or c.region=:region)
+    group by d.syear, d.cid, d.sic
+    having sum(d.capex)>0
+    ) as r
+    join tmp_vsum_by_cid_sic_year t 
+        on t.syear=r.syear-1 
+        and t.cid=r.cid
+        and t.sic=r.sic
+) as r2
+group by 1,2
+order by 2, 1 desc;
+
+select 
+  r.syear,
+  sum(t.v*r.tsales)/sum(r.tsales) as v
+from
+( select 
+  d.syear,
+  d.sic,
+  sum(d.sales) as tsales
+  from sales_divdetails d
+     join sales_companies c on  d.cid = c.cid
+     join tmp_selected_sics ss on d.sic=ss.sic
+  group by 1,2
+) as r
+join tmp_values_by_sic_year t on r.sic=t.sic and r.syear=t.syear
+group by r.syear;
 
 
-select syear, sum(capex) from sales_divdetails where syear in (2012,2011)
- and cid='905039' and sic=1311 group by 1;
+   
+
 

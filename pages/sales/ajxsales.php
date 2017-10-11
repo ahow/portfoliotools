@@ -753,80 +753,91 @@ group by d.syear, d.sic",
       return false;       
    }
 
+    // field can takes values: ebit sales capex assets 
+   function prepareGrowthsCalcBySics($field)
+   {  $db = $this->cfg->db;
+      $db->query('DROP TABLE IF EXISTS tmp_vsum_by_cid_sic_year');
+      $db->query('CREATE TEMPORARY TABLE
+IF NOT EXISTS tmp_vsum_by_cid_sic_year 
+(syear integer not null, cid varchar(16) NOT NULL, sic integer NOT NULL,
+v double not null)');
+      $db->query("insert into tmp_vsum_by_cid_sic_year
+select 
+    d.syear,
+    d.cid,
+    d.sic,
+    sum(d.$field)
+from sales_divdetails d
+   join sales_companies c on  d.cid = c.cid
+   join tmp_selected_sics ss on d.sic=ss.sic
+where  d.capex is not null
+   and (:region='' or :region='Global' or c.region=:region)
+group by d.syear, d.cid, d.sic
+having sum(d.capex)>0", $this->getPostParams('region'));
+
+    $db->query('DROP TABLE IF EXISTS tmp_values_by_sic_year');
+          $db->query('CREATE TEMPORARY TABLE
+    IF NOT EXISTS tmp_values_by_sic_year
+    (syear integer not null, sic integer NOT NULL,
+    v double not null)');
+
+    $db->query("insert into tmp_values_by_sic_year
+select 
+    r2.syear,
+    r2.sic,
+    sum(gv*r2.v)/sum(r2.v) as v
+from
+(   select 
+      r.syear,
+      r.cid,
+      r.sic,
+      r.v,
+      100*(r.v/t.v-1) as gv
+    from
+    (select 
+        d.syear,
+        d.cid,
+        d.sic,
+        sum(d.capex) as v    
+    from sales_divdetails d
+       join sales_companies c on  d.cid = c.cid
+       join tmp_selected_sics ss on d.sic=ss.sic
+    where  d.capex is not null
+        and (:region='' or :region='Global' or c.region=:region)    
+    group by d.syear, d.cid, d.sic
+    having sum(d.capex)>0
+    ) as r
+    join tmp_vsum_by_cid_sic_year t 
+        on t.syear=r.syear-1 
+        and t.cid=r.cid
+        and t.sic=r.sic
+) as r2
+group by 1,2
+order by 2, 1 desc", $this->getPostParams('region'));       
+   }
+   
    function growthCalculation($hs)
    {  if (strpos($hs,'grw')===0)
       {  $db = $this->cfg->db;
-         $f =  substr($hs,3); // ebit sales capex assets         
-         $qr=$db->query("select 
-      d.syear,
-      p.sic,
-      sum(d.sales) as tsales,
-      sum(d.$f) as v
-from sales_divdetails d
-    join sales_companies c on  d.cid = c.cid
-    join tmp_selected_sics ss on d.sic=ss.sic
-    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
-    join sales_companies_totals t on d.cid=t.cid
-where  d.sales>0
---    and (I_region='' or I_region='Global' or c.region=:region)
-group by d.syear, d.sic",
-        $this->getPostParams('region'));
-        $data = array();
-        $max_year = -2000000;
-        $min_year =  2000000;
-        $totals = array(); // total values
-        while ($r=$db->fetchSingle($qr))
-        {  if (!isset($data[$r->syear])) $data[$r->syear]=array();
-           if (!isset($data[$r->syear][$r->sic])) $data[$r->syear][$r->sic]=$r;
-           if ($max_year<$r->syear) $max_year = 1*$r->syear; 
-           if ($min_year>$r->syear) $min_year = 1*$r->syear;
-           if (!isset($totals[$r->syear]))
-           {   $tt = new stdClass();
-                $tt->tsales = 0; // sum of tsales
-                $tt->tpval = 0;  // sale of SIC * calculated value
-                $totals[$r->syear] = $tt;
-                $tt->has_data = false;
-           }
-           // sum of all SIC tsales
-           $totals[$r->syear]->tsales+=$r->tsales;           
-        }
-             
-        for ($i=$max_year; $i>=($min_year-1); $i--)
-        {   $y = ''.$i;            
-            if (isset($data[$y]))
-            foreach($data[$y] as $sic=>$r1)
-            { if (isset($data[$y-1]) && isset($data[$y-1][$sic]))
-              { $r2 = $data[$y-1][$sic];
-                $r = new stdClass();
-                $r->syear = 1*$y;
-                $r->sic = $sic;
-                if (1.0*$r2->v!=0.0)
-                {  $r->v = 100.0*(1.0*$r1->v/1.0*$r2->v-1);
-                   if (is_nan($r->v)) $r->v=NULL;
-                }
-                else $r->v = NULL; 
-                if ($r->v!==NULL && $r1->tsales!==NULL)
-                {   // Sum prodact of 3 yr value and total sales of SIC
-                    $totals[$y]->tpval+=$r->v * $r1->tsales;
-                    $totals[$y]->has_data = true;
-                }                
-              }
-            }
-        }
-        
-        $result = array();
-        foreach ($totals as $y=>$r)
-        {  $rr = new stdClass();
-           $rr->syear = $y;
-           if ($r->has_data)
-           {
-             if ($r->tsales>0) $rr->v = $r->tpval / $r->tsales;
-             else  $rr->v = 0;
-           } else  $rr->v = NULL;
-           $result[] = $rr;
-        }
-        
-        return $result;
+         $f =  substr($hs,3); // ebit sales capex assets  
+         $this->prepareGrowthsCalcBySics($f);
+         $qr = $db->query("select 
+  r.syear,
+  sum(t.v*r.tsales)/sum(r.tsales) as v
+from
+( select 
+  d.syear,
+  d.sic,
+  sum(d.sales) as tsales
+  from sales_divdetails d
+     join sales_companies c on  d.cid = c.cid
+     join tmp_selected_sics ss on d.sic=ss.sic
+  where  (:region='' or :region='Global' or c.region=:region)
+  group by 1,2
+) as r
+join tmp_values_by_sic_year t on r.sic=t.sic and r.syear=t.syear
+group by r.syear", $this->getPostParams('region'));
+         return $qr->fetchAll(PDO::FETCH_OBJ);
       }
       return false;       
    }
