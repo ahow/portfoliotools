@@ -177,6 +177,21 @@ function modelFormController(selector)
            if (onloaded!=null) onloaded(d);
        }
        
+       function clearData()
+       {   var ctrls = $(selector).find('[data-control-type]');           
+           for (var i=0; i<ctrls.length; i++)
+           { var ctrl = ctrls[i];
+             var id = ctrl.getAttribute('id'), val=null;
+			 var c_type = ctrl.getAttribute('data-control-type');           
+			 if (gl_formvalidator!=undefined && gl_formvalidator.controls[c_type]!=undefined && id!=null)
+			 { var getter = new gl_formvalidator.controls[c_type]('#'+id);
+			   getter.setData('');			   
+			   ctrl.setAttribute('data-old-value', '');
+			 }  
+           }
+           if (onloaded!=null) onloaded(d);
+       }
+       
        function getData(is_insert)
        {   var r = {};
            var ctrls = $(selector).find('[data-control-type]');
@@ -241,7 +256,15 @@ function modelFormController(selector)
                  }
           });
        }
-       
+
+       function deleteRow(r, fu)
+       {    ajx(model+'/delete', r, function(d){
+                 if (!d.error) 
+                 {   if (fu!=undefined) fu(d);                     
+                 }
+          });
+       }
+              
        function update()
        {  var r = getData();           
           if (!$.isEmptyObject(r))
@@ -272,5 +295,6 @@ function modelFormController(selector)
        
       return {load:load, total:total, bind:bind, click:click, loaded:loaded,
            insert:insert, update:update,
-           getData:getData, setData:setData, loadrow:loadrow, updated:updated};
+           getData:getData, setData:setData, loadrow:loadrow, updated:updated,
+           clearData:clearData, deleteRow:deleteRow};
 }

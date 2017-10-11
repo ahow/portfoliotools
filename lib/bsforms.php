@@ -3,11 +3,22 @@
  class BSformDefault
 {   var $fa;
     var $jfilt;
+    var $valid = '';
     
     function __construct()
     { $this->fa = array();
       $this->jfilt = new stdClass();
     }
+    
+    function validate($s)
+    { $this->valid = " data-validate=\"$s\"";
+	}
+	
+	function getValid($clear = true)
+	{ $r = $this->valid;
+	  if ($clear) $this->valid='';
+	  return $r;
+	}
     
     function mkTestFilt($name,$filter='number',$maxlen=null,$min=null,$max=null)
     {  $r = new StdClass();
@@ -35,7 +46,7 @@
     {  $label = T($name);
        return '<div class="form-group"><label for="'.$name.'">'.$label.'</label>
        <div class="input-group form-lookup" data-control-type="data" id="'.$id.'" data-value="">
-        <input type="text" class="form-control" data-control-type="basic" id="'.$name.'" data-toggle="tooltip" data-placement="top" title="'.$label.'" placeholder="'.$label.'">
+        <input type="text" class="form-control" data-control-type="basic"'.$this->getValid().' id="'.$name.'" data-toggle="tooltip" data-placement="top" title="'.$label.'" placeholder="'.$label.'">
         <span class="input-group-btn">
             <button class="btn btn-default" type="button">...</button> 
         </span>
@@ -50,7 +61,8 @@
        
        return ' <div class="form-group">
             <label for="'.$name.'">'.$label.'</label>
-            <input type="'.$type.'" class="form-control" data-control-type="basic" id="'.$name.'" placeholder="'.$label.'">
+            <input type="'.$type.'" class="form-control" data-control-type="basic" '.
+            $this->getValid().'id="'.$name.'" placeholder="'.$label.'">
           </div>';
     }
 
@@ -141,7 +153,8 @@
         $this->mkTestFilt($name,'text');
          // <label for="comment">'.$label.'</label>
         return '<div class="form-group">
-  <textarea class="form-control" rows="'.$rows.'" id="'.$name.'" "  data-control-type="basic" placeholder="'.$label.'"></textarea>
+  <textarea class="form-control" rows="'.$rows.'" id="'.$name.'"'.
+  $this->getValid().' "  data-control-type="basic" placeholder="'.$label.'"></textarea>
 </div>';
     }
     
@@ -159,15 +172,35 @@
       return $s;
     }
     
-    function modelSelect($name,$model)
+    function modelSelect($name,$model,$option=null)
     {  $label = T($name);
-       $s = '<div class="form-group bs-model-select" data-model="'.$model.'">
+       $opt = '';
+       if ($option!==null) $opt='data-option="'.$option.'" ';
+       $s = '<div class="form-group bs-model-select" '.$opt.'data-model="'.$model.'">
   <label for="'.$name.'">'.$label.'</label>
-  <select class="form-control" id="'.$name.'" data-control-type="basic">
+  <select class="form-control" id="'.$name.'" data-control-type="basic" '.$this->getValid().'>
   </select>
 </div>';
        return $s;
     }
+    
+    function listSelect($name,$list)
+    {  $label = T($name);
+       $a = explode(';', $list);
+       $s = '<div class="form-group bs-list-select">
+  <label for="'.$name.'">'.$label.'</label>
+  <select class="form-control" id="'.$name.'" data-control-type="basic">';
+       foreach($a as $k=>$v)
+       {   if (strpos($v,':')>0)
+           {   $a = explode(':',$v);
+               $s.='<option value="'.$a[0].'">'.$a[1].'</option>';
+           } else $s.='<option value="'.($k+1).'">'.$v.'</option>';
+       }
+       $s.='</select>
+</div>';
+       return $s;
+    }
+    
     
     function vwtabs($name)
     {     $qv = $name."_qv";
