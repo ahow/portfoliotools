@@ -42,7 +42,11 @@
           if (substr($mod,-3)=='.js')
           {  $inc = '../'.$type.'/'.$path.'/'.$mod;
              header("Content-Type:application/javascript");
-          }
+          } else
+          if (substr($mod,-4)=='.css')
+          {  $inc = '../'.$type.'/'.$path.'/'.$mod;
+             header("Content-Type:text/css");
+          }          
           else
             $inc = '../'.$type.'/'.$path.'/html.'.$mod.'.php';
             
