@@ -117,7 +117,8 @@ function formValidator(selector)
        var T = locale.T;
        hints = {req:T('REQ_VAL'), minlen:T('TOO_SHORT'), 
        email:T('WRONG_EMAIL_FMT'), equalto:T('CNFRM_FIELD'),
-       maxlen:T('TOO_LONG'),reqradio:T('NO_OPTIONS_SELECTED')}
+       maxlen:T('TOO_LONG'),reqradio:T('NO_OPTIONS_SELECTED'),
+       gt:T('GRATER_THAN'),lt:T('LESS_THAN')}
     });
     
     var vErrors = null;
@@ -212,7 +213,23 @@ function formValidator(selector)
                 valid=false;
                 h.push(hints.maxlen);
             }
-            
+
+            if (p.gt!=undefined 
+                && ctrl.value!='' 
+                && 1.0*ctrl.value>p.gt) 
+            { 
+                valid=false;
+                h.push(hints.gt+' '+p.gt);
+            }
+
+            if (p.lt!=undefined 
+                && ctrl.value!='' 
+                && 1.0*ctrl.value<p.lt) 
+            { 
+                valid=false;
+                h.push(hints.lt+' '+p.lt);
+            }
+                        
             if (p.email!=undefined && ctrl.value!='' && !validateEmail(ctrl.value)) 
             {
                 valid=false;
