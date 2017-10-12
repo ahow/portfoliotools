@@ -671,88 +671,6 @@ and id<>9999;');
        // id in (116,119,131) 
    }
 
-
-   // Calculation of 3yr EBIT growth, 3yr Sales growth e.t.c
-   // If function name start with y3 then we caclulate values ant return array
-   // else the function returns FALSE
-   function y3calculation($hs)
-   {  if (strpos($hs,'y3')===0)
-      {  $db = $this->cfg->db;
-         $f =  substr($hs,2); // ebit sales capex assets         
-         $qr=$db->query("select 
-      d.syear,
-      p.sic,
-      sum(d.sales) as tsales,
-      sum(d.$f) as v
-from sales_divdetails d
-    join sales_companies c on  d.cid = c.cid
-    join tmp_selected_sics ss on d.sic=ss.sic
-    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
-    join sales_companies_totals t on d.cid=t.cid
-where  d.sales>0
---    and (I_region='' or I_region='Global' or c.region=:region)
-group by d.syear, d.sic",
-        $this->getPostParams('region'));
-        $data = array();
-        $max_year = -2000000;
-        $min_year =  2000000;
-        $totals = array(); // total values
-        while ($r=$db->fetchSingle($qr))
-        {  if (!isset($data[$r->syear])) $data[$r->syear]=array();
-           if (!isset($data[$r->syear][$r->sic])) $data[$r->syear][$r->sic]=$r;
-           if ($max_year<$r->syear) $max_year = 1*$r->syear; 
-           if ($min_year>$r->syear) $min_year = 1*$r->syear;
-           if (!isset($totals[$r->syear]))
-           {   $tt = new stdClass();
-                $tt->tsales = 0; // sum of tsales
-                $tt->tpval = 0;  // sale of SIC * calculated value
-                $totals[$r->syear] = $tt;
-                $tt->has_data = false;
-           }
-           // sum of all SIC tsales
-           $totals[$r->syear]->tsales+=$r->tsales;           
-        }
-             
-        for ($i=$max_year; $i>=($min_year-3); $i--)
-        {   $y = ''.$i;            
-            if (isset($data[$y]))
-            foreach($data[$y] as $sic=>$r1)
-            { if (isset($data[$y-3]) && isset($data[$y-3][$sic]))
-              { $r2 = $data[$y-3][$sic];
-                $r = new stdClass();
-                $r->syear = 1*$y;
-                $r->sic = $sic;
-                if (1.0*$r2->v!=0.0)
-                {  $r->v = 100.0*(pow(1.0*$r1->v/1.0*$r2->v, 1.0/3.0)-1);
-                   if (is_nan($r->v)) $r->v=NULL;
-                }
-                else $r->v = NULL; 
-                if ($r->v!==NULL && $r1->tsales!==NULL)
-                {   // Sum prodact of 3 yr value and total sales of SIC
-                    $totals[$y]->tpval+=$r->v * $r1->tsales;
-                    $totals[$y]->has_data = true;
-                }                
-              }
-            }
-        }
-        
-        $result = array();
-        foreach ($totals as $y=>$r)
-        {  $rr = new stdClass();
-           $rr->syear = $y;
-           if ($r->has_data)
-           {
-             if ($r->tsales>0) $rr->v = $r->tpval / $r->tsales;
-             else  $rr->v = 0;
-           } else  $rr->v = NULL;
-           $result[] = $rr;
-        }
-        
-        return $result;
-      }
-      return false;       
-   }
-
     // field can takes values: ebit sales capex assets 
    function prepareGrowthsCalcBySics($field)
    {  $db = $this->cfg->db;
@@ -833,18 +751,19 @@ select
 from sales_divdetails d
    join sales_companies c on  d.cid = c.cid
    join tmp_selected_sics ss on d.sic=ss.sic
-where  d.capex is not null
+where  d.$field is not null
    and (:region='' or :region='Global' or c.region=:region)
 group by d.syear, d.cid, d.sic
-having sum(d.capex)>0", $this->getPostParams('region'));
+having sum(d.$field)>0", $this->getPostParams('region'));
 
-    $db->query('DROP TABLE IF EXISTS tmp_values_by_sic_year');
-          $db->query('CREATE TEMPORARY TABLE
-    IF NOT EXISTS tmp_values_by_sic_year
-    (syear integer not null, sic integer NOT NULL,
-    v double not null)');
-
-    $db->query("select 
+      $db->query('DROP TABLE IF EXISTS tmp_vsum_by_cid_sic_year2');
+      $db->query('CREATE TEMPORARY TABLE
+IF NOT EXISTS tmp_vsum_by_cid_sic_year2 
+(syear integer not null, cid varchar(16) NOT NULL, sic integer NOT NULL,
+v double not null,gv double)');
+    
+    // green area
+    $qr = $db->query("select 
       r.syear,
       r.cid,
       r.sic,
@@ -855,28 +774,64 @@ having sum(d.capex)>0", $this->getPostParams('region'));
         d.syear,
         d.cid,
         d.sic,
-        sum(d.capex) as v    
+        sum(d.$field) as v    
     from sales_divdetails d
        join sales_companies c on  d.cid = c.cid
        join tmp_selected_sics ss on d.sic=ss.sic
-    where  d.capex is not null
+    where  d.$field is not null
         and (:region='' or :region='Global' or c.region=:region)    
     group by d.syear, d.cid, d.sic
-    having sum(d.capex)>0
+    having sum(d.$field)>0
     ) as r
     join tmp_vsum_by_cid_sic_year t 
         on t.syear=r.syear-3 
         and t.cid=r.cid
         and t.sic=r.sic", $this->getPostParams('region'));       
+        while ($r=$db->fetchSingle($qr))
+        {   $v = null;
+            if ($r->v2!=0.0)
+            {   $v = 100*(pow($r->v1/$r->v2, 1.0/3.0)-1);
+                if (is_nan($v)) $v=null;
+            } else $v = null;
+            $v1 = $r->v1;
+            unset($r->v1);
+            unset($r->v2);
+            $r->v = $v1;
+            $r->gv = $v;
+            $db->query('insert into tmp_vsum_by_cid_sic_year2 values (:syear,:cid,:sic,:v,:gv)', $r);
+        }
+        
+        $db->query('DROP TABLE IF EXISTS tmp_values_by_sic_year');
+        $db->query('CREATE TEMPORARY TABLE
+    IF NOT EXISTS tmp_values_by_sic_year
+    (syear integer not null, sic integer NOT NULL,
+    v double not null)');
+    
+        $db->query("insert into tmp_values_by_sic_year
+select 
+    r2.syear,
+    r2.sic,
+    sum(gv*r2.v)/sum(r2.v) as v
+from tmp_vsum_by_cid_sic_year2 r2
+group by 1,2
+order by 2, 1 desc", $this->getPostParams('region'));
    }
    
+   function ajxTest3()
+   {  $db = $this->cfg->db;
+      $_POST['region']='';
+      $db->query('SET @@sql_mode = "ONLY_FULL_GROUP_BY"');
+      $db->query('call selectCustomSics()');
+      $this->prepare3yrGrowthsCalcBySics('capex');
+      $qr = $db->query('select * from tmp_values_by_sic_year');
+      $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
+      echo json_encode($this->res);      
+   }
    
-   function growthCalculation($hs)
-   {  if (strpos($hs,'grw')===0)
-      {  $db = $this->cfg->db;
-         $f =  substr($hs,3); // ebit sales capex assets  
-         $this->prepareGrowthsCalcBySics($f);
-         $qr = $db->query("select 
+   // final calculation for theams
+   function aggregateBySics()
+   {  $db = $this->cfg->db;
+      $qr = $db->query("select 
   r.syear,
   sum(t.v*r.tsales)/sum(r.tsales) as v
 from
@@ -892,11 +847,31 @@ from
 ) as r
 join tmp_values_by_sic_year t on r.sic=t.sic and r.syear=t.syear
 group by r.syear", $this->getPostParams('region'));
-         return $qr->fetchAll(PDO::FETCH_OBJ);
+      return $qr->fetchAll(PDO::FETCH_OBJ);
+   }
+   
+   function growthCalculation($hs)
+   {  if (strpos($hs,'grw')===0)
+      {  $db = $this->cfg->db;
+         $f =  substr($hs,3); // ebit sales capex assets  
+         $this->prepareGrowthsCalcBySics($f);
+         return $this->aggregateBySics();
       }
       return false;       
    }
 
+   // Calculation of 3yr EBIT growth, 3yr Sales growth e.t.c
+   // If function name start with y3 then we caclulate values ant return array
+   // else the function returns FALSE
+   function growth3yrCalculation($hs)
+   {  if (strpos($hs,'y3')===0)
+      {  $db = $this->cfg->db;
+         $f =  substr($hs,2); // ebit sales capex assets  
+         $this->prepare3yrGrowthsCalcBySics($f);
+         return $this->aggregateBySics();
+      }
+      return false;       
+   }
 
    function ajxThemesSummarySicTotals()
    {    $params = (object)$_POST;
@@ -905,7 +880,7 @@ group by r.syear", $this->getPostParams('region'));
         $db->query('call select_sics_by_themes(:theme_id,:theme_min,:theme_max)', 
           $this->getPostParams('theme_min,theme_max,theme_id'));
         
-        if ( ($this->res->lrows=$this->y3calculation(post('lhs')))===false &&
+        if ( ($this->res->lrows=$this->growth3yrCalculation(post('lhs')))===false &&
              ($this->res->lrows=$this->growthCalculation(post('lhs')))===false
            )
         {   $qr = $db->query('call summary_by_sics_by_years(:lhs,:region)',  
@@ -917,7 +892,7 @@ group by r.syear", $this->getPostParams('region'));
 
         if (post('lhs')==post('rgs')) $this->res->rrows = $this->res->lrows;
         else 
-        {   if ( ($this->res->rrows=$this->y3calculation(post('rhs')))===false &&
+        {   if ( ($this->res->rrows=$this->growth3yrCalculation(post('rhs')))===false &&
                  ($this->res->rrows=$this->growthCalculation(post('rhs')))===false
             )
             {
