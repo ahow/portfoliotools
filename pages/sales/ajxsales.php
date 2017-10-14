@@ -672,15 +672,15 @@ and id<>9999;');
    }
 
 
-   // ROA calculation
-   function prepareROACalcBySics()
+   // Sum divided by sum  calculation
+   function prepareSumBySumCalcBySics($f1, $f2)
    {  $db = $this->cfg->db;
       $db->query('DROP TABLE IF EXISTS tmp_ebit_sum_by_cid_sic_year');
       $db->query('CREATE TEMPORARY TABLE
 IF NOT EXISTS tmp_ebit_sum_by_cid_sic_year 
 (syear integer not null, cid varchar(16) NOT NULL, sic integer NOT NULL,
 v double not null)');
-      $field = 'ebit';
+      $field = $f1;
       $db->query("insert into tmp_ebit_sum_by_cid_sic_year 
 select 
     d.syear,
@@ -700,7 +700,7 @@ having sum(d.$field)>0", $this->getPostParams('region'));
 IF NOT EXISTS tmp_asset_sum_by_cid_sic_year 
 (syear integer not null, cid varchar(16) NOT NULL, sic integer NOT NULL,
 v double not null)');
-      $field = 'assets';
+      $field = $f2;
       $db->query("insert into tmp_asset_sum_by_cid_sic_year 
 select 
     d.syear,
@@ -944,17 +944,17 @@ group by r.syear", $this->getPostParams('region'));
    }
 
 
-   function ROACalculation($hs)
-   {  if ($hs=='ROA')
-      {  $db = $this->cfg->db;
-         $f =  substr($hs,2); // ebit sales capex assets  
-         $this->prepareROACalcBySics();
+   // for example if we have ebit-by-assets then we will get
+   // sum of ebit divided by sob of assets
+   function SumBySumCalculation($hs)
+   {  if (strpos($hs,'-by-')>0)
+      {  $p = explode('-by-',$hs);
+         $db = $this->cfg->db;
+         $this->prepareSumBySumCalcBySics($p[0], $p[1]);
          return $this->aggregateBySics();
       }
       return false;
    }
-
-
 
    function ajxThemesSummarySicTotals()
    {    $params = (object)$_POST;
@@ -965,7 +965,7 @@ group by r.syear", $this->getPostParams('region'));
         
         if ( ($this->res->lrows=$this->growth3yrCalculation(post('lhs')))===false &&
              ($this->res->lrows=$this->growthCalculation(post('lhs')))===false &&
-             ($this->res->lrows=$this->ROACalculation(post('lhs')))===false
+             ($this->res->lrows=$this->SumBySumCalculation(post('lhs')))===false
            )
         {   $qr = $db->query('call summary_by_sics_by_years(:lhs,:region)',  
               $this->getPostParams('lhs,region'));
@@ -978,7 +978,7 @@ group by r.syear", $this->getPostParams('region'));
         else 
         {   if ( ($this->res->rrows=$this->growth3yrCalculation(post('rhs')))===false &&
                  ($this->res->rrows=$this->growthCalculation(post('rhs')))===false &&
-                 ($this->res->rrows=$this->ROACalculation(post('rhs')))===false
+                 ($this->res->rrows=$this->SumBySumCalculation(post('rhs')))===false
             )
             {
                 $qr2 = $db->query('call summary_by_sics_by_years(:rhs,:region)',  
