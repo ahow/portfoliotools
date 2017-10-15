@@ -406,7 +406,6 @@ begin
     WHEN 'tsales' THEN call get_sics_totals(I_region);
     WHEN 'top3' THEN call get_topN_by_years(3, NULL, I_region);
     WHEN 'top5' THEN call get_topN_by_years(5, NULL, I_region);
-    WHEN 'sales_growth' THEN call get_calc_by_years(NULL, I_region);
     WHEN 'roic' THEN call get_calc_by_years(NULL, I_region);
     WHEN 'pe' THEN call get_calc_by_years(NULL, I_region);
     WHEN 'evebitda' THEN call get_calc_by_years(NULL, I_region);
