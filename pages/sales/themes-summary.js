@@ -7,29 +7,7 @@ $(function(){
       }
       return n.toFixed(decimals);
     }
-    
-    /*
-    function drawSummary(d)
-    {  var selector='#summary';
-       var s = '<table class="table table-striped">';
-        total = 0.0;
-        s+='<tr><th>Theme</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
-        for (var i=0; i<d.rows.length; i++)
-        {   var r = d.rows[i];
-            if (r!=undefined)
-            {   s+='<tr><td>'+r.name+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
-                +toFloat((100.0*r.top3sum)/(1.0*r.tsales), 0)+'</td><td>'
-                +toFloat((100.0*r.top5sum)/(1.0*r.tsales), 0)+'</td><td>'
-                +toFloat(r.stability,1)+'</td><td>'+toFloat(r.asales_growth,1)+'</td><td>'
-                +toFloat(r.aroic,1)+'</td><td>'+toFloat(r.ape,1)+'</td><td>'
-                +toFloat(r.aevebitda,1)+'</td><td>'+toFloat(r.apayout,1)+'</td><td>'
-                +toFloat(r.previewed,0)+'</td></tr>';
-            }
-        }
-        s+='</table>';
-        $(selector).html(s);
-    }
-*/
+   
    
 
     function drawThemes(d)
@@ -133,12 +111,7 @@ $(function(){
         loadThemesSummary();
     });
 
-/*    
-    $('#minsize').click(function(){
-        if ($('#subsec input').val()!='') loadSubsector( $('#subsec input').val() );
-        if (last_sic!=null &&  $('#sic_code input').val()!='') loadSIC( last_sic );
-    });
-    */
+
     
     // Range slider setup
  
@@ -158,18 +131,6 @@ $(function(){
            
     $("input.bs-range").slider({});
     
-    /* Disabled. Calculations too slow.
-     
-    $("input.bs-range").each(function(i,e){
-        
-         var ch = new onChanheVal(function(e){            
-             loadThemesSummary();             
-         });
-           
-         $(e).change(ch.check);
-        
-    });
-    */
     
     
     $('#sic_id button').click(function(){
@@ -370,115 +331,7 @@ $(function(){
         
         drawChart({title:tl+' vs '+tr, nameL:tl, nameR:tr, categories:categories, data:[d.l, d.r] });		
     }
-    
-    function drawSicTotals(l,r)
-    {   
-		function total_sales()
-		{  var d = [];
-		   for (var i=0; i<sic_totals.length; i++)
-		   { d.push(1.0*sic_totals[i].tsales);
-		   }
-		   return d;
-		}
-		
-        function defcalc(name)
-        {  function fu()
-           {  setError('Nor realized function: '+name)
-              var d = [];
-              return d;  
-           }
-           return fu;
-        }
         
-        var top3 = new defcalc('top3');
-        var top5 = new defcalc('top5');
-        var stability = new defcalc('stability');
-        var blank = new defcalc('blank');
-		
-		function sales_growth()
-		{  var d = [null];
-		   for (var i=1; i<sic_totals.length; i++)
-		   { d.push(100*( ( (1.0*sic_totals[i].tsales) / (1.0*sic_totals[i-1].tsales) )-1 ));
-		   }
-		   return d;
-		}
-		
-		function sales_growth_3yr()
-		{  var d = [null,null,null];
-		   for (var i=3; i<sic_totals.length; i++)
-		   { d.push(100*( Math.pow( (1.0*sic_totals[i].tsales) / (1.0*sic_totals[i-3].tsales), 1/3 )-1 ));
-		   }
-		   return d;
-		}
-		
-		function ebit_growth()
-		{  var d = [null];
-		   for (var i=1; i<sic_totals.length; i++)
-		   { d.push(100*( ( (1.0*sic_totals[i].tebit) / (1.0*sic_totals[i-1].tebit) )-1 ));
-		   }
-		   return d;
-		}
-		
-		function ebit_growth_3yr()
-		{  var d = [null,null,null];
-		   for (var i=3; i<sic_totals.length; i++)
-		   { d.push(100*( Math.pow( (1.0*sic_totals[i].tebit) / (1.0*sic_totals[i-3].tebit), 1/3 )-1 ));
-		   }
-		   return d;
-		}
-		
-		function ebit_margin()
-		{  var d = [];
-		   for (var i=0; i<sic_totals.length; i++)
-		   { d.push(100*( ( (1.0*sic_totals[i].tebit) / (1.0*sic_totals[i].tsales) ) ));
-		   }
-		   return d;
-		}
-		
-		function roa()
-		{  var d = [];
-		   for (var i=0; i<sic_totals.length; i++)
-		   { d.push(100*( ( (1.0*sic_totals[i].tebit) / (1.0*sic_totals[i].tassets) ) ));
-		   }
-		   return d;
-		}
-		
-		function asset_growth()
-		{  var d = [null];
-		   for (var i=1; i<sic_totals.length; i++)
-		   { d.push(100*( ( (1.0*sic_totals[i].tassets) / (1.0*sic_totals[i-1].tassets) )-1 ));
-		   }
-		   return d;
-		}
-			
-		function asset_growth_3yr()
-		{  var d = [null,null,null];
-		   for (var i=3; i<sic_totals.length; i++)
-		   { d.push(100*( Math.pow( (1.0*sic_totals[i].tassets) / (1.0*sic_totals[i-3].tassets), 1/3 )-1 ));
-		   }
-		   return d;
-		}
-		
-		var calc = [total_sales,top3,top5,stability,sales_growth,blank,blank,blank,sales_growth_3yr,
-		ebit_growth, ebit_growth_3yr, ebit_margin, roa, asset_growth, asset_growth_3yr];
-		
-		
-		var d = {l:null, r:null};
-		if (calc[l]!=undefined) d.l = calc[l]();
-		if (calc[r]!=undefined) d.r = calc[r]();
-		
-		var categories = [];
-		
-		for (var i=0; i<sic_totals.length; i++)
-	    {   categories.push(sic_totals[i].syear);
-		}
-	
-		var tl = $('#LHS option')[l].innerHTML;
-        var rl = $('#RHS option')[r].innerHTML;
-        drawChart({title:tl+' vs '+rl, nameL:tl, nameR:rl, categories:categories, data:[d.l, d.r] });
-		console.log(r);	
-	}
-    
     $('.b-vchart').click(function(){
 		
 		// var l = (1*$('#LHS').val())-1;
