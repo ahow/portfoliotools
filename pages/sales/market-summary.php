@@ -51,12 +51,6 @@ Capex intensity (capex/assets)*/
              <div id="chart" style="min-width: 210px; height: 350px; margin: 0 auto"></div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-lg-4"></div>
-        <div class="col-lg-4"></div>
-        <div class="col-lg-4"><button style="margin-top:25px" class="btn b-debug pull-right">Debug info ...</button></div>
-    </div>
         
     <div class="row" id="debug" style="display:none">
     </div>
