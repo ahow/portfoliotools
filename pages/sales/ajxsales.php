@@ -351,7 +351,8 @@ order by 3 desc,4 desc";
        echo json_encode($this->res);
     }
    
-   function ajxMarketSummarySicTotals()
+   
+   function ajxMarketSummarySicTotals_old()
    {    $params = (object)$_POST;
         $db = $this->cfg->db;
         $prm = new stdClass();
@@ -366,6 +367,39 @@ order by 3 desc,4 desc";
         echo json_encode($this->res);
    }
  
+   function ajxMarketSummarySicTotals()
+   {    $params = (object)$_POST;
+        $db = $this->cfg->db;
+
+        $db->query('call select_single_sic(:sic)', 
+          $this->getPostParams('sic'));
+        
+        if ( ($this->res->lrows=$this->growth3yrCalculation(post('lhs')))===false &&
+             ($this->res->lrows=$this->growthCalculation(post('lhs')))===false &&
+             ($this->res->lrows=$this->SumBySumCalculation(post('lhs')))===false
+           )
+        {   $qr = $db->query('call summary_by_sics_by_years(:lhs,:region)',  
+              $this->getPostParams('lhs,region'));
+            
+            $this->res->lrows = $qr->fetchAll(PDO::FETCH_OBJ);
+            $qr->closeCursor();
+        }
+
+        if (post('lhs')==post('rgs')) $this->res->rrows = $this->res->lrows;
+        else 
+        {   if ( ($this->res->rrows=$this->growth3yrCalculation(post('rhs')))===false &&
+                 ($this->res->rrows=$this->growthCalculation(post('rhs')))===false &&
+                 ($this->res->rrows=$this->SumBySumCalculation(post('rhs')))===false
+            )
+            {
+                $qr2 = $db->query('call summary_by_sics_by_years(:rhs,:region)',  
+                  $this->getPostParams('rhs,region'));
+                $this->res->rrows = $qr2->fetchAll(PDO::FETCH_OBJ);
+                $qr2->closeCursor();
+            }
+        }
+        echo json_encode($this->res);
+   }
    // Code obsolete. should be removed
    function getMarketSummaryBySic($sic=null, $debug=false)
    {    $params = (object)$_POST;

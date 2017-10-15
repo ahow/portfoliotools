@@ -269,6 +269,69 @@ $(function(){
     }
    
     var sic_totals = null;
+
+   function drawSicTotals2(dd,lp,rp)
+    {   var d = {l:[],r:[]};
+        var categories = [];
+        var yr_idx = {};
+        var yr;
+        var min = Number.MAX_VALUE;
+        var max = Number.MIN_VALUE;        
+        
+        for (var i=0; i<dd.lrows.length;i++) 
+        {  var r = dd.lrows[i];
+           var y = 1*r.syear;
+           if (r[lp]!=undefined) dd.lrows[i].v = r[lp];
+           if (y > 0)  
+           {  if (min>y) min=y;
+              if (max<y) max=y;
+           }
+        }
+        for (var i=0; i<dd.rrows.length;i++) 
+        {  var r = dd.rrows[i];
+           var y = 1*r.syear;
+           if (r[rp]!=undefined) dd.rrows[i].v = r[rp];
+           if (y > 0)  
+           {  if (min>y) min=y;
+              if (max<y) max=y;
+           }
+        }
+        var n=0;
+        for (var i=min; i<=max;i++)
+        { categories.push(i);
+          yr_idx[i]=n;
+          d.l[n]=null;
+          d.r[n]=null;
+          n++;
+        }
+        
+        function to_n(v)
+        { if (v==null) return v;
+          return 1.0*v;
+        }
+
+        for (var i=0; i<dd.lrows.length;i++) 
+        {  var r = dd.lrows[i];
+           if (1*r.syear > 0) 
+           {   d.l[ yr_idx[r.syear] ] = to_n(r.v);
+           }
+        }
+        
+        for (var i=0; i<dd.rrows.length;i++) 
+        {  var r = dd.rrows[i];
+           if (1*r.syear > 0) 
+           {   d.r[ yr_idx[r.syear] ] = to_n(r.v);
+           }
+        }
+
+        var lv = $('#LHS').val();
+        var rv = $('#RHS').val();
+        
+		var tl = $('#LHS [value="'+lv+'"]').html();
+        var tr = $('#LHS [value="'+rv+'"]').html();
+        
+        drawChart({title:tl+' vs '+tr, nameL:tl, nameR:tr, categories:categories, data:[d.l, d.r] });		
+    }    
     
     function drawSicTotals(l,r)
     {   
@@ -387,18 +450,21 @@ $(function(){
     
     $('.b-vchart').click(function(){
 		
-		var l = (1*$('#LHS').val())-1;
-        var r = (1*$('#RHS').val())-1;
+//		var l = (1*$('#LHS').val())-1;
+        //var r = (1*$('#RHS').val())-1;
+		var lhs = $('#LHS').val();
+        var rhs = $('#RHS').val();
         
 		if ($('#sic_code input').val()!='')
 		{	
 			//if (sic_totals==null)
 			//{ 
-				ajx('/pages/sales/MarketSummarySicTotals',{sic:last_sic, region:$('#region').val(),
+				ajx('/pages/sales/MarketSummarySicTotals',{sic:last_sic, 
+                    region:$('#region').val(), lhs:lhs, rhs:rhs, 
 					min_size:$('#minsize').val()
 				},function(d){
 					   sic_totals = d.rows;
-					   drawSicTotals(l,r)
+					   drawSicTotals2(d, lhs,rhs)
 				});
 			//} else drawSicTotals(l,r);
 	    }
