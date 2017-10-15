@@ -394,7 +394,7 @@ $(function(){
 		{	
 			//if (sic_totals==null)
 			//{ 
-				ajx('/pages/sales/SIC/MarketSummarySicTotals',{sic:last_sic, region:$('#region').val(),
+				ajx('/pages/sales/MarketSummarySicTotals',{sic:last_sic, region:$('#region').val(),
 					min_size:$('#minsize').val()
 				},function(d){
 					   sic_totals = d.rows;
