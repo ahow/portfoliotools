@@ -1,5 +1,5 @@
 <?php
-  include('../lib/mime.php');  
+  include(SYS_PATH.'lib/mime.php');  
   if ($this->inGroup('admin') || $this->inGroup('editor'))
   {   output_headers('CompanyList-'.date('Y-md-His').'.csv');
   

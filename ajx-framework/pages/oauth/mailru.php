@@ -16,7 +16,7 @@ use OAuth\Common\Storage\Session;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\ServiceFactory;
 
-require_once '../vendor/autoload.php';
+require_once SYS_PATH.'vendor/autoload.php';
 
 // Session storage
 $storage = new Session();

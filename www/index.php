@@ -13,7 +13,7 @@
      var $nav = '';
      
      function template()
-     { include('../'.$this->template);
+     { include(SYS_PATH.$this->template);
      }
      
      function route()

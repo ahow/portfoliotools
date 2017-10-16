@@ -1,6 +1,6 @@
 <?php
 
-include('../lib/mime.php');
+include(SYS_PATH.'lib/mime.php');
 $id = get('id');
  
 if ($this->inGroup('admin') || $this->inGroup('editor'))

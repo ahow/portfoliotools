@@ -84,7 +84,7 @@
         $clist = (object)$_FILES['sic_desc'];
        
         if ($clist->error==0)
-        { $tmp = mktempname('../uploads/sic-');
+        { $tmp = mktempname(UPLOAD_PATH.'sic-');
           if (move_uploaded_file($clist->tmp_name, $tmp))
           {  $f = fopen($tmp,'r');
              $h = fgets($f);
@@ -174,7 +174,7 @@
     if (isset($_FILES['company_list']))
     {
         $clist = (object)$_FILES['company_list'];
-        $tmp = mktempname('../uploads/company-');
+        $tmp = mktempname(UPLOAD_PATH.'company-');
         if ($clist->error==0)
         { if (move_uploaded_file($clist->tmp_name, $tmp))
           {  $f = fopen($tmp,'r');
@@ -246,7 +246,7 @@
     if (isset($_FILES['division_details']))
     {
         $clist = (object)$_FILES['division_details'];        
-        $tmp = mktempname('../uploads/divdetails-');
+        $tmp = mktempname(UPLOAD_PATH.'divdetails-');
         if ($clist->error==0)
         { if (move_uploaded_file($clist->tmp_name, $tmp))
           {  // echo "<div class=\"alert alert-success\">Division details file uploaded! Import started!</div>";
@@ -271,7 +271,7 @@
     if (isset($_FILES['isin_matching']))
     {
         $clist = (object)$_FILES['isin_matching'];
-        $tmp = mktempname('../uploads/isin-matching-');
+        $tmp = mktempname(UPLOAD_PATH.'isin-matching-');
         if ($clist->error==0)
         { if (move_uploaded_file($clist->tmp_name, $tmp))
           {  $f = fopen($tmp,'r');

@@ -70,7 +70,7 @@ function InstallPages($db, $admin=false)
     {
         $blacklist = array('.', '..');
         while (false !== ($file = readdir($handle))) 
-        {   $dir = "../pages/$file";
+        {   $dir = SYS_PATH."pages/$file";
             if (!in_array($file, $blacklist) && is_dir($dir)) 
             {   $manifest = "$dir/manifest.js";
                 if (file_exists($manifest)) 

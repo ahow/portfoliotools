@@ -1,8 +1,8 @@
 <?php
  /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
- // include('../lib/params.php');
- // include('../lib/phpmailer.php');
- include('../lib/ajaxmodel.php');
+ // include(SYS_PATH.'lib/params.php');
+ // include(SYS_PATH.'lib/phpmailer.php');
+ include(SYS_PATH.'lib/ajaxmodel.php');
  
  class ajxsales extends wAjaxModel
  {  

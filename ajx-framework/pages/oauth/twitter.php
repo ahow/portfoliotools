@@ -16,7 +16,7 @@ use OAuth\Common\Storage\Session;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\ServiceFactory;
 
-require_once '../vendor/autoload.php';
+require_once SYS_PATH.'vendor/autoload.php';
 
 // We need to use a persistent storage to save the token, because oauth1 requires the token secret received before'
 // the redirect (request token request) in the access token request.

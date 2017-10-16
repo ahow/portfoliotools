@@ -1,5 +1,5 @@
 <?php
-    include('../lib/bsforms.php');
+    include(SYS_PATH.'lib/bsforms.php');
     $f = new BSformDefault();
 ?>
 <h2><?=T('Users')?></h2>

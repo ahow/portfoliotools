@@ -1,6 +1,6 @@
 <?php  
  /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
- include('../lib/ajaxmodel.php');
+ include(SYS_PATH.'lib/ajaxmodel.php');
   
     class ajxadmin extends wAjaxModel
     {  

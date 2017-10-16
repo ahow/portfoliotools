@@ -99,7 +99,7 @@
      $res->stage = 'Import started';
      send_message(++$msg_num, $res);
      $fid = date('YmdHis').'.'.rand(1,10000);
-     $fn = '../uploads/errlog-'.$fid;
+     $fn = LOG_PATH.'errlog-'.$fid;
      $fe = fopen($fn, 'w+');
      $res->errors = 0;
      

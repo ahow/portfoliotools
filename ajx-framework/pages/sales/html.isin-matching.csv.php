@@ -1,5 +1,5 @@
 <?php
-  include('../lib/mime.php');
+  include(SYS_PATH.'lib/mime.php');
   if ($this->inGroup('admin') || $this->inGroup('editor'))
   {   output_headers('ISIN-matching-'.date('Y-md-His').'.csv');
       $db = $this->db;

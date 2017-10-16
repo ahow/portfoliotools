@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Example of retrieving an authentication token of the Google service
+ * Example of retrieving an authentication token of the yandex service
  *
  * PHP version 5.4
  *
@@ -11,12 +11,12 @@
  * @license    http://www.opensource.org/licenses/mit-license.html  MIT License
  */
 
-use OAuth\OAuth2\Service\Google;
+use OAuth\OAuth2\Service\Yandex;
 use OAuth\Common\Storage\Session;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\ServiceFactory;
 
-require_once '../vendor/autoload.php';
+require_once SYS_PATH.'vendor/autoload.php';
 
 // Session storage
 $storage = new Session();
@@ -24,7 +24,7 @@ $storage = new Session();
 $servicesCredentials = array();
 include(__DIR__.'/readconfig.php');
 
-if (!isset($servicesCredentials['google']))
+if (!isset($servicesCredentials['yandex']))
 {   echo T('ERR_LOST_CONFIG_OF_OAUTH_MODULE');
     $this->oauth = null;
     return;
@@ -50,8 +50,8 @@ $currentUri = new URI('/'.$seg[0].'/'.$srv);
  
 // Setup the credentials for the requests
 $credentials = new Credentials(
-    $servicesCredentials['google']['key'],
-    $servicesCredentials['google']['secret'],
+    $servicesCredentials['yandex']['key'],
+    $servicesCredentials['yandex']['secret'],
     $currentUri->getAbsoluteUri()
 );
 
@@ -62,24 +62,31 @@ $this->oauth = null;
 try
 {
     
-    // Instantiate the Google service using the credentials, http client and storage mechanism for the token
-    /** @var $googleService Google */
-    $googleService = $serviceFactory->createService('google', $credentials, $storage, array('userinfo_email', 'userinfo_profile'));
+    // Instantiate the yandex service using the credentials, http client and storage mechanism for the token
+    /** @var $yandexService yandex */
+    $yandexService = $serviceFactory->createService('yandex', $credentials, $storage, array());
 
     if (!empty($_GET['code'])) 
     {   
         // retrieve the CSRF state parameter
         $state = isset($_GET['state']) ? $_GET['state'] : null;
 
-        // This was a callback request from google, get the token
-        $googleService->requestAccessToken($_GET['code'], $state);
+        // This was a callback request from yandex, get the token
+        $yandexService->requestAccessToken($_GET['code'], $state);
 
         // Send a request with it
-        $r = (object)json_decode($googleService->request('userinfo'), true);
+        $rvk = (object)json_decode($yandexService->request('info'), true);
+        $r = new stdClass();
+        $r->given_name = $rvk->first_name;
+        $r->family_name = $rvk->last_name;
+        $r->name = $rvk->display_name;
+        $r->picture = '';
+        $r->email = $rvk->default_email;
+        $r->id = $rvk->id;
         $this->oauth = $r;
 
     } else {
-        $url = $googleService->getAuthorizationUri();
+        $url = $yandexService->getAuthorizationUri();
         header('Location: ' . $url);
     }
     

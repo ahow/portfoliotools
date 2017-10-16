@@ -1,2 +1,5 @@
 *.log
 /config.php
+/log/*.log
+/uploads/*.*
+
