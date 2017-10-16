@@ -8,7 +8,7 @@
     function ajxLocale()
     {  global $_TRANSLATIONS;
        $path = post('path');
-       $this->includePageLocales($this->cfg->sys_path.$path);
+       $this->includePageLocales(SYS_PATH.$path);
        if (!$this->res->error)
        {   $this->res->locale = $_TRANSLATIONS;
            echo json_encode($this->res);

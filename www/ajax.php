@@ -1,9 +1,8 @@
 <?php
    /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */  
-   
-  include('../ajerrors.php');
-  // error_reporting(E_ALL);
-  include('../classes.php');
+  include('path.php'); 
+  include(SYS_PATH.'ajerrors.php');
+  include(SYS_PATH.'classes.php');
   
   class wAjax extends wMod
   {  var $res;
@@ -71,10 +70,10 @@
         $mod = 'ajx'.$a[1];
                 
         if ($p!='')
-        { $trfile = '../'.$type.'/'.$path.'/ajx'.$this->lang.'.ini';
+        { $trfile = SYS_PATH.$type.'/'.$path.'/ajx'.$this->lang.'.ini';
           if (file_exists($trfile)) $_TRANSLATIONS = parse_ini_file($trfile);
         
-          $inc = '../'.$type.'/'.$path.'/'.$mod.'.php';
+          $inc = SYS_PATH.$type.'/'.$path.'/'.$mod.'.php';
           if (file_exists($inc))
           { include($inc);
             $this->ajax = new $mod($this, $type.'/'.$path ,$a);            
@@ -84,7 +83,7 @@
      }
   }
 
-  include('../config.php');
+  include(SYS_PATH.'config.php');
   $conf = new wConfig();
   
   $conf->route();

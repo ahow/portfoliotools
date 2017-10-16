@@ -3,9 +3,10 @@
   // die();
   /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
   error_reporting(E_ALL);  
-  include('../errors.php');
-  include('../classes.php');
-  
+  include('path.php'); 
+  include(SYS_PATH.'errors.php');
+  include(SYS_PATH.'classes.php');
+
   
   class wMain extends wBase
   {  var $page = null;
@@ -26,14 +27,14 @@
         $this->nav = $p;
         $a = explode('/',$p);
         if ($p!='')
-        { $inc = '../pages/'.$a[0].'/'.$a[0].'.php';
-          $index = '../pages/'.$a[0].'/index.php';
+        { $inc = SYS_PATH.'pages/'.$a[0].'/'.$a[0].'.php';
+          $index = SYS_PATH.'pages/'.$a[0].'/index.php';
           if (file_exists($inc))
           { include($inc);
             $this->page = new $a[0]($this, 'pages/'.$a[0] ,$a);
           } else $this->page = new wPage($this, $index ,$a);
         } else
-        $this->page = new wPage($this,'../default.php');
+        $this->page = new wPage($this,SYS_PATH.'default.php');
 
         $this->template();
      }
@@ -54,10 +55,10 @@
   }
 
 
-  include('../config.php');
+  include(SYS_PATH.'config.php');
 
   $conf = new wConfig();
-  $trfile = "../lang/$conf->lang.ini";
+  $trfile = SYS_PATH."lang/$conf->lang.ini";
   if (file_exists($trfile)) $_TRANSLATIONS = parse_ini_file($trfile);
   $conf->route();
 

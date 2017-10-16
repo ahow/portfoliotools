@@ -1,7 +1,7 @@
 <?php
-  
-  include('../errors.php');
-  include('../classes.php');
+  include('path.php');
+  include(SYS_PATH.'errors.php');
+  include(SYS_PATH.'classes.php');
   
   class wMain extends wBase
   {  var $res;
@@ -37,18 +37,18 @@
         $mod =  $a[2];
         
         if ($p!='')
-        { $trfile = '../'.$type.'/'.$path.'/'.$this->lang.'.ini';
+        { $trfile = SYS_PATH.$type.'/'.$path.'/'.$this->lang.'.ini';
           if (file_exists($trfile)) $_TRANSLATIONS = parse_ini_file($trfile);
           if (substr($mod,-3)=='.js')
-          {  $inc = '../'.$type.'/'.$path.'/'.$mod;
+          {  $inc = SYS_PATH.$type.'/'.$path.'/'.$mod;
              header("Content-Type:application/javascript");
           } else
           if (substr($mod,-4)=='.css')
-          {  $inc = '../'.$type.'/'.$path.'/'.$mod;
+          {  $inc = SYS_PATH.$type.'/'.$path.'/'.$mod;
              header("Content-Type:text/css");
           }          
           else
-            $inc = '../'.$type.'/'.$path.'/html.'.$mod.'.php';
+            $inc = SYS_PATH.$type.'/'.$path.'/html.'.$mod.'.php';
             
           if (file_exists($inc))
           { include($inc);            
@@ -74,7 +74,7 @@
      }
   }
     
-  include('../config.php');
+  include(SYS_PATH.'config.php');
   $conf = new wConfig();
   $conf->route();
   $conf->showErrors();
