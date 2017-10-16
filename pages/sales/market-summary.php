@@ -8,9 +8,9 @@
 ?>
 <div id="mranking">
     <div class="row">
-        <div class="col-lg-6"><?=$f->search3dot('sic_code','sic')?></div>
-        <div class="col-lg-4"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
-        <div class="col-lg-2"><?=$f->input('minsize','number')?></div>
+        <div class="col-lg-7"><?=$f->search3dot('sic_code','sic')?></div>
+        <div class="col-lg-5"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
+        <!-- <div class="col-lg-2"><?=$f->input('minsize','number')?></div> -->
     </div>
     <div class="row">
         <div class="col-lg-6"><?=$f->search3dot('subsec','subsector')?></div>
