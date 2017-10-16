@@ -65,7 +65,7 @@
       $this->path = $path;
       if ($data!='')
       { if (!is_array($data))
-        {  $f = '../'.$path.'/'.$data;
+        {  $f = SYS_PATH.$path.'/'.$data;
            if  (!file_exists($f)) $cfg->setError('Module data not found '.$f, 404);
            else $this->data = json_decode( file_get_contents($f) );
         }
@@ -93,7 +93,7 @@
        
      function newMod($mod, $data='')
      {  try
-        {   $inc = "../modules/$mod/$mod.php";
+        {   $inc = SYS_PATH."modules/$mod/$mod.php";
             if (file_exists($inc)) 
             { include_once($inc);
               return new $mod($this, "modules/$mod", $data);
@@ -102,32 +102,6 @@
         {   $this->setError($e->getMessage(), $e->getCode(), $e->getFile(), $e->getLine());
         }
      }
-     
-     /*
-     function addJS($path, $f)
-     {  $p = implode('-',explode('/',$path.'/'.$f));
-        if (file_exists("$path/$f") || substr($f,0,4)=='http') 
-        {  $this->js[]="$path/$f";
-           return;
-        }
-        $nf = "cache/$p";
-        $sf = "../$path/$f";        
-        if ((!file_exists($nf)) && file_exists($sf)) copy($sf, $nf);
-        $this->js[]=$nf;
-     }
-     
-     function addCSS($path, $f)
-     {  $p = implode('-',explode('/',$path.'/'.$f));
-        if (file_exists("$path/$f") || substr($f,0,4)=='http') 
-        {  $this->css[]="$path/$f";
-           return;
-        }
-        $nf = "cache/$p";
-        $sf = "../$path/$f";        
-        if ((!file_exists($nf)) && file_exists($sf)) copy($sf, $nf);
-        $this->css[]=$nf;
-     }
-     */
      
      function addJS($path, $js){ $this->js[]="$path/$js"; }
      function addCSS($path, $css){ $this->css[]="$path/$css"; }
