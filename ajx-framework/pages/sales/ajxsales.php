@@ -1921,17 +1921,27 @@ join sales_sic s on t.sic=s.id';
     { $params = (object)$_POST;
       $db = $this->cfg->db;
       $db->query('select max(syear) from sales_divdetails into @max_year');
-      
-      $db->query('call select_sics_by_theme_range(@max_year,:theme_id,:theme_min,:theme_max,:region)', 
-        $this->getPostParams('theme_min,theme_max,theme_id,region'));
-        
-      $qr = $db->query('call summary_by_sics(@max_year,:theme_id,:region)',
-        $this->getPostParams('theme_id,region'));
-        
-      $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
-
-      echo json_encode($this->res);
-      
+      // count number of theams
+      $qr = $db->query('select headers from sales_exposure');
+      $h = $db->fetchSingleValue($qr);
+      $header = explode(';',$h);
+      $n = count($header);
+      $rows = array();
+      if ($n>0)
+      for ($i=1; $i<=$n; $i++)
+      {   $_POST['theme_id'] = $i;
+          $db->query('call select_sics_by_theme_range(@max_year,:theme_id,:theme_min,:theme_max,:region)', 
+          $this->getPostParams('theme_min,theme_max,theme_id,region'));
+          $qr = $db->query('call summary_by_sics(@max_year,:theme_id,:region)',
+          $this->getPostParams('theme_id,region'));            
+          $a = $qr->fetchAll(PDO::FETCH_OBJ);
+          if (!empty($a))
+          {   $a[0]->name = $header[$i-1];
+              $rows[] = $a[0];
+          }
+          
+      }
+      $this->res->rows = $rows;
       echo json_encode($this->res); 
     }
 
