@@ -18,6 +18,7 @@ $(function(){
      fprint.submit();
    }
    
+   
     function reloadChartData()
     { 
         var range = $('#theme_range').val().split(',');
@@ -30,6 +31,18 @@ $(function(){
             yaxis:$('#y-axis').val()
         }, function(d){
             
+            var x = $('#x-axis').val();
+            var y = $('#y-axis').val();
+            d.xtitle = $('#x-axis option[value="'+x+'"]').html();
+            d.ytitle = $('#y-axis option[value="'+y+'"]').html();
+            d.xdata = [];
+            for (var i=0; i<d.rows.length; i++)
+            {   var r = d.rows[i];                
+                d.xdata.push({name:r.name,x:1.0*r[x],y:1.0*r[y]});
+            }
+            
+            console.log(d);
+
             last_data = d;
             
             var param = {
@@ -126,36 +139,6 @@ $('.bs-model-select').each(function(i,e){
     var views = new htviewCached();
     
     $("input.bs-range").slider({});
-    
-    function loadSubsector(sub)
-    {  ajx('/pages/sales/MarketSummarySubsector',{subsector:sub, region:$('#region').val(),
-            min_size:$('#minsize').val()
-        },function(d){
-             //  drawSummary(d);
-       });
-    }
-
-    function loadSIC(sic)
-    {  ajx('/pages/sales/MarketSummarySic',{sic:sic, region:$('#region').val(),
-            min_size:$('#minsize').val()
-        },function(d){
-              // drawSIC(d);
-       });
-    }
-        
-    views.view('/pages/sales/search','#search_sic', function(){        
-        dsic = new searchDialog('#search_sic', "/pages/sales/Model/sic",'Search SIC');
-        dsic.select(function(sr, target){
-            $('#sic_code input').val(sr.name);
-            $('#subsec input').val('');
-            last_id = sr.id;
-            select_mode='SIC';
-        });
-        
-        $('#sic_code button').click(function(){
-            dsic.open();
-        });
-    });
 
     views.view('/pages/sales/search','#search_subsec', function(){        
         dsubsec = new searchDialog('#search_subsec', "/pages/sales/Model/subsector",'Search Subsector');
@@ -171,29 +154,7 @@ $('.bs-model-select').each(function(i,e){
         });
     });    
     
-    $('#year').val(new Date().getFullYear()-1);
-    
-    $('#region').click(function(){
-       reloadChartData();
-    });
 
-    $('#x-axis').click(function(){
-       reloadChartData();
-    });
-
-    $('#y-axis').click(function(){
-       reloadChartData();
-    });
-
-    $('#sic_subsector').click(function(){
-       reloadChartData();
-    });
-    
-        
-    $('#minsize').click(function(){
-       reloadChartData();
-    });
-    
     $('.b-vchart').click(function(){
         reloadChartData();
     });
