@@ -7,10 +7,10 @@
     $f = new BSformDefault();
 ?>
 <div id="mranking">
-    <div class="row">
-        <div class="col-lg-4"><?=$f->modelSelect('themes','/pages/sales/ModelThemes','')?></div>
+    <div class="row">        
         <div class="col-lg-4"><?=$f->range('theme_range',-2,2)?></div>
         <div class="col-lg-4"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
+        <div class="col-lg-4"></div>
     </div>
     <div class="row">
         <?php $list = 'Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed'; ?>

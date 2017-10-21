@@ -1036,19 +1036,7 @@ group by r.syear", $this->getPostParams('region'));
         $this->getPostParams('theme_id,region'));
         
       $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
-      /*
-      
-      $qr = $db->query('select id
-from sales_sic 
-where CSV_DOUBLE(exposure,@theme_id)  between @theme_min and @theme_max
-and id<>9999');
-      $rows = array();
-      while ($sic = $db->fetchSingleValue($qr))
-      {  $r = $this->getMarketSummaryBySic($sic);
-         $rows[] = $r->rows[0];
-      }
-      $this->res->rows = $rows;      
-      */
+
       echo json_encode($this->res);
    }
 
@@ -1930,262 +1918,23 @@ join sales_sic s on t.sic=s.id';
     
     
     function ajxThemesComparison()
-    {   $db = $this->cfg->db; 
-        $params = (object)$_POST;  
-        $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
-        
-        $this->selectSicsByThemeRange($db);
-        
-        // Subsector mode
-        $axis = array(null,'sum(sales)',null,null,null,'avg(sales_growth)', 'avg(roic)', 'avg(pe)','avg(evebitda)', 'avg(payout)', 'sum(reviewed)/count(*)');
-        
-        // SIC mode
-        $axis1 = array(null,'sum(sales)',null,null,null,'sum(c.sales_growth*t.proc)/sum(t.proc)',
-        'sum(c.roic*t.proc)/sum(t.proc)','sum(c.pe*t.proc)/sum(t.proc)',
-        'sum(c.evebitda*t.proc)/sum(t.proc)', 'sum(c.payout*t.proc)/sum(t.proc)',
-        'sum(c.reviewed*t.proc)/sum(t.proc)');
-
-       function getStabilityBySIC($db, $wp, $wh, $minyear, $maxyear)
-       {    $years = array();
-            for ($y=$minyear; $y<=$maxyear; $y++)
-            {   $sql = "select 
-    c.cid,c.name,sum(d.sales)
-    from sales_divdetails d
-    join sales_companies c on  d.cid = c.cid
-    join tmp_selected_sics t on d.sic = t.sic
-    where ".implode(' and ', $wh)."  and d.syear=$y 
-    group by c.cid, c.name
-    order by d.sales desc
-    limit 20";
-                $years[$y] = array();
-                $qr = $db->query($sql, $wp);
-                $i=1;
-                while ( $r = $db->fetchSingle($qr) )
-                {   $years[$y][$r->cid] = $i;
-                    $i++;
-                }
-            }
+    { $params = (object)$_POST;
+      $db = $this->cfg->db;
+      $db->query('select max(syear) from sales_divdetails into @max_year');
       
-            $changes = array();
-            $n = 0;
-            $sum = 0;
-                        
-            for ($y=$maxyear; $y>$minyear; $y--)
-            {  $yd = ''.$y.'-'.($y-1);
-                $changes[$yd]= array();
-                foreach($years[$y] as $k=>$v)
-                { if (!isset($years[$y-1][$k])) 
-                  {
-                     $df = 5;
-                  }
-                  else 
-                  {  $df = $years[$y][$k] - $years[$y-1][$k];                      
-                  }
-                  $changes[$yd][$k]=$df;
-                  $n++;
-                  $df = abs($df);
-                  if ($df>5) $df=5;
-                  $sum+=$df;
-                }
-            }
-            if ($n!=0) $stability = $sum/$n;
-            else $stability='NULL';
-            return $stability;
-       }
-            
-       /*    
-        function setSubsectorValue($db, $name, $no, $wp, $wh, $minyear, $maxyear)
-        {   if ($no==2 || $no==3) // top 3  and top 5 (%)
-            {   $wh[] = " c.subsector=:subsector ";
-                $wp['subsector'] = $name;
-                $sql = "select sum(c.sales) from sales_companies c where ".implode(' and ', $wh)." into @ssum";
-                $qr = $db->query($sql, $wp);
-                if ($no==2)
-                   $sql = "select 100.0*sum(t.sales)/@ssum from (select c.sales from sales_companies c where ".implode(' and ', $wh)." order by 1 desc limit 3) t";
-                else 
-                   $sql = "select 100.0*sum(t.sales)/@ssum from (select c.sales from sales_companies c where ".implode(' and ', $wh)." order by 1 desc limit 5) t";
-                $qr = $db->query($sql, $wp);
-                return 1.0*$db->fetchSingleValue($qr);
-            } else
-            if ($no==4)
-            {      
-               $wh[] = " c.subsector=:subsector ";
-               $wp['subsector'] = $name;
-                
-               $stab = getStabilityBySubsector($db,$wp, $wh,$minyear,$maxyear);
-               return $stab;
-            }
-            return 0;
-        }
-        */
+      $db->query('call select_sics_by_theme_range(@max_year,:theme_id,:theme_min,:theme_max,:region)', 
+        $this->getPostParams('theme_min,theme_max,theme_id,region'));
         
-        function setSICValue($db, $sic, $no, $wp, $wh, $minyear, $maxyear)
-        {   if ($no==2 || $no==3) // top 3  and top 5 (%)
-            {   
-                $wh[] = " d.sic=:sic ";
-                $wp['sic'] = $sic;
-                
-                $sql = "select sum(d.sales) 
-from sales_divdetails d 
-join sales_companies c on  d.cid = c.cid
-join tmp_selected_sics t on d.sic = t.sic
-where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum";
-                $qr = $db->query($sql, $wp);
-                
-                if ($no==2) // get total sales of companies with selected SIC number and max year
-                   $sql = "select sum(t.sales)/@ssum from (select d.sales from sales_divdetails d 
-        join sales_companies c on  d.cid = c.cid
-        join tmp_selected_sics t on d.sic = t.sic
-        where  ".implode(' and ', $wh)." and d.syear=@maxyear  order by 1 desc limit 3) t";
-                else 
-                   $sql = "select sum(t.sales)/@ssum from (select d.sales from sales_divdetails d 
-        join sales_companies c on  d.cid = c.cid
-        join tmp_selected_sics t on d.sic = t.sic
-        where  ".implode(' and ', $wh)." and d.syear=@maxyear  order by 1 desc limit 3) t";
-                // write_log("no = $no");
-                $qr = $db->query($sql, $wp);
-                $res = 100.0*$db->fetchSingleValue($qr);
-                // if ($sic=='781') write_log("res = $res");
-                return $res;
-            } else 
-            if ($no==4)
-            {      
-                    $wh[] = " d.sic=:sic ";
-                    $wp['sic'] = $sic;
-                
-                    $stab = getStabilityBySIC($db,$wp, $wh,$minyear,$maxyear);
-               /*
-                if ($sic=='781') 
-                {    write_log("Stability = $stab");
-                }*/
-                   return $stab;
-            }
-            return 10;            
-        }
+      $qr = $db->query('call summary_by_sics(@max_year,:theme_id,:region)',
+        $this->getPostParams('theme_id,region'));
         
-        $flds = array();
-        
-        $wh = array();
-        $wp = array();
-        
-        $params->mode=1; // SIC mode
-        if ($params->mode==1) $axis = $axis1;        
-        
-        if (isset($axis[$params->xaxis]) && $axis[$params->xaxis]!=null) 
-            $flds[]=$axis[$params->xaxis].' as x ';
-        if (isset($axis[$params->yaxis]) && $axis[$params->yaxis]!=null) 
-            $flds[]=$axis[$params->yaxis].' as y ';
-        if ($params->mode=='Subsector' && isset($params->id))
-        { $wh[] = 'subsector=:subsector';
-          $wp['subsector'] = $params->id;
-        }
-        
-        if ($params->mode=='SIC' && isset($params->id))
-        { $wh[] = 'cid in (select d.cid from sales_divdetails d where d.sic=:sic)';
-          $wp['sic'] = $params->id;
-        }
-        if (isset($params->region) && $params->region!='Global')
-        { $wh[] = 'region=:region';
-          $wp['region'] = $params->region;
-        }
-        if (isset($params->min_size) && 1*$params->min_size > 0)
-        {  $wh[] = 'sales>:minsize';
-           $wp['minsize'] = $params->min_size;
-        }
-        
-        // write_log(print_r($flds, true));        
-        if (count($flds)==2)
-        {    
-             $db->query('select max(syear), min(syear) from sales_divdetails into @maxyear, @minyear');
-             $qr = $db->query('select @maxyear as maxyear, @minyear as minyear;');
-             $yr = $db->fetchSingle($qr);
-             $minyear = 1*$yr->minyear;
-             $maxyear = 1*$yr->maxyear;
-            
-            
-             if ($params->mode==2) // Subsector mode
-             {   $flds[]='subsector as name';
-                 $sql = "sselect ".implode(',',$flds).' from sales_companies ';
-                 if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
-                 $sql.=' group by subsector ';
-                 $qr = $db->query($sql, $wp);
-                 $data = array();
-                 while ($r=$db->fetchSingle($qr)) 
-                 {
-                   if (!isset($r->x)) 
-                      $r->x = setSubsectorValue($db, $r->name, $params->xaxis, $wp, $wh, $minyear, $maxyear);
-                   else  $r->x *= 1.0;
-                      
-                   if (!isset($r->y)) 
-                     $r->y = setSubsectorValue($db, $r->name, $params->yaxis, $wp, $wh, $minyear, $maxyear);
-                   else  $r->y *= 1.0;
-                   
-                   $data[] = $r;
-                 }
-                 $this->res->xdata = $data;
-             } else  // SIC mode
-             {                  
-                $db->query('CREATE TEMPORARY TABLE tmp_cid_sales (cid varchar(16) NOT NULL, tsales double, primary key (cid)) ENGINE=MEMORY;');
-                $db->query('insert into tmp_cid_sales
-select d.cid, sum(d.sales)
-from sales_divdetails d
-join tmp_selected_sics t on d.sic = t.sic
-where d.syear=@maxyear
-group by 1');
-                // ---- debug
-                $qr = $db->query('select * from tmp_cid_sales'); 
-                $this->res->cid_sales = $qr->fetchAll(PDO::FETCH_OBJ);
-                
-                
-                $db->query('CREATE TEMPORARY TABLE tmp_cid_sic_proc (cid varchar(16) not null, sic integer NOT NULL, proc double, primary key (cid,sic)) ENGINE=MEMORY;');
-                $db->query('insert into tmp_cid_sic_proc
-select d.cid, d.sic, sum(d.sales)/t.tsales
-from sales_divdetails d
-join tmp_cid_sales t on d.cid=t.cid
-where d.syear=@maxyear
-group by 1,2');
+      $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
 
-                // ---- debug
-                $qr = $db->query('select * from tmp_cid_sic_proc'); 
-                $this->res->tmp_cid_sic_proc = $qr->fetchAll(PDO::FETCH_OBJ);
-
-                $flds[]='s.name';
-                $flds[]='s.id as sic';
-                $sql = "select ".implode(',',$flds).' from sales_companies c
-join tmp_cid_sic_proc t on c.cid = t.cid
-join sales_sic s on t.sic=s.id';
-                if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
-                $sql.=' group by s.name, s.id';
-                $qr = $db->query($sql, $wp);
-                
-                // ---- debug                
-                $this->res->query = $sql;
-                
-                $data = array();
-                
-                while ($r=$db->fetchSingle($qr)) 
-                { 
-                  if (!isset($r->x)) 
-                    $r->x = setSICValue($db, $r->sic, $params->xaxis, $wp, $wh, $minyear, $maxyear);
-                  else  $r->x *= 1.0;
-                  
-                  if (!isset($r->y)) 
-                    $r->y = setSICValue($db, $r->sic, $params->yaxis, $wp, $wh, $minyear, $maxyear);
-                  else  $r->y *= 1.0;
-                  // unset($r->sic);
-                  $data[] = $r;
-                }
-                $this->res->xdata = $data;
-             }
-             $qr = $db->query('select count(*) from tmp_selected_sics');             
-             $this->res->tmpcount = $db->fetchSingleValue($qr);
-             
-             $this->res->xtitle = $titles[$params->xaxis];
-             $this->res->ytitle = $titles[$params->yaxis];
-        }
-        echo json_encode($this->res); 
+      echo json_encode($this->res);
+      
+      echo json_encode($this->res); 
     }
-    
+
     
     function ajxGetMaxYear()
     {   $db = $this->cfg->db;
