@@ -13,7 +13,7 @@
         <div class="col-lg-4"></div>
     </div>
     <div class="row">
-        <?php $list = 'tsales:Total sales;top3sum:% top 3;top5sum:% top 5;stability:Stability;asales_growth:Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed'; ?>
+        <?php $list = 'tsales:Total sales;top3sum:% top 3;top5sum:% top 5;stability:Stability;asales_growth:Sales growth;aroic:ROIC;ape:PE;aevebitda:EVBIDTA;apayout:Payout;previewed:% reviewed'; ?>
         <div class="col-lg-4"><?=$f->listSelect('x-axis',$list)?></div>
         <div class="col-lg-4"><?=$f->listSelect('y-axis',$list)?></div>
         <div class="col-lg-4">

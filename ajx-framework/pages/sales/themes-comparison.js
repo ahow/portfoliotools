@@ -41,7 +41,7 @@ $(function(){
                 d.xdata.push({name:r.name,x:1.0*r[x],y:1.0*r[y]});
             }
             
-            console.log(d);
+            // console.log(d);
 
             last_data = d;
             
