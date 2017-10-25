@@ -1,4 +1,5 @@
 *.log
+google*.htm*
 /config.php
 /log/*.log
 /uploads/*.*
