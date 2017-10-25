@@ -15,6 +15,7 @@ drop procedure if exists get_topN_by_sic_years;
 drop procedure if exists get_calc_by_years;
 drop procedure if exists select_sics_by_themes;
 drop procedure if exists selectCustomSics;
+drop procedure if exists sales_growth_by_year;
 
 delimiter $$
 -- This procedure must be loaded after uploading of divdetails
@@ -469,6 +470,74 @@ begin
 end $$
 
 
+create procedure sales_growth_by_year(I_max_year integer, I_region varchar(255))
+begin
+     DROP TABLE IF EXISTS tmp_vsum_by_cid_sic_year;
+     
+     CREATE TEMPORARY TABLE
+IF NOT EXISTS tmp_vsum_by_cid_sic_year 
+(syear integer not null, cid varchar(16) NOT NULL, sic integer NOT NULL,
+v double not null);
+     
+     insert into tmp_vsum_by_cid_sic_year
+select 
+    d.syear,
+    d.cid,
+    d.sic,
+    sum(d.sales)
+from sales_divdetails d
+   join sales_companies c on  d.cid = c.cid
+   join tmp_selected_sics ss on d.sic=ss.sic
+where  d.sales is not null 
+   and d.syear in (I_max_year-1, I_max_year)
+   and (I_region='' or I_region='Global' or c.region=I_region)
+group by d.syear, d.cid, d.sic
+having sum(d.sales)>0;
+
+    DROP TABLE IF EXISTS tmp_sales_growth_by_sic_year;
+    
+    CREATE TEMPORARY TABLE
+    IF NOT EXISTS tmp_sales_growth_by_sic_year
+    (syear integer not null, sic integer NOT NULL,
+    v double not null);
+
+    insert into tmp_sales_growth_by_sic_year
+select 
+    r2.syear,
+    r2.sic,
+    sum(gv*r2.v)/sum(r2.v) as v
+from
+(   select 
+      r.syear,
+      r.cid,
+      r.sic,
+      r.v,
+      100*(r.v/t.v-1) as gv
+    from
+    (select 
+        d.syear,
+        d.cid,
+        d.sic,
+        sum(d.sales) as v    
+    from sales_divdetails d
+       join sales_companies c on  d.cid = c.cid
+       join tmp_selected_sics ss on d.sic=ss.sic
+    where  d.sales is not null
+        and d.syear in (I_max_year-1, I_max_year)
+        and (I_region='' or I_region='Global' or c.region=I_region) 
+    group by d.syear, d.cid, d.sic
+    having sum(d.sales)>0
+    ) as r
+    join tmp_vsum_by_cid_sic_year t 
+        on t.syear=r.syear-1 
+        and t.cid=r.cid
+        and t.sic=r.sic
+) as r2
+group by 1,2
+order by 2, 1 desc;
+
+end $$
+
 /*
 call selected_sics_by...
 before using
@@ -509,6 +578,9 @@ begin
     DECLARE L_top5sum DOUBLE;
     DECLARE L_previewed DOUBLE;
     DECLARE L_stability DOUBLE;
+  
+    -- create tmp_sales_growth_by_sic_year
+    call sales_growth_by_year(I_max_year,I_region);
   
     -- select procent of revieved
     select 
@@ -562,6 +634,8 @@ begin
       p.sic,
       st.stability,
       sum(d.sales) as tsales,
+--      sum(c.sales_growth*p.psale*t.sales)/sum(p.psale*t.sales) as asales_growth,
+      gr.v as sales_growth,
       sum(c.sales_growth*p.psale*t.sales)/sum(p.psale*t.sales) as asales_growth,
       sum(c.roic*p.psale*t.sales)/sum(p.psale*t.sales) as aroic,
       sum(c.pe*p.psale*t.sales)/sum(p.psale*t.sales) as ape,
@@ -573,9 +647,10 @@ begin
     join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
     join sales_companies_totals t on d.cid=t.cid
     join tmp_stabilities st on p.sic=st.sic
+    left outer join tmp_sales_growth_by_sic_year gr on p.sic=gr.sic
     where d.syear=I_max_year and d.sales>0
     and (I_region='' or I_region='Global' or c.region=I_region)
-    group by d.sic, st.stability
+    group by d.sic, p.sic, st.stability, gr.v
     ) as st;
 
 end $$

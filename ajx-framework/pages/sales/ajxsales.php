@@ -379,7 +379,7 @@ order by 3 desc,4 desc";
              ($this->res->lrows=$this->SumBySumCalculation(post('lhs')))===false
            )
         {   $qr = $db->query('call summary_by_sics_by_years(:lhs,:region)',  
-              $this->getPostParams('lhs,region'));
+            $this->getPostParams('lhs,region'));
             
             $this->res->lrows = $qr->fetchAll(PDO::FETCH_OBJ);
             $qr->closeCursor();
@@ -1016,7 +1016,7 @@ group by r.syear", $this->getPostParams('region'));
             )
             {
                 $qr2 = $db->query('call summary_by_sics_by_years(:rhs,:region)',  
-                  $this->getPostParams('rhs,region'));
+                $this->getPostParams('rhs,region'));
                 $this->res->rrows = $qr2->fetchAll(PDO::FETCH_OBJ);
                 $qr2->closeCursor();
             }
