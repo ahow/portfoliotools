@@ -578,9 +578,7 @@ begin
     DECLARE L_top5sum DOUBLE;
     DECLARE L_previewed DOUBLE;
     DECLARE L_stability DOUBLE;
-  
-    -- create tmp_sales_growth_by_sic_year
-    call sales_growth_by_year(I_max_year,I_region);
+    DECLARE L_sales_growth DOUBLE;
   
     -- select procent of revieved
     select 
@@ -612,6 +610,15 @@ begin
         on p.syear=t.syear and p.sic=t.sic
     group by p.syear into L_top5sum;
      
+    -- Sales growth 
+    call sales_growth_by_year(I_max_year,I_region);
+    select sum(p.v*t.tsum)/sum(t.tsum) as v        
+    from tmp_sales_growth_by_sic_year p
+    join tmp_total_sic_tsales_by_years t
+        on p.syear=t.syear and p.sic=t.sic
+    group by p.syear into L_sales_growth;
+     
+     
     -- select stability
     call get_sics_stabilities(I_max_year, I_region);
     --call get_stability(I_max_year, I_region, L_stability);
@@ -623,7 +630,7 @@ begin
       L_top5sum as top5sum,
       sum(st.tsales*st.stability)/sum(st.tsales) as stability,
       sum(st.tsales) as tsales,
-      sum(st.tsales*st.asales_growth)/sum(st.tsales) as asales_growth,
+      L_sales_growth as asales_growth,
       sum(st.tsales*st.aroic)/sum(st.tsales) as aroic,
       sum(st.tsales*st.ape)/sum(st.tsales) as ape,
       sum(st.tsales*st.aevebitda)/sum(st.tsales) as aevebitda,
@@ -634,9 +641,6 @@ begin
       p.sic,
       st.stability,
       sum(d.sales) as tsales,
---      sum(c.sales_growth*p.psale*t.sales)/sum(p.psale*t.sales) as asales_growth,
-      gr.v as sales_growth,
-      sum(c.sales_growth*p.psale*t.sales)/sum(p.psale*t.sales) as asales_growth,
       sum(c.roic*p.psale*t.sales)/sum(p.psale*t.sales) as aroic,
       sum(c.pe*p.psale*t.sales)/sum(p.psale*t.sales) as ape,
       sum(c.evebitda*p.psale*t.sales)/sum(p.psale*t.sales) as aevebitda,
@@ -646,11 +650,10 @@ begin
     join tmp_selected_sics ss on d.sic=ss.sic
     join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
     join sales_companies_totals t on d.cid=t.cid
-    join tmp_stabilities st on p.sic=st.sic
-    left outer join tmp_sales_growth_by_sic_year gr on p.sic=gr.sic
+    join tmp_stabilities st on p.sic=st.sic    
     where d.syear=I_max_year and d.sales>0
     and (I_region='' or I_region='Global' or c.region=I_region)
-    group by d.sic, p.sic, st.stability, gr.v
+    group by d.sic, p.sic, st.stability
     ) as st;
 
 end $$
