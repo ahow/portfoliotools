@@ -119,7 +119,14 @@
                $this->cfg->addJs('/html.php/pages/sales','portfolio-snapshot.js');
            break;
            case 'thematic-industry-comparison':
-           
+               $this->cfg->addJs('/js','bootstrap-slider.js');
+               $this->cfg->addJs('/js', 'loadingoverlay.min.js');
+               $this->cfg->addCSS('/css','bootstrap-slider.css');
+               $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
+               $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
+               $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
+               $this->cfg->addJs('/html.php/pages/sales','lookup.js');
+               $this->cfg->addJs('/html.php/pages/sales','thematic-industry-comparison.js');
            break;
            default: $this->cfg->addJs('/html.php/pages/sales','inittable.js');               
        }
