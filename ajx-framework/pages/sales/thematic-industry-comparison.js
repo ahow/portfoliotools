@@ -1,5 +1,8 @@
+
 $(function(){
-    
+   
+    var dsic, dsubsec, last_id, last_data = null;
+     
     function toFloat(v, decimals)
     { var n = 1.0*v;            
       if (isNaN(n) || v==null)
@@ -7,34 +10,114 @@ $(function(){
       }
       return n.toFixed(decimals);
     }
-   
-   
-
-    function drawThemes(d)
-    {  $('div.p-chart').css('display','');
-       var selector='#summary';
-       var s = '<table class="table table-striped">';
-        total = 0.0;
-        s+='<tr><th>Theme</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
-        for (var i=0; i<d.rows.length; i++)
-        {   var r = d.rows[i];
-            if (r!=undefined)
-            {  // s+='<tr><td>'+$('#themes option[value="'+r.theme_id+'"]').html()+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
-                 s+='<tr><td>'+r.name+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
-                +toFloat(r.top3sum, 0)+'</td><td>'
-                +toFloat(r.top5sum, 0)+'</td><td>'
-                +toFloat(r.stability, 1)+'</td><td>'+toFloat(r.asales_growth,1)+'</td><td>'
-                +toFloat(r.aroic,1)+'</td><td>'+toFloat(r.ape,1)+'</td><td>'
-                +toFloat(r.aevebitda,1)+'</td><td>'+toFloat(r.apayout,1)+'</td><td>'
-                +toFloat(r.previewed,0)+'</td></tr>';
-            }
-        }
-        s+='</table>';
-        $(selector).html(s);
-    }
     
+        
+   function print()
+   { fprint.title.value = 'Industry analysis';
+     fprint.svg.value = $('#container svg').get(0).outerHTML;
+     fprint.submit();
+   }
    
-    $('.bs-model-select').each(function(i,e){
+   
+    function reloadChartData()
+    { 
+        var range = $('#theme_range').val().split(',');
+        var tnames = [,'SIC','Subsector'];
+        
+        ajx('/pages/sales/ThemesComparison',{region:$('#region').val(),
+            theme_min:range[0], theme_max:range[1],
+            theme_id:$('#themes').val(),
+            xaxis:$('#x-axis').val(),
+            yaxis:$('#y-axis').val()
+        }, function(d){
+            
+            var x = $('#x-axis').val();
+            var y = $('#y-axis').val();
+            d.xtitle = $('#x-axis option[value="'+x+'"]').html();
+            d.ytitle = $('#y-axis option[value="'+y+'"]').html();
+            d.xdata = [];
+            for (var i=0; i<d.rows.length; i++)
+            {   var r = d.rows[i];                
+                d.xdata.push({name:r.name,x:1.0*r[x],y:1.0*r[y]});
+            }
+            
+            // console.log(d);
+
+            last_data = d;
+            
+            var param = {
+                chart: {
+                    type: 'scatter',            
+                    zoomType: 'xy'
+                },
+                title: {
+                    text: d.xtitle+' Versus '+d.ytitle
+                },
+                xAxis: {
+                    title: {
+                        enabled: true,
+                        text: d.xtitle
+                    },
+                    startOnTick: true,
+                    endOnTick: true,
+                    showLastLabel: true
+                },
+                yAxis: {
+                    title: {
+                        text: d.ytitle
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    x: 100,
+                    y: 70,
+                    floating: true,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+                    borderWidth: 1
+                },
+                plotOptions: {
+                    scatter: {
+                        marker: {
+                            radius: 5,
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    lineColor: 'rgb(100,100,100)'
+                                }
+                            }
+                        },
+                        states: {
+                            hover: {
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{point.key}</b><br>',
+                            pointFormat: d.xtitle+': {point.x:.2f}, '+d.ytitle+': {point.y:.2f}'
+                        }
+                    },
+                    series:{  turboThreshold:150000 }
+                },
+                series: [{
+                    name: tnames[$('#sic_subsector').val()],
+                    color: 'rgba(03, 83, 223, .5)',
+                    data: d.xdata
+                }]
+            };
+             
+            Highcharts.chart('container', param);
+            $('.b-print').attr('disabled', false);
+            $('.b-csv').attr('disabled', false);
+        });
+       
+    }
+
+
+$('.bs-model-select').each(function(i,e){
         var sel = $(e);
         var model = sel.attr('data-model')+'/load';
         var firstOption = sel.attr('data-option');        
@@ -52,47 +135,18 @@ $(function(){
     });
     
    //  var sic_subsector = new lookupInput('#sic_subsector','/pages/sales/Model/sic_subsector-lookup/load');     
-    var dsic, dsubsec, last_sic = null;
+   
     var views = new htviewCached();
     
-    function drawDebug(d)
-    {   if (d.dbg!=undefined)
-        { $('#debug').html('<pre>'+d.dbg+'</pre>')
-        }
-    }
-    
-    function loadThemesSummary()
-    {   $("#mranking").LoadingOverlay("show");
-        var range = $('#theme_range').val().split(',');
-        ajx('/pages/sales/ThemesSummary',{region:$('#region').val(),
-            theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val()
-        },function(d){
-               drawThemes(d);
-               drawDebug(d);
-               $("#mranking").LoadingOverlay("hide", true);
-       });
-    }
-        
-    views.view('/pages/sales/search','#search_sic', function(){        
-        dsic = new searchDialog('#search_sic', "/pages/sales/Model/sic",'Search SIC');
-        dsic.select(function(sr, target){
-            $('#sic_code input').val(sr.name);
-            $('#subsec input').val('');
-            last_sic = sr.id;
-            loadSIC(last_sic);
-        });
-        
-        $('#sic_code button').click(function(){
-            dsic.open();
-        });
-    });
+    $("input.bs-range").slider({});
 
     views.view('/pages/sales/search','#search_subsec', function(){        
         dsubsec = new searchDialog('#search_subsec', "/pages/sales/Model/subsector",'Search Subsector');
         dsubsec.select(function(sr, target){
             $('#subsec input').val(sr.subsector);            
             $('#sic_code input').val('');
-            loadSubsector(sr.id);
+            select_mode='Subsector';
+            last_id = sr.id;            
         });
         
         $('#subsec button').click(function(){            
@@ -100,261 +154,22 @@ $(function(){
         });
     });    
     
-    $('#year').val(new Date().getFullYear()-1);
-    
-    $('#region').click(function(){
-        // if ($('#subsec input').val()!='') loadSubsector( $('#subsec input').val() );
-        // if (last_sic!=null &&  $('#sic_code input').val()!='') loadSIC( last_sic );
-    });
 
-    $('.b-summary').click(function(){
-        loadThemesSummary();
-    });
-
-
-    
-    // Range slider setup
- 
-    function onChanheVal(onChange)
-    {   var val = '';
-        var fu = onChange;
-        
-        function check(e)
-        { var v = $(e.target).val();
-          if (v!=val)
-          {  if (fu!=undefined) fu(e.target);
-             val = v;
-          }
-        }
-        return {check:check};
-    }
-           
-    $("input.bs-range").slider({});
-    
-    
-    
-    $('#sic_id button').click(function(){
-        var val = $('#sic').val();
-        ajx('/pages/sales/Model/sic/row',{id:val},function(d){
-            if (d.row!==false)
-            {  $('#sic_description').html(d.row.name+'<br>'+d.row.description);
-               var year = $('#year').val();
-               var region = $('#region').val();
-               var params = {sic:val,year:year,region:region};
-               var minsize = $('#minsize').val();
-               if (minsize!='') params.min_size = minsize;
-               ajx('/pages/sales/MarketRanking',params,function(d){                   
-                   var years = {};
-                   var ytotal = {};
-                   var t;
-                   for (var i=0; i<d.rows.length; i++)
-                   { var r = d.rows[i];
-                     r.tsales=1.0*r.tsales;
-                     t = r.tsales;
-                     if (ytotal[r.syear]==undefined) ytotal[r.syear]=0.0;
-                     if (t>0.0) ytotal[r.syear]+=t;
-                     
-                     if (r.syear!=year)
-                     { if (years[r.syear]==undefined) years[r.syear]={};
-                       years[r.syear][r.cid] = r.tsales;
-                       delete d.rows[i];
-                     }                     
-                   }
-                   
-                   var y1 = year-1;
-                   var y2 = year-2;
-                   
-                   for (var i=0; i<d.rows.length; i++)
-                   {  var r = d.rows[i];
-                      if (r!=undefined)
-                      {   if (years[y1]!=undefined && years[y1][r.cid]!=undefined) 
-                            d.rows[i].y1 = years[y1][r.cid];
-                          else d.rows[i].y1 = null;
-                          
-                          if (years[y2]!=undefined && years[y2][r.cid]!=undefined) 
-                            d.rows[i].y2 = years[y2][r.cid];
-                          else d.rows[i].y2 = null;
-                          
-                          if (r.tsales>=0.0) r.psale = ((r.tsales / ytotal[year])*100.0).toFixed(2);
-                          else r.psale=null;
-                          
-                          if (r.y1>=0.0) r.psaleY1 = ((r.y1 / ytotal[y1])*100.0).toFixed(2);
-                          else r.psaleY1=null;
-                          
-                          if (r.y2>=0.0) r.psaleY2 = ((r.y2 / ytotal[y2])*100.0).toFixed(2);
-                          else r.psaleY2=null;
-                          
-                      }
-                   }
-                   
-                   drawRanking('#ranking',d, ytotal);
-                                      
-               });
-               
-            } else 
-            { $('#sic_description').html('<div class="alert alert-warning">SIC code not found!</div>');
-              $('#ranking').html('');
-            }
-        });
-    });
-    
-    $('.b-debug').click(function(){
-            $('#debug').css('display','');
-    });
-    
-    /* ------------------ Chart ---------------------------*/
-    
-     function drawChart(d)
-    {   Highcharts.chart('chart', {
-            chart: {
-                zoomType: 'xy'
-            },
-            title: {
-                text: d.title
-            },
-            xAxis: [{
-                categories: d.categories,
-                crosshair: true
-           }],
-            yAxis: [{ // Primary yAxis
-                title: {
-                    text: d.nameL,
-                },
-                opposite: false
-
-            }, 
-            { // Secondary yAxis
-                gridLineWidth: 0,
-                title: {
-                    text: d.nameR
-                },
-                labels: {
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    }
-                },
-                opposite: true
-            }],
-            tooltip: {
-                shared: true
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'left',
-                x: 80,
-                verticalAlign: 'top',
-                y: 55,
-                floating: true,
-                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-            },
-            series: [{
-                name: d.nameL,
-                type: 'spline',
-                yAxis: 0,
-                data: d.data[0],
-                marker: {
-                    enabled: true
-                }
-            }, {
-                name: d.nameR,
-                type: 'spline',
-                yAxis: 1,
-                data: d.data[1],
-                marker: {
-                    enabled: true
-                }
-            }]
-        });
-    }
-   
-    var sic_totals = null;
-    
-    function drawSicTotals2(dd,lp,rp)
-    {   var d = {l:[],r:[]};
-        var categories = [];
-        var yr_idx = {};
-        var yr;
-        var min = Number.MAX_VALUE;
-        var max = Number.MIN_VALUE;        
-        
-        for (var i=0; i<dd.lrows.length;i++) 
-        {  var r = dd.lrows[i];
-           var y = 1*r.syear;
-           if (r[lp]!=undefined) dd.lrows[i].v = r[lp];
-           if (y > 0)  
-           {  if (min>y) min=y;
-              if (max<y) max=y;
-           }
-        }
-        for (var i=0; i<dd.rrows.length;i++) 
-        {  var r = dd.rrows[i];
-           var y = 1*r.syear;
-           if (r[rp]!=undefined) dd.rrows[i].v = r[rp];
-           if (y > 0)  
-           {  if (min>y) min=y;
-              if (max<y) max=y;
-           }
-        }
-        var n=0;
-        for (var i=min; i<=max;i++)
-        { categories.push(i);
-          yr_idx[i]=n;
-          d.l[n]=null;
-          d.r[n]=null;
-          n++;
-        }
-        
-        function to_n(v)
-        { if (v==null) return v;
-          return 1.0*v;
-        }
-
-        for (var i=0; i<dd.lrows.length;i++) 
-        {  var r = dd.lrows[i];
-           if (1*r.syear > 0) 
-           {   d.l[ yr_idx[r.syear] ] = to_n(r.v);
-           }
-        }
-        
-        for (var i=0; i<dd.rrows.length;i++) 
-        {  var r = dd.rrows[i];
-           if (1*r.syear > 0) 
-           {   d.r[ yr_idx[r.syear] ] = to_n(r.v);
-           }
-        }
-
-        var lv = $('#LHS').val();
-        var rv = $('#RHS').val();
-        
-		var tl = $('#LHS [value="'+lv+'"]').html();
-        var tr = $('#LHS [value="'+rv+'"]').html();
-        
-        drawChart({title:tl+' vs '+tr, nameL:tl, nameR:tr, categories:categories, data:[d.l, d.r] });		
-    }
-        
     $('.b-vchart').click(function(){
-		
-		// var l = (1*$('#LHS').val())-1;
-        // var r = (1*$('#RHS').val())-1;
-        
-		if ($('#sic_code input').val()!='')
-		{	
-			//if (sic_totals==null)
-			//{ 
-            var lp= $('#LHS').val();
-            var rp= $('#RHS').val();
-            var range = $('#theme_range').val().split(',');
-			ajx('/pages/sales/ThemesSummarySicTotals',{region:$('#region').val(),
-            theme_min:range[0], theme_max:range[1], theme_id:$('#themes').val(),
-            lhs:lp, rhs:rp},
-                function(d){
-					   sic_totals = d.rows;
-					   drawSicTotals2(d,lp,rp)
-				});
-			//} else drawSicTotals(l,r);
-	    }
-       
-       
+        reloadChartData();
     });
+    
+     $('.b-csv').click(function(){
+        var d = last_data;
+        var csv = '"Name","'+d.xtitle+'","'+d.ytitle+"\"\n";
+        for (var i=0; i<d.xdata.length; i++)
+        {   var r = d.xdata[i];
+            csv+='"'+r.name.replace("\n",'\\n').replace('"','\"')+'",'+r.x+','+r.y+"\n";
+        }
+        download(csv,'industry_analisys.csv');
+     });
+    
+    $('.b-print').click(print);
+
     
 });
