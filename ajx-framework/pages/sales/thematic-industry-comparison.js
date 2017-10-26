@@ -24,7 +24,7 @@ $(function(){
         var range = $('#theme_range').val().split(',');
         var tnames = [,'SIC','Subsector'];
         
-        ajx('/pages/sales/ThemesComparison',{region:$('#region').val(),
+        ajx('/pages/sales/ThematicIndustryComparison',{region:$('#region').val(),
             theme_min:range[0], theme_max:range[1],
             theme_id:$('#themes').val(),
             xaxis:$('#x-axis').val(),
@@ -35,12 +35,6 @@ $(function(){
             var y = $('#y-axis').val();
             d.xtitle = $('#x-axis option[value="'+x+'"]').html();
             d.ytitle = $('#y-axis option[value="'+y+'"]').html();
-            d.xdata = [];
-            for (var i=0; i<d.rows.length; i++)
-            {   var r = d.rows[i];                
-                d.xdata.push({name:r.name,x:1.0*r[x],y:1.0*r[y]});
-            }
-            
             // console.log(d);
 
             last_data = d;

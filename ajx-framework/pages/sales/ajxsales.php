@@ -1944,6 +1944,76 @@ join sales_sic s on t.sic=s.id';
       $this->res->rows = $rows;
       echo json_encode($this->res); 
     }
+    
+    // $f could be: tsales, roic, pe, evebitda, payout
+    function calcSicValues($f)
+    {  $db = $this->cfg->db;
+       if ($f=='tsales') $f='sales';
+       if ($f=='sales') $st = 'sum(d.sales) as v ';
+       else $st = " sum(c.$f*p.psale*t.sales)/sum(p.psale*t.sales) as v ";
+       $qr = $db->query("select 
+      d.syear,
+      p.sic,
+      $st
+    from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+    where d.sales>0
+     and (:region='' or :region='Global' or c.region=:region) 
+     and (d.syear=@max_year)
+    group by d.syear, d.sic", 
+          $this->getPostParams('region'));
+       return $qr->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    function ajxThematicIndustryComparison()
+    {  $params = (object)$_POST;
+       $db = $this->cfg->db;
+       
+       $db->query('call select_sics_by_themes(:theme_id,:theme_min,:theme_max)', 
+                $this->getPostParams('theme_min,theme_max,theme_id'));
+       $db->query('select max(syear) from sales_divdetails into @max_year');
+       
+       function calcByParam($ctx, $f)
+       {   switch ($f)
+           {   case 'tsales':
+               case 'roic':
+               case 'pe':
+               case 'evebitda':
+               case 'payout':
+                  return $ctx->calcSicValues($f);
+               break;               
+           }
+       }
+       
+       $data = array();
+       $x = calcByParam($this, post('xaxis'));
+       $y = calcByParam($this, post('yaxis'));
+        
+       foreach($x as $r)
+       { $data[$r->sic] = new stdClass();
+         $data[$r->sic]->x = 1.0*$r->v;   
+       }
+       foreach($y as $r)
+       { if (!isset($data[$r->sic]))
+         { $data[$r->sic] = new stdClass();
+           $data[$r->sic]->x = null;   
+         }          
+         $data[$r->sic]->y = 1.0*$r->v;   
+       }
+       $xdata = array();
+       foreach ($data as $k=>$r) 
+       { $n = new stdClass();
+         $n->name = $k;
+         $n->x = $r->x;
+         $n->y = $r->y;
+         $xdata[] = $n;
+       }
+       $this->res->xdata = $xdata;
+       echo json_encode($this->res); 
+    }
 
     
     function ajxGetMaxYear()

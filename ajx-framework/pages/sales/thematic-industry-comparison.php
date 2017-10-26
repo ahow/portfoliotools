@@ -8,12 +8,21 @@
 ?>
 <div id="mranking">
     <div class="row">        
+        <div class="col-lg-4"><?=$f->modelSelect('themes','/pages/sales/ModelThemes','')?></div>
         <div class="col-lg-4"><?=$f->range('theme_range',-2,2)?></div>
-        <div class="col-lg-4"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
-        <div class="col-lg-4"></div>
+        <div class="col-lg-3"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>        
     </div>
     <div class="row">
-        <?php $list = 'tsales:Total sales;top3sum:% top 3;top5sum:% top 5;stability:Stability;asales_growth:Sales growth;aroic:ROIC;ape:PE;aevebitda:EVBIDTA;apayout:Payout;previewed:% reviewed'; ?>
+        <?php 
+           $list = 'tsales:Total sales;top3:% top 3;top5:% top 5;'
+           .'stability:Stability;roic:ROIC;pe:PE;evebitda:EVBIDTA;'
+           .'payout:Payout;y3sales:3yr Sales growth;y3ebit:3yr EBIT growth;'
+           .'y3assets:3yr Asset growth;y3capex:3yr Capex growth;'
+           .'grwsales:Sales growth;grwebit:EBIT growth;'
+           .'grwassets:Asset growth;grwcapex:Capex growth;'
+           .'ebit-by-assets:ROA;capex-by-assets:Capex intensity;'
+           .'sales-by-assets:Asset turnover';
+         ?>        
         <div class="col-lg-4"><?=$f->listSelect('x-axis',$list)?></div>
         <div class="col-lg-4"><?=$f->listSelect('y-axis',$list)?></div>
         <div class="col-lg-4">
