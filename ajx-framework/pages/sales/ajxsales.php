@@ -2012,6 +2012,14 @@ join sales_sic s on t.sic=s.id';
       $qr = $db->query("select syear, sic, proc as v from tmp_totalN_by_sic_years");
       return $qr->fetchAll(PDO::FETCH_OBJ);      
     }
+
+    function themesIndustryStabilities()
+    { $db = $this->cfg->db;
+      $db->query("call get_sics_stabilities(@max_year,:region)",
+           $this->getPostParams('region'));
+      $qr = $db->query("select sic, stability as v from tmp_stabilities");
+      return $qr->fetchAll(PDO::FETCH_OBJ);     
+    }
         
     function ajxThematicIndustryComparison()
     {  $params = (object)$_POST;
@@ -2035,6 +2043,9 @@ join sales_sic s on t.sic=s.id';
                break;
                case 'top5':
                   return $ctx->themesIndustryTopN(5);
+               break;
+               case 'stability':
+                  return $ctx->themesIndustryStabilities();
                break;
                default:
                  if (($r=$ctx->themesIndustryGrowth($f))!==false) return $r;
