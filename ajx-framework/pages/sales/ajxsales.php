@@ -775,7 +775,7 @@ order by 2, 1 desc", $this->getPostParams('region'));
    }
 
     // field can takes values: ebit sales capex assets 
-   function prepareGrowthsCalcBySics($field)
+   function prepareGrowthsCalcBySics($field, $year='NULL')
    {  $db = $this->cfg->db;
       $db->query('DROP TABLE IF EXISTS tmp_vsum_by_cid_sic_year');
       $db->query('CREATE TEMPORARY TABLE
@@ -793,6 +793,7 @@ from sales_divdetails d
    join tmp_selected_sics ss on d.sic=ss.sic
 where  d.$field is not null
    and (:region='' or :region='Global' or c.region=:region)
+   and ($year is NULL or d.syear=$year or d.syear=$year-1)
 group by d.syear, d.cid, d.sic
 having sum(d.$field)>0", $this->getPostParams('region'));
 
@@ -825,6 +826,7 @@ from
        join tmp_selected_sics ss on d.sic=ss.sic
     where  d.$field is not null
         and (:region='' or :region='Global' or c.region=:region)    
+        and ($year is NULL or d.syear=$year)
     group by d.syear, d.cid, d.sic
     having sum(d.$field)>0
     ) as r
@@ -838,7 +840,7 @@ order by 2, 1 desc", $this->getPostParams('region'));
    }
    
    // field can takes values: ebit sales capex assets 
-   function prepare3yrGrowthsCalcBySics($field)
+   function prepare3yrGrowthsCalcBySics($field, $year='NULL')
    {  $db = $this->cfg->db;
       $db->query('DROP TABLE IF EXISTS tmp_vsum_by_cid_sic_year');
       $db->query('CREATE TEMPORARY TABLE
@@ -856,6 +858,7 @@ from sales_divdetails d
    join tmp_selected_sics ss on d.sic=ss.sic
 where  d.$field is not null
    and (:region='' or :region='Global' or c.region=:region)
+   and ($year is NULL or d.syear=$year or d.syear=$year-3)
 group by d.syear, d.cid, d.sic
 having sum(d.$field)>0", $this->getPostParams('region'));
 
@@ -882,7 +885,8 @@ v double not null,gv double)');
        join sales_companies c on  d.cid = c.cid
        join tmp_selected_sics ss on d.sic=ss.sic
     where  d.$field is not null
-        and (:region='' or :region='Global' or c.region=:region)    
+        and (:region='' or :region='Global' or c.region=:region)
+        and ($year is NULL or d.syear=$year)
     group by d.syear, d.cid, d.sic
     having sum(d.$field)>0
     ) as r
@@ -1968,6 +1972,24 @@ join sales_sic s on t.sic=s.id';
        return $qr->fetchAll(PDO::FETCH_OBJ);
     }
     
+    function themesIndustryGrowth($hs)
+    {  if (strpos($hs,'grw')!==0) return false;
+       $f =  substr($hs,3);       
+       $db = $this->cfg->db;
+       $this->prepareGrowthsCalcBySics($f, '@max_year');
+       $qr = $db->query("select * from tmp_values_by_sic_year");
+       return $qr->fetchAll(PDO::FETCH_OBJ);        
+    }
+
+    function themesIndustry3yrGrowth($hs)
+    {  if (strpos($hs,'y3')!==0) return false;
+       $f =  substr($hs,2);       
+       $db = $this->cfg->db;
+       $this->prepare3yrGrowthsCalcBySics($f, '@max_year');
+       $qr = $db->query("select * from tmp_values_by_sic_year");
+       return $qr->fetchAll(PDO::FETCH_OBJ);        
+    }
+        
     function ajxThematicIndustryComparison()
     {  $params = (object)$_POST;
        $db = $this->cfg->db;
@@ -1984,8 +2006,12 @@ join sales_sic s on t.sic=s.id';
                case 'evebitda':
                case 'payout':
                   return $ctx->calcSicValues($f);
-               break;               
+               break; 
+               default:
+                 if (($r=$ctx->themesIndustryGrowth($f))!==false) return $r;
+                 else if (($r=$ctx->themesIndustry3yrGrowth($f))!==false) return $r;                 
            }
+           return array();
        }
        
        $data = array();
