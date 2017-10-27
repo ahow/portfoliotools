@@ -707,7 +707,7 @@ and id<>9999;');
 
 
    // Sum divided by sum  calculation
-   function prepareSumBySumCalcBySics($f1, $f2)
+   function prepareSumBySumCalcBySics($f1, $f2, $year='NULL')
    {  $db = $this->cfg->db;
       $db->query('DROP TABLE IF EXISTS tmp_ebit_sum_by_cid_sic_year');
       $db->query('CREATE TEMPORARY TABLE
@@ -726,6 +726,7 @@ from sales_divdetails d
    join tmp_selected_sics ss on d.sic=ss.sic
 where  d.$field is not null
    and (:region='' or :region='Global' or c.region=:region)
+   and ($year is NULL or d.syear=$year)
 group by d.syear, d.cid, d.sic
 having sum(d.$field)>0", $this->getPostParams('region'));
 
@@ -746,6 +747,7 @@ from sales_divdetails d
    join tmp_selected_sics ss on d.sic=ss.sic
 where  d.$field is not null
    and (:region='' or :region='Global' or c.region=:region)
+   and ($year is NULL or d.syear=$year)
 group by d.syear, d.cid, d.sic
 having sum(d.$field)>0", $this->getPostParams('region'));
      $db->query('DROP TABLE IF EXISTS tmp_values_by_sic_year');
@@ -1980,6 +1982,19 @@ join sales_sic s on t.sic=s.id';
        $qr = $db->query("select * from tmp_values_by_sic_year");
        return $qr->fetchAll(PDO::FETCH_OBJ);        
     }
+    
+    function themesIndustrySumBySum($hs)
+    {
+      if (strpos($hs,'-by-')>0)
+      {  $p = explode('-by-',$hs);
+         $db = $this->cfg->db;
+         $this->prepareSumBySumCalcBySics($p[0], $p[1], '@max_year');
+         $db = $this->cfg->db;
+         $qr = $db->query("select * from tmp_values_by_sic_year");
+         return $qr->fetchAll(PDO::FETCH_OBJ);        
+      }
+      return false;
+    }
 
     function themesIndustry3yrGrowth($hs)
     {  if (strpos($hs,'y3')!==0) return false;
@@ -2009,7 +2024,8 @@ join sales_sic s on t.sic=s.id';
                break; 
                default:
                  if (($r=$ctx->themesIndustryGrowth($f))!==false) return $r;
-                 else if (($r=$ctx->themesIndustry3yrGrowth($f))!==false) return $r;                 
+                 else if (($r=$ctx->themesIndustry3yrGrowth($f))!==false) return $r;
+                 else if (($r=$ctx->themesIndustrySumBySum($f))!==false) return $r;
            }
            return array();
        }
