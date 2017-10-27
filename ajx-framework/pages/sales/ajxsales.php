@@ -2004,7 +2004,7 @@ join sales_sic s on t.sic=s.id';
        $qr = $db->query("select * from tmp_values_by_sic_year");
        return $qr->fetchAll(PDO::FETCH_OBJ);        
     }
-    
+        
     function themesIndustryTopN($n)
     { $db = $this->cfg->db;
       $db->query("call get_topN_by_sic_years($n,@max_year,:region)",
