@@ -2004,6 +2004,14 @@ join sales_sic s on t.sic=s.id';
        $qr = $db->query("select * from tmp_values_by_sic_year");
        return $qr->fetchAll(PDO::FETCH_OBJ);        
     }
+    
+    function themesIndustryTopN($n)
+    { $db = $this->cfg->db;
+      $db->query("call get_topN_by_sic_years($n,@max_year,:region)",
+          $this->getPostParams('region'));
+      $qr = $db->query("select syear, sic, proc as v from tmp_totalN_by_sic_years");
+      return $qr->fetchAll(PDO::FETCH_OBJ);      
+    }
         
     function ajxThematicIndustryComparison()
     {  $params = (object)$_POST;
@@ -2022,6 +2030,12 @@ join sales_sic s on t.sic=s.id';
                case 'payout':
                   return $ctx->calcSicValues($f);
                break; 
+               case 'top3':
+                  return $ctx->themesIndustryTopN(3);
+               break;
+               case 'top5':
+                  return $ctx->themesIndustryTopN(5);
+               break;
                default:
                  if (($r=$ctx->themesIndustryGrowth($f))!==false) return $r;
                  else if (($r=$ctx->themesIndustry3yrGrowth($f))!==false) return $r;
@@ -2033,10 +2047,11 @@ join sales_sic s on t.sic=s.id';
        $data = array();
        $x = calcByParam($this, post('xaxis'));
        $y = calcByParam($this, post('yaxis'));
-        
+               
        foreach($x as $r)
        { $data[$r->sic] = new stdClass();
          $data[$r->sic]->x = 1.0*$r->v;   
+         $data[$r->sic]->y =  null; 
        }
        foreach($y as $r)
        { if (!isset($data[$r->sic]))
