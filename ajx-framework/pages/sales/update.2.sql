@@ -54,14 +54,13 @@ begin
     
     insert into sales_sic_companies_totals
     select 
-        d.cid, d.sic, d.sales/t.sales*100 as psale
+    d.cid, d.sic, sum(d.sales)/t.sales*100 as psale
     from sales_divdetails d 
     join sales_companies c on d.cid=c.cid 
     join sales_companies_totals t on d.cid=t.cid 
     where d.syear=max_year and d.sales>0
-    group by 1,2
+    group by 1,2,t.sales
     having psale is not null;
-
 end $$
 
 -- input:  tmp_selected_sics must exists before call it
