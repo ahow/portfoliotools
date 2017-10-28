@@ -16,6 +16,7 @@ drop procedure if exists get_calc_by_years;
 drop procedure if exists select_sics_by_themes;
 drop procedure if exists selectCustomSics;
 drop procedure if exists sales_growth_by_year;
+drop procedure if exists select_companies_by_theme_range;
 
 delimiter $$
 -- This procedure must be loaded after uploading of divdetails
@@ -452,6 +453,32 @@ begin
         and c.region=I_region
         order by s.id;
     END IF;
+end $$
+
+create procedure select_companies_by_theme_range(I_max_year integer,
+ I_theme_id integer, I_theme_min double, I_theme_max double,
+ I_region varchar(255))
+begin
+    DROP TABLE IF EXISTS tmp_selected_cids;
+    CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_cids (cid varchar(16) NOT NULL);
+      
+    insert into tmp_selected_cids
+    select 
+      c.cid
+    from 
+    ( select syear, cid, sic
+      from sales_divdetails 
+      where sales>0  
+      and (I_max_year is NULL or I_max_year=syear)
+      group by syear, cid, sic 
+    ) as d
+    join sales_companies c on  d.cid = c.cid
+    join sales_sic s on d.sic=s.id
+    join sales_sic_companies_totals t on d.cid=t.cid and d.sic=t.sic
+    where (I_region='' or I_region='Global' or c.region=I_region) 
+    -- and s.id<>9999
+    group by c.cid
+    having sum(CSV_DOUBLE(s.exposure,I_theme_id)*t.psale/100) between I_theme_min and I_theme_max;
 end $$
 
 create procedure select_sics_by_themes(I_theme_id integer, I_theme_min integer, I_theme_max integer)
