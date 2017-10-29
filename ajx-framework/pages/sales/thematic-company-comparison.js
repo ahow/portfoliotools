@@ -24,7 +24,7 @@ $(function(){
         var range = $('#theme_range').val().split(',');
         var tnames = [,'SIC','Subsector'];
         
-        ajx('/pages/sales/ThematicIndustryComparison',{region:$('#region').val(),
+        ajx('/pages/sales/ThematicCompanyComparison',{region:$('#region').val(),
             theme_min:range[0], theme_max:range[1],
             theme_id:$('#themes').val(),
             xaxis:$('#x-axis').val(),

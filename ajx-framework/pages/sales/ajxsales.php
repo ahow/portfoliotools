@@ -2083,6 +2083,93 @@ join sales_sic s on t.sic=s.id';
        echo json_encode($this->res); 
     }
 
+
+    // $f could be: sales, roic, pe, evebitda, payout, reviewed, market_cap
+    function calcCompanyValues($f)
+    {  $db = $this->cfg->db;
+       /*
+       if ($f=='tsales') $f='sales';
+       if ($f=='sales') $st = 'sum(d.sales) as v ';
+       else $st = " sum(c.$f*p.psale*t.sales)/sum(p.psale*t.sales) as v ";
+       */
+       $qr = $db->query("select
+       c.cid, 
+      c.$f as v
+    from sales_companies c
+    join tmp_selected_cids t on c.cid = t.cid    
+    where  (:region='' or :region='Global' or c.region=:region)", 
+          $this->getPostParams('region'));
+       return $qr->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    function ajxThematicCompanyComparison()
+    {  $params = (object)$_POST;
+       $db = $this->cfg->db;
+       
+       $db->query('select max(syear) from sales_divdetails into @max_year');
+       
+       $db->query('call select_companies_by_theme_range(@max_year, :theme_id,:theme_min,:theme_max,:region)', 
+                $this->getPostParams('theme_min,theme_max,theme_id,region'));
+       
+       
+       function calcByParam($ctx, $f)
+       {   switch ($f)
+           {   case 'sales':
+               case 'roic':
+               case 'pe':
+               case 'evebitda':
+               case 'market_cap':
+               case 'reviewed':
+               case 'payout':
+                  return $ctx->calcCompanyValues($f);
+               break; 
+               /*
+               case 'top3':
+                  return $ctx->themesIndustryTopN(3);
+               break;
+               case 'top5':
+                  return $ctx->themesIndustryTopN(5);
+               break;
+               case 'stability':
+                  return $ctx->themesIndustryStabilities();
+               break;
+               default:
+                 if (($r=$ctx->themesIndustryGrowth($f))!==false) return $r;
+                 else if (($r=$ctx->themesIndustry3yrGrowth($f))!==false) return $r;
+                 else if (($r=$ctx->themesIndustrySumBySum($f))!==false) return $r;
+                 */
+           }
+           return array();
+       }
+       
+       $data = array();
+       $x = calcByParam($this, post('xaxis'));
+       $y = calcByParam($this, post('yaxis'));
+               
+       foreach($x as $r)
+       { $data[$r->cid] = new stdClass();
+         $data[$r->cid]->x = 1.0*$r->v;   
+         $data[$r->cid]->y =  null; 
+       }
+       foreach($y as $r)
+       { if (!isset($data[$r->cid]))
+         { $data[$r->cid] = new stdClass();
+           $data[$r->cid]->x = null;   
+         }          
+         $data[$r->cid]->y = 1.0*$r->v;   
+       }
+       $xdata = array();
+       foreach ($data as $k=>$r) 
+       { $n = new stdClass();
+         $n->name = $k;
+         $n->x = $r->x;
+         $n->y = $r->y;
+         $xdata[] = $n;
+       }
+       $this->res->xdata = $xdata;
+       echo json_encode($this->res); 
+    }
+
     
     function ajxGetMaxYear()
     {   $db = $this->cfg->db;
