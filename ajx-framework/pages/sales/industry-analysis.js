@@ -18,6 +18,8 @@ $(function(){
      fprint.submit();
    }
    
+   var arrayList = new arrayListTable('.array-list');
+    
     function reloadChartData()
     {   var prm = {};
         prm.mode = $('#sic_subsector').val();
@@ -31,6 +33,19 @@ $(function(){
         ajx('/pages/sales/IndustryAnalysis',prm,function(d){
             
             last_data = d;
+            var link = "<?php echo mkURL('/sales/sic'); ?>";
+            if (prm.mode !=1) link = "<?php echo mkURL('/sales/companies'); ?>";
+             
+            console.log(d);
+            arrayList.setHeader([
+                    {title:"Name",f:'name', ondraw:function(v, r){ 
+                        return '<a target="_blank" href="'+link+'/'+r.id+'">'+v+'</a>';
+                    }},
+                    {title:d.xtitle, f:'x'},
+                    {title:d.ytitle, f:'y'}]
+            );
+            arrayList.setData(d.xdata);
+            
             
             var param = {
                 chart: {

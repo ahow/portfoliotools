@@ -88,10 +88,11 @@
            case 'industry-analysis':
                 $this->cfg->addJs('/html.php/pages/sales','lookup.js');
                 $this->cfg->addJs('/html.php/pages/sales','download.js');
+                $this->cfg->addJs('/html.php/pages/sales','array-list-table.js');
                 $this->cfg->addJs('/html.php/pages/sales','industry-analysis.js');
                 $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
                 $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
-                $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
+                $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');                
            break;
            case 'themes-comparison':
                $this->cfg->addJs('/js','bootstrap-slider.js');

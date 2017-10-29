@@ -1859,6 +1859,7 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
             
              if ($params->mode==2) // Subsector mode
              {   $flds[]='subsector as name';
+                 $flds[]='cid as id';
                  $sql = "select ".implode(',',$flds).' from sales_companies ';
                  if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
                  $sql.=' group by subsector ';
@@ -1894,6 +1895,7 @@ where d.syear=@maxyear
 group by 1,2');
                 $flds[]='s.name';
                 $flds[]='s.id as sic';
+                $flds[]='s.id';
                 $sql = "select ".implode(',',$flds).' from sales_companies c
 join tmp_cid_sic_proc t on c.cid = t.cid
 join sales_sic s on t.sic=s.id';
