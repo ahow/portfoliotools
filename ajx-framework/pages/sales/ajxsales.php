@@ -2158,14 +2158,27 @@ join sales_sic s on t.sic=s.id';
          }          
          $data[$r->cid]->y = 1.0*$r->v;   
        }
+       
+       $qr = $db->query("select
+       c.cid, c.name       
+    from sales_companies c
+    join tmp_selected_cids t on c.cid = t.cid");
+       
+       while ($r = $db->fetchSingle($qr))
+       {  if (isset($data[$r->cid])) $data[$r->cid]->name = $r->name;
+       }
+       
        $xdata = array();
        foreach ($data as $k=>$r) 
        { $n = new stdClass();
-         $n->name = $k;
+         $n->id = $k;
+         $n->name = $r->name;
          $n->x = $r->x;
          $n->y = $r->y;
          $xdata[] = $n;
        }
+       
+        
        $this->res->xdata = $xdata;
        echo json_encode($this->res); 
     }
