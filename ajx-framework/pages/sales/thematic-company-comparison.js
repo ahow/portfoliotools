@@ -42,8 +42,8 @@ $(function(){
             var link = "<?php echo mkURL('/sales/companies'); ?>";
             
             arrayList.setHeader([
-                    {title:"Name",f:'name', ondraw:function(v){ 
-                        return '<a href="'+link+'/'+v+'">'+v+'</a>';
+                    {title:"Name",f:'name', ondraw:function(v, r){ 
+                        return '<a target="_blank" href="'+link+'/'+r.id+'">'+v+'</a>';
                     }},
                     {title:d.xtitle, f:'x'},
                     {title:d.ytitle, f:'y'}]
