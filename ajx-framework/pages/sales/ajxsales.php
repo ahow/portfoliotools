@@ -1875,6 +1875,9 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
                      $r->y = setSubsectorValue($db, $r->name, $params->yaxis, $wp, $wh, $minyear, $maxyear);
                    else  $r->y *= 1.0;
                    
+                   if ($r->x=='NULL') $r->x=null;
+                   if ($r->y=='NULL') $r->y=null;
+                   
                    $data[] = $r;
                  }
                  $this->res->xdata = $data;
