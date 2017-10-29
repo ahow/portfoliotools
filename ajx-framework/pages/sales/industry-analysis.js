@@ -36,7 +36,6 @@ $(function(){
             var link = "<?php echo mkURL('/sales/sic'); ?>";
             if (prm.mode !=1) link = "<?php echo mkURL('/sales/companies'); ?>";
              
-            console.log(d);
             arrayList.setHeader([
                     {title:"Name",f:'name', ondraw:function(v, r){ 
                         return '<a target="_blank" href="'+link+'/'+r.id+'">'+v+'</a>';

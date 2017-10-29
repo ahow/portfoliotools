@@ -57,5 +57,14 @@ Capex intensity (capex/assets)*/
     </div>
     
 </div>
+
+<div class="array-list">
+    <table class="table table-striped selectable">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+    <div class="list-pager"></div>
+</div>
+
 <div id="search_sic"></div>
 <div id="search_subsec"></div>

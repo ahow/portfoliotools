@@ -1,4 +1,5 @@
 $(function(){
+
     
     function toFloat(v, decimals)
     { var n = 1.0*v;            
