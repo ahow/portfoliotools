@@ -18,7 +18,8 @@ $(function(){
      fprint.submit();
    }
    
-   
+    var arrayList = new arrayListTable('.array-list');
+    
     function reloadChartData()
     { 
         var range = $('#theme_range').val().split(',');
@@ -36,6 +37,17 @@ $(function(){
             d.xtitle = $('#x-axis option[value="'+x+'"]').html();
             d.ytitle = $('#y-axis option[value="'+y+'"]').html();
             // console.log(d);
+
+            var link = "<?php echo mkURL('/sales/sic'); ?>";
+            
+            arrayList.setHeader([
+                    {title:"Name",f:'name', ondraw:function(v, r){ 
+                        return '<a target="_blank" href="'+link+'/'+r.id+'">'+v+'</a>';
+                    }},
+                    {title:d.xtitle, f:'x'},
+                    {title:d.ytitle, f:'y'}]
+            );
+            arrayList.setData(d.xdata);
 
             last_data = d;
             
