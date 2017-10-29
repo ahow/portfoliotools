@@ -18,6 +18,7 @@ $(function(){
      fprint.submit();
    }
    
+   var arrayList = new arrayListTable('.array-list');
    
     function reloadChartData()
     { 
@@ -41,6 +42,13 @@ $(function(){
                 d.xdata.push({name:r.name,x:1.0*r[x],y:1.0*r[y]});
             }
             
+            arrayList.setHeader([
+                    {title:"Name",f:'name'},
+                    {title:d.xtitle, f:'x'},
+                    {title:d.ytitle, f:'y'}]
+            );
+            
+            arrayList.setData(d.xdata);
             // console.log(d);
 
             last_data = d;
