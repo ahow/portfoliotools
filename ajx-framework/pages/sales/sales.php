@@ -136,6 +136,7 @@
                $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
                $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
                $this->cfg->addJs('/html.php/pages/sales','lookup.js');
+               $this->cfg->addJs('/html.php/pages/sales','array-list-table.js');
                $this->cfg->addJs('/html.php/pages/sales','thematic-company-comparison.js');
            break;
            default: $this->cfg->addJs('/html.php/pages/sales','inittable.js');               

@@ -18,6 +18,8 @@ $(function(){
      fprint.submit();
    }
    
+    var arrayList = new arrayListTable('.array-list');
+   
    
     function reloadChartData()
     { 
@@ -31,10 +33,24 @@ $(function(){
             yaxis:$('#y-axis').val()
         }, function(d){
             
+            
             var x = $('#x-axis').val();
             var y = $('#y-axis').val();
             d.xtitle = $('#x-axis option[value="'+x+'"]').html();
             d.ytitle = $('#y-axis option[value="'+y+'"]').html();
+            
+            var link = "<?php echo mkURL('/sales/companies'); ?>";
+            
+            arrayList.setHeader([
+                    {title:"Name",f:'name', ondraw:function(v){ 
+                        return '<a href="'+link+'/'+v+'">'+v+'</a>';
+                    }},
+                    {title:d.xtitle, f:'x'},
+                    {title:d.ytitle, f:'y'}]
+            );
+            arrayList.setData(d.xdata);
+
+
             // console.log(d);
 
             last_data = d;
