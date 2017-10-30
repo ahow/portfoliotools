@@ -1,6 +1,3 @@
-<!-- Page Content -->
-<div class="container">
-
   <div class="row">
 
     <!-- /.col-lg-3 -->
@@ -87,6 +84,3 @@
 
     </div>
   </div>
-
-</div>
-<!-- /.container -->
