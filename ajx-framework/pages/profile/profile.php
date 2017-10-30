@@ -6,6 +6,7 @@
         $this->cfg = $cfg;
         $this->cfg->addJs('/js','formvalidator.js');
         $this->cfg->addJs('/js', 'profile.js');
+        $this->seg = $seg;
      }
      
      function display()
@@ -15,7 +16,7 @@
      
      function afterInit()
      {  $user = $this->cfg->user->user;
-        if (empty($user)) header('Location: '.mkURL('/login'));        
+        if (empty($user)) header('Location: '.mkURL('/login?from=/'.implode('/',$this->seg)));        
      }
   }
 ?>
