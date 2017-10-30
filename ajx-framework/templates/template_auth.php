@@ -54,6 +54,9 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <?php $this->echoCSS() ?>
+    <link rel="icon" 
+    type="image/png" 
+    href="/images/logo.png">
   </head>  
   <body>
     <!-- Fixed navbar -->
