@@ -16,7 +16,7 @@
      
      function afterInit()
      {  $user = $this->cfg->user->user;
-        if (empty($user)) header('Location: '.mkURL('/login?from=/'.implode('/',$this->seg)));        
+        if (empty($user)) header('Location: '.mkURL('/login?gotoURL=/'.implode('/',$this->seg)));        
      }
   }
 ?>

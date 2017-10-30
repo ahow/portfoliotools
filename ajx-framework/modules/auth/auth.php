@@ -112,7 +112,10 @@
            if ($this->checkUserPassword($uname, $_POST['upass'],$o))
            {  $u = $this->getInf($o);
               $s = $this->startSession($u->id);
-              if (isset($this->cfg->authorizedURL)) header('Location: '.$this->cfg->authorizedURL);
+              $URL = '';
+              if (isset($_GET['gotoURL'])) $URL=mkURL($_GET['gotoURL']); 
+              else if (isset($this->cfg->authorizedURL)) $URL=$this->cfg->authorizedURL;
+              if ($URL!='') header('Location: '.$URL);
               return $s;
            }
            

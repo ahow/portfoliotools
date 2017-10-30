@@ -13,7 +13,6 @@
   // After init modules
   if (method_exists($this->page,'afterInit')) $this->page->afterInit();
 
-  
   if (isset($this->user->user))
   {  
   }
