@@ -36,14 +36,15 @@
     <div class="row">
         <div id="container" style="min-width: 600px; height: 600px; margin: 0 auto"></div>
     </div>
-</div>
 
-<div class="array-list">
-    <table class="table table-striped selectable">
+  <div class="array-list">
+      <table class="table table-striped selectable">
         <thead></thead>
         <tbody></tbody>
-    </table>
-    <div class="list-pager"></div>
+      </table>
+      <div class="list-pager"></div>
+  </div>
+
 </div>
 
 <form name="fprint" method="POST" target="_blank" action="<?=mkURL('/html.php/pages/sales/chart.pdf')?>">

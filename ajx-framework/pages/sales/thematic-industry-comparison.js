@@ -24,7 +24,7 @@ $(function(){
     { 
         var range = $('#theme_range').val().split(',');
         var tnames = [,'SIC','Subsector'];
-        
+        $("#mranking").LoadingOverlay("show");
         ajx('/pages/sales/ThematicIndustryComparison',{region:$('#region').val(),
             theme_min:range[0], theme_max:range[1],
             theme_id:$('#themes').val(),
@@ -48,6 +48,8 @@ $(function(){
                     {title:d.ytitle, f:'y'}]
             );
             arrayList.setData(d.xdata);
+            
+             $("#mranking").LoadingOverlay("hide", true);
 
             last_data = d;
             
