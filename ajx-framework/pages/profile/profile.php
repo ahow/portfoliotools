@@ -12,5 +12,10 @@
      { //  echo '<center><h1>'.T($this->cfg->title).'</h1></center>';
         echo '<div id="profile"></div>';
      }
+     
+     function afterInit()
+     {  $user = $this->cfg->user->user;
+        if (empty($user)) header('Location: '.mkURL('/login'));        
+     }
   }
 ?>
