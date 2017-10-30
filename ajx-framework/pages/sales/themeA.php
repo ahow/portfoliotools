@@ -1,10 +1,11 @@
+  <img class="card-img-top img-fluid w-logo"; style='width: 100%'; src="/images/volcano.jpg" alt="">
+
   <div class="row">
 
     <!-- /.col-lg-3 -->
 
     <div class="col-lg-12">
 
-        <img class="card-img-top img-fluid"; style='width: 100%'; src="/images/volcano.jpg" alt="">
         <div class="card-body">
           <h3 class="card-title">Climate change</h3>
           <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente dicta fugit fugiat hic aliquam itaque facere, soluta. Totam id dolores, sint aperiam sequi pariatur praesentium animi perspiciatis molestias iure, ducimus!</p>

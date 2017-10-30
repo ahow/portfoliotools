@@ -10,7 +10,7 @@
   {
 ?>
 <h1><?=T('Login') ?></h1>
-<form method="POST">
+<form class="w-login" method="POST">
   <div class="form-group">
     <label for="uname"><?=T('Login_name') ?></label>
     <input type="text" class="form-control" id="uname" name="uname" placeholder="<?=T('Login_name') ?>" >

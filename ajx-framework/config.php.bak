@@ -20,7 +20,8 @@
       public $lang = 'EN';
       public $sef = true; 
       protected $template = 'templates/template_auth.php';
-      
+      public $authorizedURL = '/'; // Goto after authorize
+            
       // Custom settings
       public $email_templates = array('signup','evnamegl','vipreserv');
       public $md_conf = 1;

@@ -7,14 +7,17 @@
    $nav='';
    if (isset($a[0])) $nav=$a[0];
    unset($a);
-   if ($nav!='login' &&  $nav!='setup' && $nav!='oauth' && empty($this->user->user)) header('Location: '.mkURL('/login'));
+   // Not needed to login
+   // if ($nav!='login' &&  $nav!='setup' && $nav!='oauth' && empty($this->user->user)) header('Location: '.mkURL('/login'));
   
   // After init modules
   if (method_exists($this->page,'afterInit')) $this->page->afterInit();
 
   
   if (isset($this->user->user))
-  {  $authMenu = $this->newMod('authMenu','user_menu.js');
+  {  
+  }
+     $authMenu = $this->newMod('authMenu','user_menu.js');
      $dataMenu = $this->newMod('pMenu','data_menu.js');
      $endmarketsMenu = $this->newMod('pMenu','endmarkets_menu.js');
      $companiesMenu = $this->newMod('pMenu','companies_menu.js');
@@ -22,6 +25,7 @@
      $pfmeasuresMenu = $this->newMod('pMenu','pfmeasures_menu.js');
      $userMenu = $this->newMod('pMenu','user_menu.js');
      // $pRightMenu = $this->newMod('pMenu','main_r_data.js');
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -171,6 +175,3 @@
     <?php $this->echoJS() ?>
   </body>
 </html>
-<?php 
-  } else include(SYS_PATH.'templates/blank.php');
-?>

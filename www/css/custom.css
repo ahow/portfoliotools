@@ -163,6 +163,8 @@ table.table-ctrls {margin-top:15px; margin-bottom:15px;}
 table.t-bordered { border-collapse: collapse;}
 .t-bordered th, .t-bordered td { border: solid #E5E5E5 1px;}
 td.disabled { color: #A19C9C; }
+.w-login { margin-bottom: 5rem; }
+.w-logo { margin-top: -1.8rem; }
 
 /* From bootstrap 4 */
 .py-3 {
