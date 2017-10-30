@@ -149,7 +149,12 @@
      
      function afterInit()
      {  $user = $this->cfg->user->user;
-        if (empty($user)) header('Location: '.mkURL('/login'));
+        $page = '';
+        if (isset($this->seg[1])) $page = $this->seg[1];         
+        if (empty($user) 
+            && $page!='themeA'
+            && $page!='themeB'
+            && $page!='themeC') header('Location: '.mkURL('/login'));        
      }
      
      function display()
