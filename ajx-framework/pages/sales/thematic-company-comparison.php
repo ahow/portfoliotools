@@ -17,7 +17,7 @@
            $list = 'sales:Total sales;'
            // .'top3:% top 3;top5:% top 5;'
            // .'stability:Stability;'
-           .'roic:ROIC;pe:PE;evebitda:EVBIDTA;market_cap:Market capacity;'
+           .'roic:ROIC;pe:PE;evebitda:EVBIDTA;market_cap:Market cap;'
            .'payout:Payout;reviewed:reviewed'
            /* y3sales:3yr Sales growth;y3ebit:3yr EBIT growth;'
            .'y3assets:3yr Asset growth;y3capex:3yr Capex growth;'

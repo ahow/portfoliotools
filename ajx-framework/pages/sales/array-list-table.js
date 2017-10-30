@@ -14,6 +14,7 @@ function arrayListTable(selector, _header)
    var rows_total = 0;
    var ondrawcell = null;
    var header = null;
+   var decimal_numbes = 2;
    
    pager = new modelPagination(selector+' .list-pager');
    pager.change(function(page){
