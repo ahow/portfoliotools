@@ -15,5 +15,10 @@
        {   parent::display();
        } else $this->cfg->setError(T("AUTH_REQURED"), 1029);
      }
+     
+     function afterInit()
+     {  $user = $this->cfg->user->user;
+        if (empty($user)) header('Location: '.mkURL('/login'));        
+     }
   }
 ?>
