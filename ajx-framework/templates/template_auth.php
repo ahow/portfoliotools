@@ -131,7 +131,7 @@
               
               <?php 
              }
-                $userMenu->display() ?>
+             //   $userMenu->display() ?>
           </ul>          
           <?php  $authMenu->display(); ?>
         </div><!--/.nav-collapse -->
