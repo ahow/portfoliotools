@@ -74,6 +74,15 @@
         <div id="navbar" class="navbar-collapse collapse">
             
           <ul class="nav navbar-nav">
+              
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <li><a href="/sales/themeA">Theme A</a></li>
+                     <li><a href="/sales/themeB">Theme B</a></li>
+                  </ul>
+              </li>
+              
              <?php
               $cf = $this;
              if ($cf->inGroup('admin'))
