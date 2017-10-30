@@ -27,13 +27,17 @@ function localeLoader(path)
 }
 
 function ajx(path, param, onOk, onErr)
-{  $.post('/ajax.php'+path, param , function(d)
+{   $.post('/ajax.php'+path, param , function(d)
    {  if (d.error==undefined) setError('Ajax: unknown error'); else
       if (d.error) 
       { setError(d.errmsg);
         if (onErr!=undefined) onErr(d);
       } else if (onOk!=undefined) onOk(d);
-   }, 'json');
+   }, 'json').fail(function(e,msg){
+       setError(e.status+": "+e.statusText);
+       console.log(msg);
+       if (onErr!=undefined) onErr(e);
+   });
 }
 
 

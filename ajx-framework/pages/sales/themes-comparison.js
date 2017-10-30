@@ -121,6 +121,9 @@ $(function(){
             Highcharts.chart('container', param);
             $('.b-print').attr('disabled', false);
             $('.b-csv').attr('disabled', false);
+        }, function(e){
+            // On error
+            $("#mranking").LoadingOverlay("hide", true);
         });
        
     }
