@@ -4,7 +4,7 @@
 
         <div class="col-lg-12">
 
-            <img class="card-img-top img-fluid"; style='width: 100%'; src="/volcano.jpg" alt="">
+            <img class="card-img-top img-fluid"; style='width: 100%'; src="/images/volcano.jpg" alt="">
             <div class="card-body">
               <h3 class="card-title">Investment theme analysis</h3>
               <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente dicta fugit fugiat hic aliquam itaque facere, soluta. Totam id dolores, sint aperiam sequi pariatur praesentium animi perspiciatis molestias iure, ducimus!</p>
@@ -94,7 +94,7 @@
                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
                   </div>
                   <div class="col-sm-6">
-                    <img style='width: 50%'; src="/logo.png">
+                    <img style='width: 50%'; src="/images/logo.png">
                   </div>
               </div>
             </div>
