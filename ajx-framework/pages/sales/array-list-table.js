@@ -60,7 +60,7 @@ function arrayListTable(selector, _header)
             if (d[i][h.f]!=undefined) v = d[i][h.f];
             if (typeof(v)=='number' && (v-Math.floor(v))>0)
             {  v = v.toFixed(decimal_num);
-            } else console.log(v, typeof(v));
+            }
             if (h.ondraw!=undefined) s+='<td>'+h.ondraw(v, d[i])+'</td>';
             else s+='<td>'+v+'</td>';
         }        
