@@ -153,5 +153,5 @@
   </body>
 </html>
 <?php 
-  } else include('../templates/blank.php');
+  } else include(SYS_PATH.'templates/blank.php');
 ?>
