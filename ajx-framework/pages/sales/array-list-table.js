@@ -14,7 +14,7 @@ function arrayListTable(selector, _header)
    var rows_total = 0;
    var ondrawcell = null;
    var header = null;
-   var decimal_numbes = 2;
+   var decimal_num = 2;
    
    pager = new modelPagination(selector+' .list-pager');
    pager.change(function(page){
@@ -58,6 +58,9 @@ function arrayListTable(selector, _header)
         {   var h = header[j];
             var v = 'none';
             if (d[i][h.f]!=undefined) v = d[i][h.f];
+            if (typeof(v)=='number' && (v-Math.round(v))>0)
+            {  v = v.toFixed(decimal_num);
+            }
             if (h.ondraw!=undefined) s+='<td>'+h.ondraw(v, d[i])+'</td>';
             else s+='<td>'+v+'</td>';
         }        
