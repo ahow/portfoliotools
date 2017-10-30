@@ -164,3 +164,21 @@ table.t-bordered { border-collapse: collapse;}
 .t-bordered th, .t-bordered td { border: solid #E5E5E5 1px;}
 td.disabled { color: #A19C9C; }
 
+/* From bootstrap 4 */
+.py-3 {
+    padding-top: 1rem!important;
+    padding-bottom: 1rem!important;
+}
+.bg-dark {
+    background-color: #343a40!important;
+}
+
+.text-white {
+    color: #fff!important;
+}
+.text-center {
+    text-align: center!important;
+}
+.m-0 {
+    margin: 0!important;
+}

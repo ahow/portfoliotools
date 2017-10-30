@@ -88,7 +88,7 @@
              {
              ?>                
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes analysis<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $themesMenu->display() ?>
                   </ul>
@@ -138,6 +138,13 @@
       <?php $this->showErrors(); ?>
     </div> <!-- /container -->
 
+    <!-- Footer -->
+    <footer class="py-3 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Andy Howard</p>
+      </div>
+      <!-- /.container -->
+    </footer>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
