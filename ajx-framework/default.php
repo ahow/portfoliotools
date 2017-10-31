@@ -1,3 +1,3 @@
 <?php
-    include(__DIR__.'/pages/sales/index.php');
+    include(SYS_PATH.'/pages/sales/index.php');
 ?>
