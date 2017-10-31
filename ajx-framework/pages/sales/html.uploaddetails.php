@@ -1,17 +1,15 @@
 <?php
     header('Content-Type: text/event-stream');
     header('Cache-Control: no-cache'); 
-    
+    ob_start();
     $msg_num = 0;
     
     function send_message($id, $d) 
     {   echo "id: $id" . PHP_EOL;
         echo "data: " . json_encode($d) . PHP_EOL;
         echo PHP_EOL;
-        ob_flush();
-        flush();
+        if (ob_get_level() > 0) ob_flush();        
     }
-
      
      $res = new stdClass();
      $res->error = false;
