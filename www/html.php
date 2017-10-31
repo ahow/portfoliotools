@@ -76,7 +76,7 @@
     
   include(SYS_PATH.'config.php');
   $conf = new wConfig();
+  date_default_timezone_set($conf->default_timezone);
   $conf->route();
   $conf->showErrors();
-  date_default_timezone_set($conf->default_timezone);
 ?>
