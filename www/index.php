@@ -61,6 +61,7 @@
   $conf = new wConfig();
   $trfile = SYS_PATH."lang/$conf->lang.ini";
   if (file_exists($trfile)) $_TRANSLATIONS = parse_ini_file($trfile);
+  date_default_timezone_set($conf->default_timezone);
   $conf->route();
 
 ?>
