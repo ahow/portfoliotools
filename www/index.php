@@ -24,6 +24,7 @@
         {   $a = explode('?', $_SERVER['REQUEST_URI']);
             $p = substr($a[0],1);
         }
+        write_log($p);
         $this->nav = $p;
         $a = explode('/',$p);
         if ($p!='')

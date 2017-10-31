@@ -22,7 +22,7 @@
   }
   
   function write_log($msg)
-  {  $f = fopen(__DIR__.'/sys.log','a+');
+  {  $f = fopen(LOG_PATH.'sys.log','a+');
      fwrite($f, date("Y-m-d H:i:s ").$msg."\n");
      fclose($f);
   }
