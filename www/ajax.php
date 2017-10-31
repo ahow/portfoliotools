@@ -59,6 +59,7 @@
         {   $a = explode('?', $_SERVER['REQUEST_URI']);
             $p = substr($a[0],10);            
         }
+        if (strpos($p,'ajax.php')===0) $p=substr($p,9);
         $this->nav = $p;
         $a = explode('/',$p);
         if (count($a)<3) 

@@ -81,8 +81,8 @@
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes<span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                     <li><a href="/sales/themeA">Theme A</a></li>
-                     <li><a href="/sales/themeB">Theme B</a></li>
+                     <li><a href="<?php echo mkURL('/sales/themeA'); ?>">Theme A</a></li>
+                     <li><a href="<?php echo mkURL('/sales/themeB'); ?>">Theme B</a></li>
                   </ul>
               </li>
               
