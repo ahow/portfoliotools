@@ -21,6 +21,7 @@
       public $sef = true; 
       protected $template = 'templates/template_auth.php';
       public $authorizedURL = '/'; // Goto after authorize
+      public $default_timezone = 'Asia/Irkutsk';
             
       // Custom settings
       public $email_templates = array('signup','evnamegl','vipreserv');

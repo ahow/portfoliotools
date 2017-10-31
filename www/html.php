@@ -78,5 +78,5 @@
   $conf = new wConfig();
   $conf->route();
   $conf->showErrors();
-
+  date_default_timezone_set($conf->default_timezone);
 ?>
