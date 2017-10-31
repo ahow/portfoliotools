@@ -24,6 +24,7 @@
         {   $a = explode('?', $_SERVER['REQUEST_URI']);
             $p = substr($a[0],1);
         }
+        if (strpos($p,'index.php')===0) $p=substr($p,9); // remove index.php if needed
         write_log($p);
         $this->nav = $p;
         $a = explode('/',$p);
