@@ -6,8 +6,8 @@
 * html.php - _used for inline parts of HTML documents_
 * .htaccess - _settings for Apache web server mod rewrite module, required for SEF URLs_
 * ***images*** - _images directory_
-* ***js*** - _static js scripts directory_
-* ***css*** - _static styles_
+* ***js*** - _static javascript files directory_
+* ***css*** - _static CSS styles_
 * ***bootstrap-3.3.6*** - _bootstrap files directory_
 * ***ttools*** - _path to the site's framework_
 
