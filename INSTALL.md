@@ -118,11 +118,16 @@ IndexIgnore */*
     RewriteRule (.*) index.php
 </IfModule>
 ```
-8. To install the site database just open URL: [http://yoursite.com/setup](http://yoursite.com/setup)
+8. To install the site database just open URL: [http://your_site_name.com/setup](http://your_site_name.com/setup)
+If SEF URLs are disabled then open other URL: [http://your_site_name.com/index.php/setup](http://your_site_name.com/index.php/setup)
+
 
 # UPDATE
-To update the website from GitHub run these commands in SSH console:
+1. To update the website from GitHub run these commands in SSH console:
 ``` bash
-cd ~\ttools
-git pull
+    cd ~\ttools
+    git pull
 ```
+2. To update the database structure open this URL: [http://your_site_name.com/setup](http://your_site_name.com/setup)
+If SEF URLs are disabled then open other URL: [http://your_site_name.com/index.php/setup](http://your_site_name.com/index.php/setup)
+
