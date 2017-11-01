@@ -13,12 +13,13 @@ cd ttools
 git clone https://github.com/ahow/portfoliotools.git
 ```
 
-3. Copy contens of www directory to the site root path, or make simlinks
+3. Copy contents of www directory to the site root path, or make symlinks
 ``` bash
-    # Run If you wish to update files manually
+    # Run, if you wish to update files manually
     cd ~
     cp -R ttools/www/* .
-    # Run If you wish to update files from git
+    
+    # Run,  if you wish to update files from git
     cd ~
     ln -s ttools/www/index.php index.php
     ln -s ttools/www/index.php html.php
