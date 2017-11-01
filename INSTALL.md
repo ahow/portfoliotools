@@ -1,6 +1,6 @@
 # INSTALLATION
 1. Login via SSH to your virtual website host
-2. Run commands in ssh console
+2. Run commands in the SSH console
 ``` bash
 # Go to the home directory of the website
 cd ~
