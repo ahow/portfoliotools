@@ -18,12 +18,12 @@
      
      function route()
      {  $p = '';
-        if (isset($_SERVER['PATH_INFO']))  $p = substr($_SERVER['PATH_INFO'],1); else
-        if (isset($_SERVER['REDIRECT_URL']))  $p = substr($_SERVER['REDIRECT_URL'],1); else
-        if (isset($_SERVER['REQUEST_URI']))  
+        if (isset($_SERVER['PATH_INFO']))  $p = substr($_SERVER['PATH_INFO'],1);
+        else if (isset($_SERVER['REQUEST_URI']))  
         {   $a = explode('?', $_SERVER['REQUEST_URI']);
             $p = substr($a[0],1);
         }
+        else if (isset($_SERVER['REDIRECT_URL']))  $p = substr($_SERVER['REDIRECT_URL'],1);
         if (strpos($p,'index.php')===0) $p=substr($p,10); // remove index.php if needed
         $this->nav = $p;
         $a = explode('/',$p);
