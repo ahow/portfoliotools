@@ -6,7 +6,7 @@ In other cases replace ~ to the path of the site.
 1. Login via SSH to your virtual website host
 2. Run commands in the SSH console
 ``` bash
-    # Go to the home directory of the website
+    # Go to the root directory of the website.
     cd ~
 
     # Create framework directory
@@ -53,7 +53,12 @@ In other cases replace ~ to the path of the site.
  cp ttools/ajx-framework/config.php.bak config.php
 ```
 
-6. Edit config `mcedit config.php`
+6. Edit config file.
+```  bash
+    mcedit config.php`
+```
+You must change database settings.
+Also, you can change default Time zone, default template, and other settings.
 ``` php
 <?php
   /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
@@ -88,7 +93,14 @@ In other cases replace ~ to the path of the site.
 ?>
 ```
 
-7. Edit .htaccess `cd ~; mcedit .htaccess`
+7. Edit .htaccess if you need to disable or enable SEF URLs
+``` bash
+    cd ~
+    mcedit .htaccess
+```
+To disable SEF URLs, you should change `MOD_REWRITE_SEF` to `off` and change
+`$sef` parameter in the _config.php_ to `false`.
+Below you can see default settings.
 ``` html
 Options +FollowSymLinks
 Options -MultiViews
