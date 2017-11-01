@@ -1,4 +1,8 @@
 # INSTALLATION
+
+The instruction is designed for the case when the root directory of the site is in the home directory ~
+In other cases replace ~ to the path of the site.
+
 1. Login via SSH to your virtual website host
 2. Run commands in the SSH console
 ``` bash
