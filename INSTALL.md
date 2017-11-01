@@ -118,7 +118,7 @@ IndexIgnore */*
     RewriteRule (.*) index.php
 </IfModule>
 ```
-8. To install the site database just open URL: [http://your_site_name.com/setup](http://your_site_name.com/setup)  
+8. To install the site database just open URL: [http://your_site_name.com/setup](http://your_site_name.com/setup)
 If SEF URLs are disabled then open other URL: [http://your_site_name.com/index.php/setup](http://your_site_name.com/index.php/setup)
 
 
@@ -130,4 +130,3 @@ If SEF URLs are disabled then open other URL: [http://your_site_name.com/index.p
 ```
 2. To update the database structure open this URL: [http://your_site_name.com/setup](http://your_site_name.com/setup)  
 If SEF URLs are disabled then open other URL: [http://your_site_name.com/index.php/setup](http://your_site_name.com/index.php/setup)
-
