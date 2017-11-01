@@ -2,28 +2,18 @@
   $this->db =  $this->newMod('db');     // Database connection
   $this->user =  $this->newMod('auth'); // Authorization
   
-   // Goto LOGIN if not logged
-   $a = explode('/',$this->nav);
-   $nav='';
-   if (isset($a[0])) $nav=$a[0];
-   unset($a);
-   // Not needed to login
-   // if ($nav!='login' &&  $nav!='setup' && $nav!='oauth' && empty($this->user->user)) header('Location: '.mkURL('/login'));
-  
-  // After init modules
+  // After init modules, used for redirection
   if (method_exists($this->page,'afterInit')) $this->page->afterInit();
 
-  if (isset($this->user->user))
-  {  
-  }
-     $authMenu = $this->newMod('authMenu','user_menu.js');
-     $dataMenu = $this->newMod('pMenu','data_menu.js');
-     $endmarketsMenu = $this->newMod('pMenu','endmarkets_menu.js');
-     $companiesMenu = $this->newMod('pMenu','companies_menu.js');
-     $themesMenu = $this->newMod('pMenu','themes_menu.js');
-     $pfmeasuresMenu = $this->newMod('pMenu','pfmeasures_menu.js');
-     $userMenu = $this->newMod('pMenu','user_menu.js');
-     // $pRightMenu = $this->newMod('pMenu','main_r_data.js');
+  // Menu modules
+  $authMenu = $this->newMod('authMenu','user_menu.js');
+  $dataMenu = $this->newMod('pMenu','data_menu.js');
+  $endmarketsMenu = $this->newMod('pMenu','endmarkets_menu.js');
+  $companiesMenu = $this->newMod('pMenu','companies_menu.js');
+  $themesMenu = $this->newMod('pMenu','themes_menu.js');
+  $pfmeasuresMenu = $this->newMod('pMenu','pfmeasures_menu.js');
+  $userMenu = $this->newMod('pMenu','user_menu.js');
+  // $pRightMenu = $this->newMod('pMenu','main_r_data.js');
 
 ?>
 <!DOCTYPE html>
