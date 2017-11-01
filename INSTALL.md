@@ -104,7 +104,7 @@ IndexIgnore */*
 8. To install the site database just open URL: [http://yoursite.com/setup](http://yoursite.com/setup)
 
 # UPDATE
-To update web site from GitHUB run these commands in SSH console:
+To update the website from GitHub run these commands in SSH console:
 ``` bash
 cd ~\ttools
 git pull
