@@ -45,8 +45,8 @@
 ```
 5. Copy example of the site settings to config.php 
 ``` bash
- cd ttools/ajx-framework/
- cp config.php.bak config.php
+ cd ~
+ cp ttools/ajx-framework/config.php.bak config.php
 ```
 
 6. Edit config `mcedit config.php`
