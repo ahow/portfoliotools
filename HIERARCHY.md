@@ -4,7 +4,7 @@
 * index.php - _The main point of the website framework_
 * ajax.php - _used for AJAX queries_
 * html.php - _used for inline parts of HTML documents_
-* .htaccess - _settings for mod rewrite Apache web server module, required for SEF URLs_
+* .htaccess - _settings for Apache web server mod rewrite module, required for SEF URLs_
 * ***images*** - _images directory_
 * ***js*** - _static js scripts directory_
 * ***css*** - _static styles_
