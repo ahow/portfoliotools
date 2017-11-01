@@ -1,6 +1,6 @@
 # FILE HIERARCHY
 ## Web site root path
-* path.php - _contains settings of directory path (upload path, log path)_
+* path.php - _contains settings of directory path (path to the ajx-framework, upload path, log path)_
 * index.php - _The main point of the website framework_
 * ajax.php - _used for AJAX queries_
 * html.php - _used for inline parts of HTML documents_
