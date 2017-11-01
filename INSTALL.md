@@ -2,15 +2,15 @@
 1. Login via SSH to your virtual website host
 2. Run commands in the SSH console
 ``` bash
-# Go to the home directory of the website
-cd ~
+    # Go to the home directory of the website
+    cd ~
 
-# Create framework directory
-mkdir ttools
-cd ttools
+    # Create framework directory
+    mkdir ttools
+    cd ttools
 
-#Clone git repository:
-git clone https://github.com/ahow/portfoliotools.git
+    #Clone git repository:
+    git clone https://github.com/ahow/portfoliotools.git
 ```
 
 3. Copy contents of www directory to the site root path, or make symlinks
