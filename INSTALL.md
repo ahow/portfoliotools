@@ -7,6 +7,7 @@ cd ~
 
 # Create framework directory
 mkdir ttools
+cd ttools
 
 #Clone git repository:
 git clone https://github.com/ahow/portfoliotools.git
