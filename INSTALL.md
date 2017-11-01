@@ -12,7 +12,27 @@ cd ttools
 #Clone git repository:
 git clone https://github.com/ahow/portfoliotools.git
 ```
-3. Open and edit path.php `mcedit path.php`
+
+3. Copy contens of www directory to the site root path, or make simlinks
+``` bash
+    # Run If you wish to update files manually
+    cd ~
+    cp -R ttools/www/* .
+    # Run If you wish to update files from git
+    cd ~
+    ln -s ttools/www/index.php index.php
+    ln -s ttools/www/index.php html.php
+    ln -s ttools/www/index.php ajax.php
+    ln -s ttools/www/js js
+    ln -s ttools/www/css css
+    cp -R ttools/www/bootstrap-3.3.6 .
+    cp -R ttools/www/images .
+    cp ttools/www/path.php .
+    cp ttools/www/robots.txt .
+    cp ttools/www/.htaccess .
+```
+
+4. Open and edit path.php `mcedit path.php`
 ``` php
 <?php
     // path to the closed part of the framework
@@ -22,12 +42,13 @@ git clone https://github.com/ahow/portfoliotools.git
     define('LOG_PATH','ttools/log/');
 ?>
 ```
-4. Copy example of the site settings to config.php 
+5. Copy example of the site settings to config.php 
 ``` bash
  cd ttools/ajx-framework/
  cp config.php.bak config.php
 ```
-5. Edit config `mcedit config.php`
+
+6. Edit config `mcedit config.php`
 ``` php
 <?php
   /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
@@ -61,7 +82,8 @@ git clone https://github.com/ahow/portfoliotools.git
   }
 ?>
 ```
-6. Edit .htaccess `cd ~; mcedit .htaccess`
+
+7. Edit .htaccess `cd ~; mcedit .htaccess`
 ``` html
 Options +FollowSymLinks
 Options -MultiViews
@@ -78,7 +100,7 @@ IndexIgnore */*
     RewriteRule (.*) index.php
 </IfModule>
 ```
-7. To install the site database just open URL: [http://yoursite.com/setup](http://yoursite.com/setup)
+8. To install the site database just open URL: [http://yoursite.com/setup](http://yoursite.com/setup)
 
 # UPDATE
 To update web site from GitHUB run these commands in SSH console:
