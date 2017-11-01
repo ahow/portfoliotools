@@ -99,7 +99,8 @@ Also, you can change default Time zone, default template, and other settings.
     mcedit .htaccess
 ```
 To disable SEF URLs, you should change `MOD_REWRITE_SEF` to `off` and change
-`$sef` parameter in the _config.php_ to `false`.
+`$sef` parameter in the _config.php_ to `false`
+
 Below you can see default settings.
 ``` html
 Options +FollowSymLinks
