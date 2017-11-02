@@ -931,7 +931,7 @@ order by 2, 1 desc", $this->getPostParams('region'));
       $_POST['region']='';
       $db->query('SET @@sql_mode = "ONLY_FULL_GROUP_BY"');
       $db->query('call selectCustomSics()');
-      $this->prepareROACalcBySics();
+      $this->prepareGrowthsCalcBySics('capex',2014);      
       // $this->prepare3yrGrowthsCalcBySics('capex');
       $qr = $db->query('select * from tmp_values_by_sic_year');
       $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
