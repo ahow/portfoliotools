@@ -69,7 +69,7 @@
           <ul class="nav navbar-nav">
               
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes&nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <li><a href="<?php echo mkURL('/sales/themeA'); ?>">Theme A</a></li>
                      <li><a href="<?php echo mkURL('/sales/themeB'); ?>">Theme B</a></li>
@@ -82,7 +82,7 @@
              {
              ?>
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Data menu<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Data menu&nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $dataMenu->display() ?>
                   </ul>
@@ -93,19 +93,19 @@
              {
              ?>                
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes analysis<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes analysis&nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $themesMenu->display() ?>
                   </ul>
               </li>
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Industries<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Industries&nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $endmarketsMenu->display() ?>
                   </ul>
               </li>
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Companies<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Companies&nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $companiesMenu->display() ?>
                   </ul>
@@ -116,7 +116,7 @@
              {
              ?>   
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Portfolio exposures<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Portfolio exposures&nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $pfmeasuresMenu->display() ?>
                   </ul>
