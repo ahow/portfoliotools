@@ -373,7 +373,8 @@ order by 3 desc,4 desc";
       $f =  substr($hs,2); // ebit sales capex assets           
       $this->prepareGrowthsCalcBySics($f, NULL);
       $db = $this->cfg->db;
-      $max_year = post('max_year');
+      $qr = $db->query('select max(syear) as m from tmp_values_by_sic_year');
+      $max_year = $db->fetchSingleValue($qr);
       $qr = $db->query('select * from tmp_values_by_sic_year '
       .' where syear between :max_year-5 and :max_year'
       .' order by sic, syear desc', array('max_year'=>$max_year));
@@ -382,9 +383,11 @@ order by 3 desc,4 desc";
       $yr = array();
       $m = $max_year;
       $rows = array();
+      // $this->res->dbg = array();
       
       while ($r =  $db->fetchSingle($qr) )
-      {  if ($sic!=$r->sic || $n==5)
+      {  // $this->res->dbg[] = $r;
+         if ($sic!=$r->sic || $n==6)
          {  if ($n==6) 
             {  $y5 = ((1+ $yr[$m] )*(1 + $yr[$m-1] )*( 1 + $yr[$m-2] )*( 1 + $yr[$m-3]  )*(1+ $yr[$m-4]  ))-1 ;
                $rr = new stdClass();
@@ -400,7 +403,10 @@ order by 3 desc,4 desc";
          $n++;
          $yr[1*$r->syear] = 1.0*$r->v; 
       }
-      if ($n==5) 
+      // $this->res->n = $n;
+      // $this->res->sic = $sic;
+      // $this->res->yr = $yr;
+      if ($n==6) 
       {  $y5 = ((1+ $yr[$m] )*(1 + $yr[$m-1] )*( 1 + $yr[$m-2] )*( 1 + $yr[$m-3]  )*(1+ $yr[$m-4]  ))-1 ;
          $rr = new stdClass();
          $rr->v = $y5;
