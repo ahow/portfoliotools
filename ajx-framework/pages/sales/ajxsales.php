@@ -958,7 +958,7 @@ v double not null,gv double)');
         while ($r=$db->fetchSingle($qr))
         {   $v = null;
             if ($r->v2!=0.0)
-            {   $v = 100*(pow($r->v1/$r->v2, 1.0/3.0)-1);
+            {   $v = 100*(pow($r->v1/$r->v2, 1.0/$n)-1);
                 if (is_nan($v)) $v=null;
             } else $v = null;
             $v1 = $r->v1;
@@ -1132,7 +1132,12 @@ group by r.syear", $this->getPostParams('region'));
    {  if (strpos($hs,'y5')===0)
       {  $db = $this->cfg->db;
          $f =  substr($hs,2); // ebit sales capex assets  
+         
          $this->prepareNyrGrowthsCalcBySics($f, 5);
+/*
+         $qr = $db->query('select * from tmp_vsum_by_cid_sic_year2 order by syear');
+         $this->res->green = $qr->fetchAll(PDO::FETCH_OBJ);
+*/
          return $this->aggregateBySics();
       }
       return false;       
