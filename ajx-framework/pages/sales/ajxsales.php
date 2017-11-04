@@ -367,8 +367,9 @@ order by 3 desc,4 desc";
         echo json_encode($this->res);
    }
  
-  /*  
-   function grows5yrCalculation($hs)
+  /*  Old way calculations
+   
+   function growths5yrCalculation($hs)
    {  if (strpos($hs,'y5')!==0) return false;      
       $f =  substr($hs,2); // ebit sales capex assets           
       $this->prepareGrowthsCalcBySics($f, NULL);
