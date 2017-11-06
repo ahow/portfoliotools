@@ -1795,8 +1795,15 @@ group by 1");
         echo json_encode($this->res); 
     }
     
-    
+ 
     function ajxIndustryAnalysis()
+    { $mode = post('mode');
+      if ($mode==2) $this->ajxIndustryAnalysisObsolete();
+      else $this->error('Should be fixed', true);
+    }
+ 
+
+    function ajxIndustryAnalysisObsolete()
     {   $db = $this->cfg->db; 
         $params = (object)$_POST;  
         $titles = explode(';',';Total sales;% top 3;% top 5;Stability;Sales growth;ROIC;PE;EVBIDTA;Payout;% reviewed');
@@ -1927,10 +1934,6 @@ limit 20";
                $wp['subsector'] = $name;
                 
                $stab = getStabilityBySubsector($db,$wp, $wh,$minyear,$maxyear);
-               /*
-                if ($sic=='781') 
-                {    write_log("Stability = $stab");
-                }*/
                 return $stab;
             }
             return 0;
@@ -1968,10 +1971,7 @@ where  d.syear=@maxyear  and d.sales>0 and ".implode(' and ', $wh)." into @ssum"
                     $wp['sic'] = $sic;
                 
                     $stab = getStabilityBySIC($db,$wp, $wh,$minyear,$maxyear);
-               /*
-                if ($sic=='781') 
-                {    write_log("Stability = $stab");
-                }*/
+
                    return $stab;
             }
             return 10;            
@@ -2086,6 +2086,7 @@ join sales_sic s on t.sic=s.id';
         echo json_encode($this->res); 
     }
     
+  
     
     function ajxThemesComparison()
     { $params = (object)$_POST;
