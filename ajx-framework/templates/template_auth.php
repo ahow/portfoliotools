@@ -73,6 +73,8 @@
                   <ul class="dropdown-menu">
                      <li><a href="<?php echo mkURL('/sales/themeA'); ?>">Theme A</a></li>
                      <li><a href="<?php echo mkURL('/sales/themeB'); ?>">Theme B</a></li>
+                     <li><a href="<?php echo mkURL('/sales/themeC'); ?>">Theme C</a></li>
+                     <li><a href="<?php echo mkURL('/sales/themeD'); ?>">Theme D</a></li>
                   </ul>
               </li>
               
