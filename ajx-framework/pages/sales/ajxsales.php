@@ -1796,21 +1796,161 @@ group by 1");
     }
     
  
-    function allStabilitiesBySic()
+    function calcAllSicsStabilities()
     {  $db = $this->cfg->db; 
-       $db->query('select max(syear) from sales_divdetails into @max_year');
-       $db->query('call get_all_sics_stabilities(:max_year, :region)',
+       $db->query('call get_all_sics_stabilities(@max_year, :region)',
             $this->getPostParams('region'));
             
-       $db->query('select t.sic, t.stability as v, s.name '
-       .' from tmp_stabilities t join sales_sic s on t.sic=s.id');
-       return fetchAll(PDO::FETCH_OBJ);
+       $qr = $db->query('select t.sic, t.stability as v '
+       .' from tmp_stabilities t ');
+       return $qr->fetchAll(PDO::FETCH_OBJ);
+    }
+ 
+   function getSicTotalsTmp($selected=false)
+   {  $db = $this->cfg->db; 
+      $db->query("DROP TABLE IF EXISTS tmp_total_sic_tsales_by_years");
+      $db->query("CREATE TEMPORARY TABLE tmp_total_sic_tsales_by_years
+        (syear integer, sic integer, tsum double, PRIMARY KEY (syear, sic))");
+      $tmpsel = '';
+      if ($selected) $tmpsel='join tmp_selected_sics ss on d.sic=ss.sic ';
+      $db->query("insert into tmp_total_sic_tsales_by_years 
+    select 
+        d.syear, d.sic, sum(d.sales) as v
+    from sales_divdetails d
+      join sales_companies c on  d.cid = c.cid  
+      $tmpsel    
+    where 
+        d.sales>0
+        and (:region='' or :region='Global' or c.region=:region)
+        and (@max_year is null or d.syear=@max_year)
+   group by 1,2
+   order by 1,2",
+            $this->getPostParams('region'));  
+   }
+ 
+   function calcAllSicsTopN($n)
+   {  $db = $this->cfg->db; 
+      $db->query('set @gr=NULL');
+      $db->query('set @sc=NULL');
+      $db->query('DROP TABLE IF EXISTS tmp_totalN_by_sic_years');
+      $db->query('CREATE TEMPORARY TABLE tmp_totalN_by_sic_years
+        (syear integer, sic integer, proc double, PRIMARY KEY (syear, sic))');
+      $this->getSicTotalsTmp();      
+    $db->query("insert into tmp_totalN_by_sic_years
+    select r2.syear, r2.sic, sum(r2.tsum)*100/t.tsum as v
+    from
+    ( select
+           @n:=if(@gr=r.syear and @sc=r.sic,@n+1,1) as rank,
+           @gr:=r.syear as syear,
+           @sc:=r.sic as sic,
+           r.cid,
+           r.tsum
+        from
+        (select     
+           d.syear,
+           d.sic,
+           d.cid,
+           sum(d.sales) as tsum
+            from sales_divdetails d
+            join sales_companies c on  d.cid=c.cid
+        where d.sales>0 
+            and (:region='' or :region='Global' or c.region=:region)
+            and (@max_year is null or d.syear=@max_year)
+        group by d.syear, d.sic, d.cid
+        order by d.syear, d.sic, tsum desc
+        ) as r
+    ) as r2
+        join tmp_total_sic_tsales_by_years  t 
+            on r2.syear=t.syear and r2.sic=t.sic
+    where rank<=$n
+    group by r2.syear, r2.sic, t.tsum", 
+        $this->getPostParams('region'));
+        
+    $qr = $db->query("select p.syear, p.sic,  sum(p.proc*t.tsum)/sum(t.tsum) as v        
+    from tmp_totalN_by_sic_years p
+    join tmp_total_sic_tsales_by_years t
+        on p.syear=t.syear and p.sic=t.sic
+    group by p.syear, p.sic"); 
+     return $qr->fetchAll(PDO::FETCH_OBJ);     
+   }
+ 
+   function allBySICs()
+   {   $params = (object)$_POST;
+       $db = $this->cfg->db;
+       $db->query('select max(syear) from sales_divdetails into @max_year');
+       
+       function calcByParam($ctx, $f)
+       {   switch ($f)
+           {   case 'tsales':
+               case 'roic':
+               case 'pe':
+               case 'evebitda':
+               case 'payout':
+               case 'market_cap':
+                  return $ctx->calcAllSicValues($f);
+               break; 
+               case 'top3':
+                  return $ctx->calcAllSicsTopN(3);
+               break;
+               case 'top5':
+                  return $ctx->calcAllSicsTopN(5);
+               break;
+               case 'stability':
+                  return $ctx->calcAllSicsStabilities();
+               break;
+               default:
+                 if (($r=$ctx->themesIndustryGrowth($f))!==false) return $r;
+                 else if (($r=$ctx->themesIndustry3yrGrowth($f))!==false) return $r;
+                 else if (($r=$ctx->themesIndustrySumBySum($f))!==false) return $r;
+           }
+           return array();
+       }
+       
+       $data = array();
+       $x = calcByParam($this, post('xaxis'));
+       $y = calcByParam($this, post('yaxis'));
+               
+       foreach($x as $r)
+       { $data[$r->sic] = new stdClass();
+         $data[$r->sic]->x = 1.0*$r->v;   
+         $data[$r->sic]->y =  null; 
+       }
+       foreach($y as $r)
+       { if (!isset($data[$r->sic]))
+         { $data[$r->sic] = new stdClass();
+           $data[$r->sic]->x = null;   
+         }          
+         $data[$r->sic]->y = 1.0*$r->v;   
+       }
+       
+       $qr = $db->query("select
+       s.id, s.name       
+    from sales_sic s");
+       
+       while ($r = $db->fetchSingle($qr))
+       {  if (isset($data[$r->id])) $data[$r->id]->name = $r->name;
+       }
+       
+       
+       $xdata = array();
+       foreach ($data as $k=>$r) 
+       { $n = new stdClass();
+         $n->id = $k;
+         $n->name = $r->name;
+         $n->x = $r->x;
+         $n->y = $r->y;
+         $xdata[] = $n;
+       }
+       $this->res->xdata = $xdata;
+       echo json_encode($this->res); 
     }
  
     function ajxIndustryAnalysis()
     { $mode = post('mode');
       if ($mode==2) $this->ajxIndustryAnalysisObsolete();
-      else $this->error('Should be fixed', true);
+      else $this->allBySICs();
+      // else 
+      // $this->error('Should be fixed', true);
     }
  
 
@@ -2125,6 +2265,28 @@ join sales_sic s on t.sic=s.id';
       }
       $this->res->rows = $rows;
       echo json_encode($this->res); 
+    }
+
+    // $f could be: tsales, roic, pe, evebitda, payout
+    function calcAllSicValues($f)
+    {  $db = $this->cfg->db;
+       if ($f=='tsales') $f='sales';
+       if ($f=='sales') $st = 'sum(d.sales) as v ';
+       else $st = " sum(c.$f*p.psale*t.sales)/sum(p.psale*t.sales) as v ";
+       $qr = $db->query("select 
+      d.syear,
+      p.sic,
+      $st
+    from sales_divdetails d
+    join sales_companies c on  d.cid = c.cid
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+    where d.sales>0
+     and (:region='' or :region='Global' or c.region=:region) 
+     and (d.syear=@max_year)
+    group by d.syear, d.sic", 
+          $this->getPostParams('region'));
+       return $qr->fetchAll(PDO::FETCH_OBJ);
     }
     
     // $f could be: tsales, roic, pe, evebitda, payout

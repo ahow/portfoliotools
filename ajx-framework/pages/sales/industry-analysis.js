@@ -35,6 +35,11 @@ $(function(){
             last_data = d;
             var link = "<?php echo mkURL('/sales/sic'); ?>";
             if (prm.mode !=1) link = "<?php echo mkURL('/sales/companies'); ?>";
+            
+            var x = $('#x-axis').val();
+            var y = $('#y-axis').val();
+            d.xtitle = $('#x-axis option[value="'+x+'"]').html();
+            d.ytitle = $('#y-axis option[value="'+y+'"]').html();
              
             arrayList.setHeader([
                     {title:"Name",f:'name', ondraw:function(v, r){ 
