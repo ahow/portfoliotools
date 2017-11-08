@@ -1806,7 +1806,7 @@ group by 1");
        return $qr->fetchAll(PDO::FETCH_OBJ);
     }
  
-   function getSicTotalsTmp($selected=false)
+   function getSicTotalsTmp($selected=true)
    {  $db = $this->cfg->db; 
       $db->query("DROP TABLE IF EXISTS tmp_total_sic_tsales_by_years");
       $db->query("CREATE TEMPORARY TABLE tmp_total_sic_tsales_by_years
@@ -1835,7 +1835,7 @@ group by 1");
       $db->query('DROP TABLE IF EXISTS tmp_totalN_by_sic_years');
       $db->query('CREATE TEMPORARY TABLE tmp_totalN_by_sic_years
         (syear integer, sic integer, proc double, PRIMARY KEY (syear, sic))');
-      $this->getSicTotalsTmp();      
+      $this->getSicTotalsTmp(false);      
     $db->query("insert into tmp_totalN_by_sic_years
     select r2.syear, r2.sic, sum(r2.tsum)*100/t.tsum as v
     from
