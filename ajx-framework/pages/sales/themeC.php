@@ -1,3 +1,4 @@
+
 <img class="card-img-top img-fluid w-logo"; style='width: 100%'; src="/images/volcano.jpg" alt="">
 
   <div class="row">
@@ -7,7 +8,7 @@
     <div class="col-lg-12">
 
         <div class="card-body">
-          <h3 class="card-title">Theme B</h3>
+          <h3 class="card-title">Theme C</h3>
           <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente dicta fugit fugiat hic aliquam itaque facere, soluta. Totam id dolores, sint aperiam sequi pariatur praesentium animi perspiciatis molestias iure, ducimus!</p>
         </div>
       </div>

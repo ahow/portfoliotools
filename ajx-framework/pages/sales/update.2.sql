@@ -17,6 +17,7 @@ drop procedure if exists select_sics_by_themes;
 drop procedure if exists selectCustomSics;
 drop procedure if exists sales_growth_by_year;
 drop procedure if exists select_companies_by_theme_range;
+drop procedure if exists get_all_sics_stabilities;
 
 delimiter $$
 -- This procedure must be loaded after uploading of divdetails
@@ -194,6 +195,83 @@ begin
         from sales_divdetails d
            join sales_companies c on  d.cid = c.cid
            join tmp_selected_sics ss on d.sic=ss.sic           
+           where d.syear in (I_year-1, I_year) 
+                and d.sales>0
+                and (I_region='' or I_region='Global' or c.region=I_region)
+           group by 1,2,3
+           order by d.syear, d.sic, 4 desc       
+        ) as s
+    ) as g
+    where g.rank<=20;
+
+  
+    insert into tmp_companies_sic_rank2
+    select r.syear, r.sic, r.cid, r.tsales, r.rank from tmp_companies_sic_rank1 r;
+
+    DROP TABLE IF EXISTS tmp_stabilities;
+    
+    CREATE TEMPORARY TABLE tmp_stabilities
+    (sic integer not null, stability double,
+     PRIMARY KEY (sic));
+    
+    -- getting stabilities
+    insert into tmp_stabilities
+    select r.sic, avg(r.cdif) as stability
+    from
+    (   select 
+           t.sic, t.cid, t.syear, t.rank as rank, p.rank as prank,
+           (t.rank-p.rank) as diff,
+           if(abs(t.rank-p.rank)>5,5,abs(t.rank-p.rank)) as cdif
+        from tmp_companies_sic_rank1 t
+        left outer join tmp_companies_sic_rank2 p on t.sic=p.sic and t.cid=p.cid              
+            and p.syear=(t.syear-1)
+        order by t.cid, t.syear desc
+    ) as r 
+    group by r.sic;
+    
+end $$
+
+
+create procedure get_all_sics_stabilities(I_year integer, I_region varchar(255))
+begin
+  DECLARE i,r INT;
+    /* DECLARE L_min_year, L_max_year INT; */
+    DROP TABLE IF EXISTS tmp_companies_sic_rank1;    
+    DROP TABLE IF EXISTS tmp_companies_sic_rank2;
+    
+    CREATE TEMPORARY TABLE tmp_companies_sic_rank1
+    (syear integer, sic integer not null, cid varchar(16) NOT NULL,
+     tsales double, rank integer, PRIMARY KEY (sic, cid, syear));
+
+    CREATE TEMPORARY TABLE tmp_companies_sic_rank2
+    (syear integer, sic integer not null, cid varchar(16) NOT NULL,
+     tsales double, rank integer, PRIMARY KEY (sic, cid, syear));
+   
+
+    set @gr=null;
+    set @yr=null;
+    set @n=0;
+
+    insert into tmp_companies_sic_rank1
+    select
+     g.syear,
+     g.sic,
+     g.cid,
+     g.tsales,
+     g.rank
+    from
+    (   select
+            s.syear,
+            s.cid,
+            s.tsales,
+            (@n:=if(@gr=s.sic and @yr=s.syear,@n+1,1)) as rank,  
+            @gr:=s.sic as sic,
+            @yr:=s.syear as yr
+        from 
+        (select 
+           d.syear, d.sic, d.cid, sum(d.sales) as tsales
+        from sales_divdetails d
+           join sales_companies c on  d.cid = c.cid         
            where d.syear in (I_year-1, I_year) 
                 and d.sales>0
                 and (I_region='' or I_region='Global' or c.region=I_region)

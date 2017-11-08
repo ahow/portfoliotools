@@ -35,7 +35,7 @@ function output_headers($file)
     
     $mime_type = exttoMIME($file_extension);
     
-    @ob_end_clean(); //turn off output buffering to decrease cpu usage
+    if (ob_get_level() > 0) @ob_end_clean(); //turn off output buffering to decrease cpu usage
      
      // required for IE, otherwise Content-Disposition may be ignored
      if(ini_get('zlib.output_compression'))
@@ -69,7 +69,7 @@ function output_file($file, $name, $mime_type='')
 	 $mime_type = exttoMIME($file_extension);
  }
  
- @ob_end_clean(); //turn off output buffering to decrease cpu usage
+ if (ob_get_level() > 0) @ob_end_clean(); //turn off output buffering to decrease cpu usage
  
  // required for IE, otherwise Content-Disposition may be ignored
  if(ini_get('zlib.output_compression'))

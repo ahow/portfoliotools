@@ -35,7 +35,6 @@ function ajx(path, param, onOk, onErr)
       } else if (onOk!=undefined) onOk(d);
    }, 'json').fail(function(e,msg){
        setError(e.status+": "+e.statusText);
-       console.log(msg);
        if (onErr!=undefined) onErr(e);
    });
 }
