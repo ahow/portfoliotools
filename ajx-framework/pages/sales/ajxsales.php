@@ -2041,14 +2041,24 @@ group by 1,2,t.tsum");
        $this->tmpSupsectorPsales('@max_year');
        $db = $this->cfg->db;
        $db->query('DROP TABLE IF EXISTS tmp_xdata');
-//        $db->query('CREATE TEMPORARY TABLE tmp_xdata
-
-       $db->query('CREATE TABLE tmp_xdata
+       $db->query('CREATE TEMPORARY TABLE tmp_xdata
     (id integer not null, x double, y double,  PRIMARY KEY (id) )');    
        $q = $db->db->prepare('insert into tmp_xdata values (:id, :x, :y)');
        foreach($d as $r) $q->execute((array)$r);
        
-       $this->res->xdata = $d;
+       $qr = $db->query('select 
+  p.subsector as name,
+  sum(p.px) as x,
+  sum(p.py) as y
+  from
+(select 
+   t.sic, t.subsector, sum(t.psale*x.x) as px, sum(t.psale*x.y) as py 
+from tmp_total_sic_subsector_psales t
+join tmp_xdata x on t.sic = x.id
+group by 1,2) as p
+group by 1');
+       
+       $this->res->xdata = $qr->fetchAll(PDO::FETCH_OBJ);
        echo json_encode($this->res);  
    }
  
