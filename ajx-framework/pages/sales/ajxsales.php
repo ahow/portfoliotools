@@ -2059,6 +2059,10 @@ group by 1,2) as p
 group by 1');
        
        $this->res->xdata = $qr->fetchAll(PDO::FETCH_OBJ);
+       foreach ($this->res->xdata as $k=>$v)
+       {   $this->res->xdata[$k]->x*=1.0;
+           $this->res->xdata[$k]->y*=1.0;
+       }
        echo json_encode($this->res);  
    }
  
