@@ -1928,7 +1928,7 @@ group by 1");
       
    }
    
-   function allBySICs()
+   function allBySICs($prepare=false)
    {   $params = (object)$_POST;
        $db = $this->cfg->db;
        $db->query('select max(syear) from sales_divdetails into @max_year');
@@ -1964,8 +1964,6 @@ group by 1");
        $data = array();
        $x = calcByParam($this, post('xaxis'));
        $y = calcByParam($this, post('yaxis'));
-       $this->res->x = $x;        
-       $this->res->y = $y;
        
        foreach($x as $r)
        { $data[$r->sic] = new stdClass();
@@ -1980,31 +1978,85 @@ group by 1");
          $data[$r->sic]->y = 1.0*$r->v;   
        }
        
-       $qr = $db->query("select
-       s.id, s.name       
-    from sales_sic s");
-       
-       while ($r = $db->fetchSingle($qr))
-       {  if (isset($data[$r->id])) $data[$r->id]->name = $r->name;
+       if (!$prepare)
+       {
+           $qr = $db->query("select
+           s.id, s.name       
+        from sales_sic s");
+           
+           while ($r = $db->fetchSingle($qr))
+           {  if (isset($data[$r->id])) $data[$r->id]->name = $r->name;
+           }
        }
-       
-       
+              
        $xdata = array();
        foreach ($data as $k=>$r) 
        { $n = new stdClass();
          $n->id = $k;
-         $n->name = $r->name;
+         if (!$prepare) $n->name = $r->name;
          $n->x = $r->x;
          $n->y = $r->y;
          $xdata[] = $n;
        }
-       $this->res->xdata = $xdata;
-       echo json_encode($this->res); 
+       if (!$prepare)
+       {
+         $this->res->xdata = $xdata;
+         echo json_encode($this->res); 
+       } else return $xdata;
     }
+ 
+
+   // Calculation of the percent of psales
+   // Result is in the temporary table: tmp_total_sic_subsector_psales
+   function tmpSupsectorPsales($year)
+   {  $db = $this->cfg->db;
+      $db->query('DROP TABLE IF EXISTS tmp_total_subsector_sales');
+      $db->query('CREATE TEMPORARY TABLE tmp_total_subsector_sales
+    (subsector varchar(100), tsum double, PRIMARY KEY (subsector) )');    
+      $db->query("insert into tmp_total_subsector_sales
+select
+     c.subsector, sum(d.sales)
+from sales_divdetails d
+join sales_companies c on d.cid=c.cid
+where d.syear=$year and d.sales>0
+group by 1");
+
+      $db->query("DROP TABLE IF EXISTS tmp_total_sic_subsector_psales");
+      $db->query("CREATE TEMPORARY TABLE tmp_total_sic_subsector_psales
+(sic integer, subsector varchar(100), psale double, PRIMARY KEY (sic,subsector) )");
+
+      $db->query("insert into tmp_total_sic_subsector_psales
+select
+      d.sic, c.subsector, sum(d.sales)/t.tsum
+from sales_divdetails d
+join sales_companies c on d.cid=c.cid
+join tmp_total_subsector_sales t on c.subsector=t.subsector
+where d.syear=$year and d.sales>0
+group by 1,2,t.tsum");
+
+   }
+
+   function allBySubsector()
+   {   $d = $this->allBySICs(true);
+       $this->tmpSupsectorPsales('@max_year');
+       $db = $this->cfg->db;
+       $db->query('DROP TABLE IF EXISTS tmp_xdata');
+//        $db->query('CREATE TEMPORARY TABLE tmp_xdata
+
+       $db->query('CREATE TABLE tmp_xdata
+    (id integer not null, x double, y double,  PRIMARY KEY (id) )');    
+       $q = $db->db->prepare('insert into tmp_xdata values (:id, :x, :y)');
+       foreach($d as $r) $q->execute((array)$r);
+       
+       $this->res->xdata = $d;
+       echo json_encode($this->res);  
+   }
+ 
+    
  
     function ajxIndustryAnalysis()
     { $mode = post('mode');
-      if ($mode==2) $this->ajxIndustryAnalysisObsolete();
+      if ($mode==2) $this->allBySubsector();
       else $this->allBySICs();
       // else 
       // $this->error('Should be fixed', true);
