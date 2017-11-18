@@ -1220,6 +1220,21 @@ group by r.syear", $this->getPostParams('region'));
       echo json_encode($this->res);
    }
 
+    function calcSICstoSubsector($table, $f)
+    {   $db = $this->cfg->db;     
+        $qr = $db->query("select sum($f*t.psale) as v from $table st
+join tmp_total_sic_subsector_psales t on st.sic=t.sic and t.subsector=:subsector",
+            $this->getPostParams('subsector') );        
+        return $db->fetchSingleValue($qr);
+    }
+
+    // result is temporary table: tmp_total_sic_tsales_by_years 
+    function calcAllTopN($n)
+    {   $db = $this->cfg->db;     
+        $qr = $db->query("call get_topN_by_sic_years($n,@max_year,:region)",
+             $this->getPostParams('region') );
+    }
+
     // ROIC, PE, evebitda, payout   market_cap
     function calcSubsectorValues()
     {  $db = $this->cfg->db;     
@@ -1276,17 +1291,18 @@ and c.subsector=:subsector
 and (:region='' or :region='Global' or c.region=:region)
 group by 1", $this->getPostParams('subsector,region') );
 
-      /*
-      
-      $qr = $db->query('call summary_by_sics(@max_year,:subsector,:region);',
-            $this->getPostParams('subsector,region') );
-      $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
-      $qr->closeCursor();        
-      // $this->res->rows = $r->rows;
-      // if (isset($r->dbg)) $this->res->dbg = $r->dbg;
-      */
       $this->tmpSubsectorPsales('@max_year');
       $this->res->rows = $this->calcSubsectorValues();
+      
+      if (isset($this->res->rows[0]))
+      {  
+          $this->calcAllTopN(3);
+         $this->res->rows[0]->top3sum = $this->calcSICstoSubsector('tmp_totalN_by_sic_years','proc');
+         
+         $this->calcAllTopN(5);
+         $this->res->rows[0]->top5sum = $this->calcSICstoSubsector('tmp_totalN_by_sic_years','proc');
+         
+      }
       echo json_encode($this->res); 
     }   
 
