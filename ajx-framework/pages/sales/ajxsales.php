@@ -1244,7 +1244,7 @@ select
   :subsector as name,
 -- st.sic,
 sum(st.tsales*t.psale) as tsales,  
-sum(st.roic*t.psale) as aqroic,
+sum(st.roic*t.psale) as aroic,
 sum(st.pe*t.psale) as ape,
 sum(st.evebitda*t.psale) as aevebitda,
 sum(st.payout*t.psale) as apayout
