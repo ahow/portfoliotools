@@ -1305,11 +1305,28 @@ group by 1", $this->getPostParams('subsector,region') );
          // stabilities 
          $qr = $db->query("call get_sics_stabilities(@max_year,:region)",
              $this->getPostParams('region') );
-         $this->res->rows[0]->stability = 1*$this->calcSICstoSubsector('tmp_stabilities','stability');
+         $this->res->rows[0]->stability = 1.0*$this->calcSICstoSubsector('tmp_stabilities','stability');
 
+         // sales growth
          $qr = $db->query("call sales_growth_by_year(@max_year,:region)",
              $this->getPostParams('region') );
-         $this->res->rows[0]->asales_growth = 1*$this->calcSICstoSubsector('tmp_sales_growth_by_sic_year','v');
+         $this->res->rows[0]->asales_growth = 1.0*$this->calcSICstoSubsector('tmp_sales_growth_by_sic_year','v');
+     
+         // prewieved
+         $qr = $db->query("select 
+       100*sum(ct.reviewed)/count(*) as prewiewed
+    from 
+    (  select 
+        d.cid, c.reviewed
+        from sales_divdetails d
+        join sales_companies c on  d.cid = c.cid
+        join tmp_selected_sics ss on d.sic=ss.sic
+        where d.syear=@max_year and c.subsector=:subsector
+         and (:region='' or :region='Global' or c.region=:region)
+        group by 1,2
+    ) as ct", $this->getPostParams('subsector,region') );
+         
+        $this->res->rows[0]->previewed = 1*$db->fetchSingleValue($qr);
                   
       }
       echo json_encode($this->res); 
