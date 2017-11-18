@@ -2008,7 +2008,7 @@ group by 1");
 
    // Calculation of the percent of psales
    // Result is in the temporary table: tmp_total_sic_subsector_psales
-   function tmpSupsectorPsales($year)
+   function tmpSubsectorPsales($year)
    {  $db = $this->cfg->db;
       $db->query('DROP TABLE IF EXISTS tmp_total_subsector_sales');
       $db->query('CREATE TEMPORARY TABLE tmp_total_subsector_sales
@@ -2038,7 +2038,7 @@ group by 1,2,t.tsum");
 
    function allBySubsector()
    {   $d = $this->allBySICs(true);
-       $this->tmpSupsectorPsales('@max_year');
+       $this->tmpSubsectorPsales('@max_year');
        $db = $this->cfg->db;
        $db->query('DROP TABLE IF EXISTS tmp_xdata');
        $db->query('CREATE TEMPORARY TABLE tmp_xdata
