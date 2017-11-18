@@ -573,7 +573,7 @@ begin
         order by s.id;
 end $$
 
-
+-- OUT: tmp_sales_growth_by_sic_year
 create procedure sales_growth_by_year(I_max_year integer, I_region varchar(255))
 begin
      DROP TABLE IF EXISTS tmp_vsum_by_cid_sic_year;

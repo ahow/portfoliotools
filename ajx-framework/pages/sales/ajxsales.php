@@ -1306,6 +1306,11 @@ group by 1", $this->getPostParams('subsector,region') );
          $qr = $db->query("call get_sics_stabilities(@max_year,:region)",
              $this->getPostParams('region') );
          $this->res->rows[0]->stability = 1*$this->calcSICstoSubsector('tmp_stabilities','stability');
+
+         $qr = $db->query("call sales_growth_by_year(@max_year,:region)",
+             $this->getPostParams('region') );
+         $this->res->rows[0]->asales_growth = 1*$this->calcSICstoSubsector('tmp_sales_growth_by_sic_year','v');
+                  
       }
       echo json_encode($this->res); 
     }   
