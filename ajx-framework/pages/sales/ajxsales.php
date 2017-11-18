@@ -722,8 +722,7 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
    }
 
    function ajxMarketSummarySic()
-   {  // $r =  $this->getMarketSummaryBySic();
-      // Min Size not used now
+   {  // Min Size not used now
       $db = $this->cfg->db;
       $db->query('call select_single_sic(:sic)', $this->getPostParams('sic') );
       $db->query('select max(syear) from sales_divdetails into @max_year');
@@ -1221,9 +1220,77 @@ group by r.syear", $this->getPostParams('region'));
       echo json_encode($this->res);
    }
 
-   
+    // ROIC, PE, evebitda, payout   market_cap
+    function calcSubsectorValues()
+    {  $db = $this->cfg->db;     
+       $qr = $db->query("
+select
+  st.syear,
+  :subsector as name,
+-- st.sic,
+sum(st.tsales*t.psale) as tsales,  
+sum(st.roic*t.psale) as aqroic,
+sum(st.pe*t.psale) as ape,
+sum(st.evebitda*t.psale) as aevebitda,
+sum(st.payout*t.psale) as apayout
+from
+(    select 
+      d.syear,
+      p.sic,
+      sum(d.sales) as tsales,
+      sum(c.roic*p.psale*t.sales)/sum(p.psale*t.sales) as roic,
+      sum(c.pe*p.psale*t.sales)/sum(p.psale*t.sales) as pe,
+      sum(c.evebitda*p.psale*t.sales)/sum(p.psale*t.sales) as evebitda,
+      sum(c.payout*p.psale*t.sales)/sum(p.psale*t.sales) as payout            
+    from sales_divdetails d
+    join tmp_selected_sics ss on d.sic=ss.sic
+    join sales_companies c on  d.cid = c.cid    
+    join sales_sic_companies_totals p on d.cid=p.cid and d.sic=p.sic
+    join sales_companies_totals t on d.cid=t.cid
+    where d.sales>0
+     and (:region='' or :region='Global' or c.region=:region) 
+     and (d.syear=@max_year)
+    group by d.syear, d.sic
+) as st
+join tmp_total_sic_subsector_psales t on st.sic=t.sic and t.subsector=:subsector
+group by 1,2", 
+          $this->getPostParams('region,subsector'));
+       return $qr->fetchAll(PDO::FETCH_OBJ);
+    }
 
     function ajxMarketSummarySubsector()
+    { // Min Size not used now
+      $db = $this->cfg->db;
+      
+      // select sics of the subsector
+      $db->query('select max(syear) from sales_divdetails into @max_year');
+      $db->query('DROP TABLE IF EXISTS tmp_selected_sics');
+      $db->query('CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL)');
+      $db->query("insert into tmp_selected_sics
+      select
+     d.sic
+from sales_divdetails d
+join sales_companies c on d.cid=c.cid
+where d.syear=@max_year and d.sales>0
+and c.subsector=:subsector
+and (:region='' or :region='Global' or c.region=:region)
+group by 1", $this->getPostParams('subsector,region') );
+
+      /*
+      
+      $qr = $db->query('call summary_by_sics(@max_year,:subsector,:region);',
+            $this->getPostParams('subsector,region') );
+      $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
+      $qr->closeCursor();        
+      // $this->res->rows = $r->rows;
+      // if (isset($r->dbg)) $this->res->dbg = $r->dbg;
+      */
+      $this->tmpSubsectorPsales('@max_year');
+      $this->res->rows = $this->calcSubsectorValues();
+      echo json_encode($this->res); 
+    }   
+
+    function ajxMarketSummarySubsectorObsolete()
     {   $params = (object)$_POST;
         $db = $this->cfg->db;
         $prm = new stdClass();
