@@ -1296,12 +1296,16 @@ group by 1", $this->getPostParams('subsector,region') );
       
       if (isset($this->res->rows[0]))
       {  
-          $this->calcAllTopN(3);
-         $this->res->rows[0]->top3sum = $this->calcSICstoSubsector('tmp_totalN_by_sic_years','proc');
+         $this->calcAllTopN(3);
+         $this->res->rows[0]->top3sum = 1*$this->calcSICstoSubsector('tmp_totalN_by_sic_years','proc');
          
          $this->calcAllTopN(5);
-         $this->res->rows[0]->top5sum = $this->calcSICstoSubsector('tmp_totalN_by_sic_years','proc');
+         $this->res->rows[0]->top5sum = 1*$this->calcSICstoSubsector('tmp_totalN_by_sic_years','proc');
          
+         // stabilities 
+         $qr = $db->query("call get_sics_stabilities(@max_year,:region)",
+             $this->getPostParams('region') );
+         $this->res->rows[0]->stability = 1*$this->calcSICstoSubsector('tmp_stabilities','stability');
       }
       echo json_encode($this->res); 
     }   
