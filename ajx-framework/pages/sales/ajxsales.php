@@ -1915,6 +1915,7 @@ group by 1");
    {  $db = $this->cfg->db; 
       $db->query('set @gr=NULL');
       $db->query('set @sc=NULL');
+      $db->query('set @n=0');
       $db->query('DROP TABLE IF EXISTS tmp_totalN_by_sic_years');
       $db->query('CREATE TEMPORARY TABLE tmp_totalN_by_sic_years
         (syear integer, sic integer, proc double, PRIMARY KEY (syear, sic))');
