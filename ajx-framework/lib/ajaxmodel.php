@@ -5,6 +5,7 @@
 
  class wAjaxModel extends wAjax
  {  var $where_parts;
+    var $order_parts;
     var $cur_page;
      
     function processModel($dir)
@@ -63,10 +64,12 @@
     }
     
     function mkOrderSQL()
-    {  if ( isset($this->model->default_order) )
+    {  if (!empty($this->order_parts))
+       {  return ' order by '.implode(',', $this->order_parts).' ';
+       }
+       if ( isset($this->model->default_order) )
        return ' order by '.$this->model->default_order.' ';
     }
-    
     
     function modelTotal($params)
     {  $db = $this->cfg->db;
@@ -96,6 +99,21 @@
        if (isset($this->model->permanent_filter))
        {   $this->where_parts[] = $this->model->permanent_filter;
        }
+       
+       if (isset($params->order))
+       {  $this->order_parts = array();
+          foreach ($params->order as $col)
+          { $d = '';
+            $r = (object)$col;
+            if (isset($r->dir) && $r->dir=='desc') $d = ' desc';
+            if (isset($r->col)) 
+            {   $fcol = filter_var($r->col,FILTER_SANITIZE_STRING);
+                $this->order_parts[] = "$fcol$d";
+            }
+          }
+          $this->res->order = $params->order;
+          unset($params->order);
+       }
 
        $this->modelTotal($params);
        
@@ -109,7 +127,7 @@
        {  $this->res->titles = array();
           $lk = explode(',', $this->model->list_columns);          
           foreach($lk as $v) 
-            $this->res->titles[] = T($v);
+          $this->res->titles[] = T($v);
           $this->res->columns = $lk;
        }
        
