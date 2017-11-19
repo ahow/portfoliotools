@@ -100,7 +100,9 @@ $(function(){
         {   var r = d.rows[i];
             if (r!=undefined)
             {  var pbar = '<div class="progress"><div class="progress-bar progress-bar-success" aria-valuemin="0" aria-valuemax="100" style="width:'+r.psale+'%"></div></div>';                
-                s+='<tr><td><a href="'+link+'/'+r.cid+'">'+r.name+'</a></td><td>'+toFloat(r.psale,2)+'</td><td>'+pbar+'</td><td>'+toFloat(r.psaleY1,2)+'</td><td>'+toFloat(r.psaleY2,2)+'</td></tr>';
+                s+='<tr><td><a href="'+link+'/'+r.cid+'">'+r.name+'</a></td><td>'
+                +toFloat(r.psale,1)+'</td><td>'+pbar+'</td><td>'
+                +toFloat(r.psaleY1,1)+'</td><td>'+toFloat(r.psaleY2,1)+'</td></tr>';
                total+=1.0*r.psale;
             }
         }
