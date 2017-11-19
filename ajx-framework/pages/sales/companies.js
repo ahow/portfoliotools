@@ -221,6 +221,27 @@ $(function(){
    var is_comp_edited = false;
 
    var model = new modelListController('#tabsearch .model-list', modelCompaniesView);
+   model.loaded(function(d){
+       var th = $('#tabsearch .model-list thead th:eq(6)');
+       th.attr('data-order','-');
+       th.html(th.html()+'&nbsp;<span class="glyphicon glyphicon-sort"></span>');
+       th.click(function(e){
+           var th = $(e.target);
+           var m = th.attr('data-order');
+           if (m=='-') 
+           { th.attr('data-order', 1);
+             th.find('span').removeClass('glyphicon-sort').addClass('glyphicon-sort-by-attributes');             
+           } else
+           if (m==1)
+           { th.attr('data-order', 2);
+             th.find('span').removeClass('glyphicon-sort-by-attributes').addClass('glyphicon-sort-by-attributes-alt');
+           } else
+           if (m==2)
+           { th.attr('data-order', '-');
+             th.find('span').removeClass('glyphicon-sort-by-attributes-alt').addClass('glyphicon-sort');
+           }
+       });       
+    });
    model.load();
    
    var selected_row = null;
