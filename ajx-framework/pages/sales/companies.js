@@ -73,7 +73,8 @@ function companieEditForm(selector)
                 s+='<td>'+i+'</td>';
                 s+='<td contenteditable="true" name="me" data-old-value="'+divs[i].years[ymax].me+'">'+divs[i].years[ymax].me+'</td>';
            //     s+='<td><input class="form-control" style="width:80px" name="sic" max="9999" type="number" value="'+sic+'" /></td>';
-                s+='<td><span>'+sic+'</span><button type="button" class="btn btn-default btn-xs">...</button></td>';
+                // s+='<td><span>'+sic+'</span><button type="button" class="btn btn-default btn-xs">...</button></td>';
+                s+='<td class="w-open-sic"><a href="javascript:">'+sic+'</a></td>';
                 s+='<td>'+divs[i].years[ymax].sic_division+'</td>';
                 s+='<td>'+divs[i].years[ymax].major_group+'</td>';
                 s+='<td>'+divs[i].years[ymax].industry_group+'</td>';
@@ -97,18 +98,9 @@ function companieEditForm(selector)
         data=keys;
         s+='</table>';
         $(selector+' .formdata').html(s);
-        
-        /*
-        $(selector+' .w-sicname').each(function(i,e){ 
-            var lk = new lookupInput($(e),'/pages/sales/Model/sic-lookup/load',{items:'all'}); 
-            lk.select(function(d){
-                  var tds = $(e).parents('tr:first').find('td');
-                  $(tds[2]).html(d.id);
-                  $(tds[2]).trigger('blur');
-            });
-        });*/
 
-        $(selector+' td button').click(function(e){                        
+        // $(selector+' td button').click(function(e){                        
+        $(selector+' td.w-open-sic').click(function(e){                        
             dialog.open(e.target);
         });
         
@@ -359,7 +351,8 @@ $(function(){
                    ajx('/pages/sales/Model/sicgroup/row',{id:sr.id}, function(d){
                      //console.log(d.row);
                        var tds =  prow.find('td');
-                       $(tds[2]).find('span').html(sr.id);
+                       // $(tds[2]).find('span').html(sr.id);
+                       $(tds[2]).find('a').html(sr.id);
                        $(tds[3]).html(d.row.sic_division);
                        $(tds[4]).html(d.row.major_group);
                        $(tds[5]).html(d.row.industry_group);
