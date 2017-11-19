@@ -83,13 +83,21 @@ function modelListController(selector, customView)
      if (onloaded!=null) onloaded(d);
    }
    
+   function order(p)
+   { if (p==null && last_params.order!=undefined) delete last_params.order;
+     else last_params.order = p;
+     console.log(last_params);
+     if (last_id==null) last_id=1;
+     load(last_id);    
+   }
+   
    model = $(selector).attr('data-model');
    
    // Redefine draw function if needed
    if (customView==undefined) ondraw = modelTableView;
    else  ondraw = customView;
    
-   return {load:load, total:total, click:click, dblclick:dblclick, loaded:loaded, refresh:refresh };
+   return {load:load, total:total, click:click, dblclick:dblclick, loaded:loaded, refresh:refresh, order:order };
 }
 
 function modelPagination(selector)
