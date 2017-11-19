@@ -1,6 +1,6 @@
 { "table": "sales_companies",
-  "select": "select cid as id,name,industry_group,industry,sector,isin,region,sales,reviewed from $table $where $order $limit",
-  "list_columns": "name,industry_group,industry,sector,isin,region,sales",
+  "select": "select cid as id,name,industry_group,industry,sector,isin,region,sales as sales_bn,reviewed from $table $where $order $limit",
+  "list_columns": "name,industry_group,industry,sector,isin,region,sales_bn",
   "primary_key": "cid",
   "default_order":"cid",
   "search":"name like :search or isin like :search or cid like :search",
