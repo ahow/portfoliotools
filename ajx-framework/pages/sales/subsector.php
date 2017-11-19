@@ -40,12 +40,13 @@
 
         <div id="mranking">
             <div class="row">
-                <div class="col-lg-6"><?=$f->search('sic_id','sic')?></div>
+                <div class="col-lg-6"><?=$f->search('subsector
+                _id','subsector')?></div>
                 <div class="col-lg-4"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
                 <div class="col-lg-2"><?=$f->input('minsize','number')?></div>
             </div>
             <div class="row">
-                <div class="col-lg-7"><p id="sic_description"></p></div>
+                <div class="col-lg-7"><p id="subsector_description"></p></div>
                 <div class="col-lg-2"><?=$f->input('year','number')?></div>                
                 <div class="col-lg-3">
                     <div class="btn-group">

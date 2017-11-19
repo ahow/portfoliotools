@@ -320,11 +320,16 @@
         $prm = new stdClass();
         $having = '';
         $region = '';
-        if (isset($params->sic) && isset($params->year))
+        if (isset($params->sic))
         {  $prm->sic =  $params->sic;
            $prm->year_max = $params->year;
            $prm->year_min = $prm->year_max-2;
-        } else return $this->error(T('SIC_OR_YEAR_NOT_FOUND'), __LINE__);
+        } else 
+        if (isset($params->subsector))
+        {  $prm->subsector =  $params->subsector;
+           $prm->year_max = $params->year;
+           $prm->year_min = $prm->year_max-2;
+        } else  return $this->error(T('SIC_OR_SUBSECTOR_NOT_FOUND'), __LINE__);
         
         if (isset($params->min_size)) 
         {  $having = ' having sum(d.sales)>:min_size ';
@@ -338,10 +343,17 @@
                $prm->region =  $params->region;
            }
         }
-        
+                
         $sql = "select d.cid,c.name,d.syear,sum(d.sales) as tsales from sales_divdetails d
 join sales_companies c on d.cid=c.cid
 where d.sic=:sic and (d.syear between :year_min and :year_max) $region
+group by 1,2,3
+$having
+order by 3 desc,4 desc";
+
+       if (isset($prm->subsector)) $sql = "select d.cid,c.name,d.syear,sum(d.sales) as tsales from sales_divdetails d
+join sales_companies c on d.cid=c.cid
+where c.subsector=:subsector and (d.syear between :year_min and :year_max) $region
 group by 1,2,3
 $having
 order by 3 desc,4 desc";
