@@ -111,7 +111,7 @@
                 $this->order_parts[] = "$fcol$d";
             }
           }
-          $this->res->order = $params->order;
+          // $this->res->order = $params->order;
           unset($params->order);
        }
 
