@@ -221,27 +221,29 @@ $(function(){
    var is_comp_edited = false;
 
    var model = new modelListController('#tabsearch .model-list', modelCompaniesView);
+   model.morder = 0;
+   
    model.loaded(function(d){
        var th = $('#tabsearch .model-list thead th:eq(6)');       
        th.attr('title','Click to change order');
        th.html(th.html()+'&nbsp;<span></span>');
+       
+       if (model.morder==1)
+          th.find('span').addClass('glyphicon glyphicon-sort-by-attributes-alt');
+       else if (model.morder==2)
+          th.find('span').addClass('glyphicon glyphicon-sort-by-attributes');
+       
        th.click(function(e){
-           var th = $(e.target);
-           var m = th.attr('data-order');
-           if (m==null) 
-           { th.attr('data-order', 1);
-             th.find('span').removeClass('glyphicon-sort').addClass('glyphicon glyphicon-sort-by-attributes');
-             model.load({order:[ {col:'sales_bn',dir:'desc'} ]});
+           model.morder++;
+           if (model.morder>2) model.morder=0;
+           if (model.morder==1)
+           {  model.load({order:[ {col:'sales_bn', dir:'desc'} ]});
            } else
-           if (m==1)
-           { th.attr('data-order', 2);
-             th.find('span').removeClass('glyphicon-sort-by-attributes').addClass('glyphicon-sort-by-attributes-alt');
-             model.load({order:[ {col:'sales_bn'} ]});
+           if (model.morder==2)
+           {  model.load({order:[ {col:'sales_bn'} ]});
            } else
-           if (m==2)
-           { th.attr('data-order', null);
-             th.find('span').removeClass('glyphicon glyphicon-sort-by-attributes-alt');
-             model.load({});
+           if (model.morder==0)
+           {  model.load({});
            }
        });       
     });
