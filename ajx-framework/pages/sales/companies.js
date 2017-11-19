@@ -228,6 +228,7 @@ $(function(){
        th.attr('title','Click to change order');
        th.html(th.html()+'&nbsp;<span></span>');
        
+       // Enable an order by sales_bn
        if (model.morder==1)
           th.find('span').addClass('glyphicon glyphicon-sort-by-attributes-alt');
        else if (model.morder==2)
