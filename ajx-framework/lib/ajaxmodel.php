@@ -105,7 +105,7 @@
           foreach ($params->order as $col)
           { $d = '';
             $r = (object)$col;
-            if (isset($r->dir) && $r->dir=='desc') $d = ' desc';
+            if (isset($r->desc) && $r->desc==true) $d = ' desc';
             if (isset($r->col)) 
             {   $fcol = filter_var($r->col,FILTER_SANITIZE_STRING);
                 $this->order_parts[] = "$fcol$d";

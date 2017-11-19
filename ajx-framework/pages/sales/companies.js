@@ -237,7 +237,7 @@ $(function(){
            model.morder++;
            if (model.morder>2) model.morder=0;
            if (model.morder==1)
-           {  model.load({order:[ {col:'sales_bn', dir:'desc'} ]});
+           {  model.load({order:[ {col:'sales_bn', desc:true} ]});
            } else
            if (model.morder==2)
            {  model.load({order:[ {col:'sales_bn'} ]});
