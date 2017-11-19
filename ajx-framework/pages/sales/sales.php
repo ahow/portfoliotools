@@ -29,6 +29,10 @@
                 $this->cfg->addJs('/html.php/pages/sales','download.js');
                 $this->cfg->addJs('/html.php/pages/sales','sic.js');
            break;           
+           case 'subsector':
+                $this->cfg->addJs('/html.php/pages/sales','download.js');
+                $this->cfg->addJs('/html.php/pages/sales','subsector.js');
+           break; 
            case 'companies':
                $this->cfg->addJs('/html.php/pages/sales','lookup.js');
                $this->cfg->addJs('/html.php/pages/sales','companies.js');
