@@ -238,13 +238,13 @@ $(function(){
            model.morder++;
            if (model.morder>2) model.morder=0;
            if (model.morder==1)
-           {  model.order([ {col:'sales_bn', desc:true} ]);
+           {  model.setParam('order', [ {col:'sales_bn', desc:true} ]);
            } else
            if (model.morder==2)
-           {  model.order([ {col:'sales_bn'} ]);
+           {  model.setParam('order', [ {col:'sales_bn'} ]);
            } else
            if (model.morder==0)
-           {  model.order(null);
+           {  model.setParam('order', null);
            }
        });       
     });

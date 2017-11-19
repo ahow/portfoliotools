@@ -83,10 +83,11 @@ function modelListController(selector, customView)
      if (onloaded!=null) onloaded(d);
    }
    
-   function order(p)
-   { if (p==null && last_params.order!=undefined) delete last_params.order;
-     else last_params.order = p;
-     console.log(last_params);
+   // name: filter, search or order
+   // p: parameter of filter search or order
+   function setParam(name, p)
+   { if (p==null && last_params[name]!=undefined) delete last_params[name];
+     else last_params[name] = p;
      if (last_id==null) last_id=1;
      load(last_id);    
    }
@@ -97,7 +98,7 @@ function modelListController(selector, customView)
    if (customView==undefined) ondraw = modelTableView;
    else  ondraw = customView;
    
-   return {load:load, total:total, click:click, dblclick:dblclick, loaded:loaded, refresh:refresh, order:order };
+   return {load:load, total:total, click:click, dblclick:dblclick, loaded:loaded, refresh:refresh, setParam:setParam };
 }
 
 function modelPagination(selector)
