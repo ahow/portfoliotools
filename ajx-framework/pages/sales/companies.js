@@ -288,6 +288,7 @@ $(function(){
         $('#tabsearch .model-list #division').val('');
         $('#tabsearch .model-list #sic').val('');
         $('#tabsearch .model-list #sic_code').attr('data-value','');
+        model.morder=0;
         model.load();
    });
    
