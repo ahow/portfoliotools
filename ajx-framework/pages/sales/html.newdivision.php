@@ -21,13 +21,27 @@
                  <div class="col-lg-2"><?=$f->search3dot('sic_code','sic')?></div>
                  <div class="col-lg-4"><?=$f->input('me')?></div>
          </div>       
-         <div class="row">           
-                 <div class="col-lg-4"><?=$f->input('syear')?></div>
-                 <div class="col-lg-2"><?=$f->input('sales')?></div>
-                 <div class="col-lg-2"><?=$f->input('ebit')?></div>
-                 <div class="col-lg-2"><?=$f->input('assets')?></div>
-                 <div class="col-lg-2"><?=$f->input('capex')?></div>
-         </div>       
+         <div class="entry">
+             <div class="row">   
+                     <div class="col-lg-4">
+                           <div class="form-group">
+                            <label for="syear">syear</label>
+                              <div class="input-group">
+                                  <span class="input-group-btn">
+                                      <button class="btn btn-success btn-add" type="button">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                      </button>
+                                  </span>
+                                  <input type="text" class="form-control" data-control-type="basic" id="syear" placeholder="syear">
+                              </div>
+                          </div>                      
+                     </div>
+                     <div class="col-lg-2"><?=$f->input('sales')?></div>
+                     <div class="col-lg-2"><?=$f->input('ebit')?></div>
+                     <div class="col-lg-2"><?=$f->input('assets')?></div>
+                     <div class="col-lg-2"><?=$f->input('capex')?></div>
+             </div>      
+         </div>
      <!-- /Edit form -->
 
         
