@@ -78,10 +78,16 @@
             </div>        
         </div>
         <div id="search_company"></div>
-        <div class="button-group">
-            <button class="btn btn-lg btn-success hidden disabled b-edit-div">Edit Division</button>
+        <div class="row" style="margin-bottom: 20px;">
+            <div class=form-group">
+                <div class="col-lg-6"> 
+                    <div class="button-group">
+                        <button class="btn btn-success disabled b-new-div">New division</button>
+                        <button class="btn btn-primary disabled b-edit-div">Edit division</button>
+                    </div>        
+                </div>
+            </div>
         </div>        
-        
     </div>
 
 </div>
