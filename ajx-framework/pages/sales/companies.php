@@ -93,3 +93,5 @@
 </div>
 <div id="search_sic"></div>
 <div id="search_sic2"></div>
+<div id="search_sic3"></div>
+<div id="newdivision"></div>

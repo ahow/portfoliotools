@@ -1,6 +1,15 @@
 
 var dialog;
 
+function dlgDivision(selector)
+{
+    function show()
+    {  $(selector+' div.modal').modal();         
+    }
+    
+    return {show:show}
+}
+
 function companieEditForm(selector)
 {   
     var onclickse = null;
@@ -177,6 +186,7 @@ function companieEditForm(selector)
     return {click:click, draw:draw, getrow:getrow, load:load, getCID:getCID}
 }
 
+
 function modelCompaniesView(selector,d,onclick,ondblclick)
 {  var s = '';
    var i;
@@ -265,6 +275,8 @@ $(function(){
         compData.loadrow({cid:row.id});
         // compData.setData(row);
         $('#tbedit').removeClass('disabled');
+        
+       $('button.b-new-div').removeClass('disabled');
         // console.log(row);
    });
    
@@ -290,6 +302,8 @@ $(function(){
         $('#tabsearch .model-list #sic_code').attr('data-value','');
         model.morder=0;
         model.load();
+        $('button.b-new-div').addClass('disabled');
+        $('button.b-edit-div').addClass('disabled');
    });
    
    $('#tabsearch  .model-list .model-search input').keyup(function(d){ 
@@ -337,6 +351,7 @@ $(function(){
         }
    });
    
+
     // ------- First tab opened -----------------------
    $("a[href='#tabsearch']").on('show.bs.tab', function(e) {
       if (is_comp_edited)
@@ -346,19 +361,50 @@ $(function(){
    });
 
    var dsic;
+
+   var dlgDiv = null; 
+   
+      
+   
+    views.view('/pages/sales/newdivision','#newdivision', function(){
+       var dsic3;
+       
+       dlgDiv = new dlgDivision('#newdivision');
+       $('button.b-new-div').click(function(){
+            dlgDiv.show();
+        });
+        
+        
+       views.view('/pages/sales/search','#search_sic3', function(){        
+            dsic3 = new searchDialog('#search_sic3', "/pages/sales/Model/sic-search",'Search SIC');
+            
+            dsic3.select(function(sr, target){
+               $('.w-division #sic').val(sr.name);
+               //  $('.model-list #sic_code').attr('data-value',sr.id);
+               console.log(sr);
+            });
+            
+            $('.w-division #sic_code button').click(function(){
+                dsic3.open();
+            });
+        
+        });
+       
+    });
    
    views.view('/pages/sales/search','#search_sic2', function(){        
         dsic = new searchDialog('#search_sic2', "/pages/sales/Model/sic-search",'Search SIC');
         dsic.select(function(sr, target){
-            console.log(sr);
             $('.model-list #sic').val(sr.name);
             $('.model-list #sic_code').attr('data-value',sr.id);
         });
         
-        $('#sic_code button').click(function(){
+        $('.model-list #sic_code button').click(function(){
             dsic.open();
         });
    });
+   
+
          
     // search SIC 
     views.view('/pages/sales/search','#search_sic', function(){        
