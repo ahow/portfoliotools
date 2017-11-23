@@ -173,12 +173,17 @@
        foreach($model->$option as $group)
        { if ($this->cfg->inGroup($group)) return true;
        }
-       $this->error(T('NOT_IN_GROUP').': '.implode(', ',$model->$option),__LINE__);
        return false;
     }
 
+    function accessAllowed($model, $option)
+    {  $r = $this->checkAccess($model, $option);
+       if (!$r) $this->error(T('NOT_IN_GROUP').': '.implode(', ',$model->$option),__LINE__);
+       return $r;
+    }
+
     function modelDelete($model)
-    {   if (!$this->checkAccess($model,'allow_delete')) return;
+    {   if (!$this->accessAllowed($model,'allow_delete')) return;
         if (isset($model->delete))
         {   $params = (object)$_POST;
             $db = $this->cfg->db;
@@ -195,7 +200,7 @@
     }
 
     function modelInsert($model)
-    {   if (!$this->checkAccess($model,'allow_insert')) return;
+    {   if (!$this->accessAllowed($model,'allow_insert')) return;
         $row = (object)$_POST;
         $db = $this->cfg->db;
         
@@ -220,7 +225,7 @@
     }
     
     function modelUpdate($model)
-    {   if (!$this->checkAccess($model,'allow_update')) return;
+    {   if (!$this->accessAllowed($model,'allow_update')) return;
         $row = (object)$_POST;
         $db = $this->cfg->db;
         
