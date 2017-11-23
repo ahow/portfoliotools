@@ -145,6 +145,12 @@
              return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
             $this->$method();
        }
+       
+       $acl = new stdClass();
+       $acl->del  = $this->checkAccess($this->model,'allow_delete');
+       $acl->ins  = $this->checkAccess($this->model,'allow_insert');
+       $acl->upd  = $this->checkAccess($this->model,'allow_update');
+       $this->res->acl = $acl;
               
        echo json_encode($this->res);
     }
