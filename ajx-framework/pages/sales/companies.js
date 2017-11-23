@@ -148,12 +148,12 @@ function companieEditForm(selector)
               //  s+='<td name="readonly"><input class="w-sicname form-control" value="'+divs[i].years[ymax].sicname+'"></td>';
                 var base = divs[i].years[ymax].sales; 
                 var base_me = divs[i].years[ymax].me;
-                s+='<td contenteditable="true" name="sales" data-old-value="'+base+'">'+base+'</td>';
+                s+='<td contenteditable="true" name="sales" data-old-value="'+base+'">'+(1.0*base).toFixed(2)+'</td>';
                 for (var y=ymax; y>=ymin; y--)
                 {  // if (divs[i].years[y]!=undefined && base!=0.0 && base_me==divs[i].years[y].me)
                     if (divs[i].years[y]!=undefined && base!=0.0)
                         //  s+='<td class="a-right">'+((divs[i].years[y].sales/base)*100).toFixed(2)+'</td>';
-                        s+='<td class="a-right">'+toFloat((divs[i].years[y].sales/ytotal[y])*100,0)+'</td>';
+                        s+='<td class="a-right">'+toFloat((divs[i].years[y].sales/ytotal[y])*100,2)+'</td>';
                     else
                         s+='<td class="a-right">-</td>';
                 }
@@ -256,7 +256,10 @@ function modelCompaniesView(selector,d,onclick,ondblclick)
        var cl = '';
        if (r.reviewed==1) cl=' class="w-reviewed"';
        if (r.id!=undefined) s+='<tr data-id="'+i+'"'+cl+'>'; else s+='<tr>';
-       for (j in d.columns) s+='<td>'+r[ d.columns[j] ]+'</td>';
+       for (j in d.columns) 
+       {   if (d.columns[j]=='sales_bn') s+='<td>'+(1.0*r[ d.columns[j] ]).toFixed(2)+'</td>';
+           else s+='<td>'+r[ d.columns[j] ]+'</td>';
+       }
        s+='</tr>';
    }
    $(selector).find('tbody').html(s);
