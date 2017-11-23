@@ -76,14 +76,20 @@
     function ajxInsertDivisions()
     {  $db = $this->cfg->db;
        $d = (object)$_POST;
-       if (!$this->authGroup('admin')) return;
-       foreach ($d->rows as $r)
-       {  $db->query("insert into sales_divdetails 
- (cid,division,syear,me,sic,sales,ebit,assets,capex) values
- (:cid,:division,:syear,:me,:sic,:sales,:ebit,:assets,:capex)",$r);
-       } 
-       $this->res->info = T('SAVED');
-       echo json_encode($this->res); 
+       
+       if ($this->cfg->inGroup('admin') || $this->cfg->inGroup('editor') )
+       {
+       
+           if (!$this->authGroup('admin')) return;
+           
+           foreach ($d->rows as $r)
+           {  $db->query("insert into sales_divdetails 
+     (cid,division,syear,me,sic,sales,ebit,assets,capex) values
+     (:cid,:division,:syear,:me,:sic,:sales,:ebit,:assets,:capex)",$r);
+           } 
+           $this->res->info = T('SAVED');
+           echo json_encode($this->res); 
+       } else $this->error(T("NOT_IN_GROUP")." admin or editor", 92);
     }
 
     function runSQL($scfile)
