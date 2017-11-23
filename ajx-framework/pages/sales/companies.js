@@ -373,6 +373,8 @@ $(function(){
        $('button.b-new-div').click(function(){
             if (selected_row!=null) 
             {   $('label.w-company-name').html(selected_row.name).attr('data-id', selected_row.id);
+                $('.w-division .entry:not(:last)').remove();
+                $('.w-division td[contenteditable="true"]').html('');
                 dlgDiv.show();
             }
         });
@@ -398,7 +400,7 @@ $(function(){
           var controlForm = $('.w-entry-body'),
           currentEntry = $(this).parents('.entry:first'),
           newEntry = $(currentEntry.clone()).appendTo(controlForm);
-          // vld.keyupValidateOn( newEntry.find('input') );
+          // vld.keyupValidateOn( newEntry.find('input') );          
           newEntry.find('td[contenteditable="true"]').html('');
           newEntry.find('a.w-select-sic').click(function(e){
                 dsic3.open(e.target);
