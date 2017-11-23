@@ -379,13 +379,11 @@ $(function(){
             dsic3 = new searchDialog('#search_sic3', "/pages/sales/Model/sic-search",'Search SIC');
             
             dsic3.select(function(sr, target){
-               $('.w-division #sic').val(sr.name);
-               //  $('.model-list #sic_code').attr('data-value',sr.id);
-               console.log(sr);
+               $(target).html(sr.name).attr('data-id', sr.id);
             });
             
-            $('.w-division #sic_code button').click(function(){
-                dsic3.open();
+            $('.w-division a.w-select-sic').click(function(e){
+                dsic3.open(e.target);
             });
         
         });
@@ -394,11 +392,14 @@ $(function(){
         $(document).on('click', '.btn-add', function(e)
         {
           e.preventDefault();
-          var controlForm = $('div.w-division'),
+          var controlForm = $('.w-entry-body'),
           currentEntry = $(this).parents('.entry:first'),
           newEntry = $(currentEntry.clone()).appendTo(controlForm);
           // vld.keyupValidateOn( newEntry.find('input') );
-          newEntry.find('input').val('');
+          newEntry.find('td[contenteditable="true"]').html('');
+          newEntry.find('a.w-select-sic').click(function(e){
+                dsic3.open(e.target);
+          });
           controlForm.find('.entry:not(:last) .btn-add')
           .removeClass('btn-add').addClass('btn-remove')
           .removeClass('btn-success').addClass('btn-danger')

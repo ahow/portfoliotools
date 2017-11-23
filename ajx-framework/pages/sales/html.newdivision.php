@@ -16,32 +16,42 @@
 
      <!-- Edit form -->   
          <div class="row">           
-                 <div class="col-lg-4"><label>COMPANY Name</label></div>
+                 <div class="col-lg-5"><label>COMPANY Name</label></div>
                  <div class="col-lg-2"><?=$f->input('num')?></div>
-                 <div class="col-lg-2"><?=$f->search3dot('sic_code','sic')?></div>
-                 <div class="col-lg-4"><?=$f->input('me')?></div>
-         </div>       
-         <div class="entry">
-             <div class="row">   
-                     <div class="col-lg-4">
-                           <div class="form-group">
-                            <label for="syear">syear</label>
-                              <div class="input-group">
+                 <div class="col-lg-5"><?=$f->input('me')?></div>
+         </div>
+         <table class="table table-striped">
+           <thead>
+             <tr>
+                  <th>Year</th>
+                  <th>Industry details</th>
+                  <th>Sales</th>
+                  <th>Ebit</th>
+                  <th>Assets</th>
+                  <th>Capex</th>
+             </tr>
+            </thead>
+            <tbody class="w-entry-body">
+                <tr class="entry">
+                    <td class="col-xs-3">
+                       <div class="input-group">
                                   <span class="input-group-btn">
                                       <button class="btn btn-success btn-add" type="button">
                                         <span class="glyphicon glyphicon-plus"></span>
                                       </button>
                                   </span>
-                                  <input type="text" class="form-control" data-control-type="basic" id="syear" placeholder="syear">
-                              </div>
-                          </div>                      
-                     </div>
-                     <div class="col-lg-2"><?=$f->input('sales')?></div>
-                     <div class="col-lg-2"><?=$f->input('ebit')?></div>
-                     <div class="col-lg-2"><?=$f->input('assets')?></div>
-                     <div class="col-lg-2"><?=$f->input('capex')?></div>
-             </div>      
-         </div>
+                                  <input type="text " class="form-control" data-control-type="basic" id="syear" placeholder="syear">
+                        </div>  
+                    </td>
+                    <td name="sic"><a class="w-select-sic" href="javascript:">Select SIC</a></td>
+                    <td name="sales" contenteditable="true"></td>
+                    <td name="ebit" contenteditable="true"></td>
+                    <td name="assets" contenteditable="true"></td>
+                    <td name="capex" contenteditable="true"></td>
+                </tr>
+                
+            </tbody>
+         </table>
      <!-- /Edit form -->
 
         
