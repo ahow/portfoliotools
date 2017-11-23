@@ -67,7 +67,8 @@ function dlgDivision(selector)
 
 function companieEditForm(selector)
 {   
-    var onclickse = null;
+    var onclick_ = null;
+    var ondelete_ = null;
     var data =  null;
     var cid = null; // companie ID    
     
@@ -195,12 +196,20 @@ function companieEditForm(selector)
            $(row.target).parents('table:first').find('tr').removeClass('active');
            var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
            $('button.b-edit-div').removeClass('disabled');
-           if(onclick!=null) onclick(data[id]);
+           if(onclick_!=null) onclick_(data[id]);
         });
-        $('button.b-edit-div').addClass('disabled');        
+        $('button.b-edit-div').addClass('disabled'); 
+        
+        $(selector+' .b-delete-division').click(function(e){
+           var id = $(e.target).parents('tr:first').attr('data-id');   
+           if(ondelete_!=null) ondelete_(data[id]);
+        }); 
+              
     }
     
-    function click(fu) { onclick=fu }
+    function click(fu) { onclick_=fu }
+    
+    function ondelete(fu) { ondelete_=fu }
  
     function getrow(id){ return data[id]; }
     
@@ -225,7 +234,7 @@ function companieEditForm(selector)
     
     function getCID(){ return cid }
 
-    return {click:click, draw:draw, getrow:getrow, load:load, getCID:getCID}
+    return {click:click, draw:draw, getrow:getrow, load:load, ondelete:ondelete, getCID:getCID}
 }
 
 
@@ -309,6 +318,18 @@ $(function(){
    filterData = new modelFormController('#tabsearch');
    
    var views = new htviewCached();
+
+   editF.ondelete(function(r){
+       if (confirm('Delete division #'+r.division+'?'))
+       {   console.log(r);
+           ajx('/pages/sales/Model/editdiv/delete', {cid:r.cid, division:r.division}, function(d){                   
+                   if (!d.error) 
+                   { setOk(d.info); 
+                     editF.load(selected_row);  
+                   }                   
+           });           
+       }
+   });
 
    model.click(function(e, row){        
         selected_row = row;
