@@ -76,6 +76,7 @@
     function ajxInsertDivisions()
     {  $db = $this->cfg->db;
        $d = (object)$_POST;
+       if (!$this->authGroup('admin')) return;
        foreach ($d->rows as $r)
        {  $db->query("insert into sales_divdetails 
  (cid,division,syear,me,sic,sales,ebit,assets,capex) values
