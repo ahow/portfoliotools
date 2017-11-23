@@ -375,6 +375,7 @@ $(function(){
             {   $('label.w-company-name').html(selected_row.name).attr('data-id', selected_row.id);
                 $('.w-division .entry:not(:last)').remove();
                 $('.w-division td[contenteditable="true"]').html('');
+                $('.w-division a.w-select-sic').html('[Select SIC...]').attr('data-id',null);
                 dlgDiv.show();
             }
         });
