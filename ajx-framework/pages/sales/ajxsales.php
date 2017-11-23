@@ -89,7 +89,7 @@
            } 
            $this->res->info = T('SAVED');
            echo json_encode($this->res); 
-       } else $this->error(T("NOT_IN_GROUP")." admin or editor", 92);
+       } else $this->error(T("NOT_IN_GROUP").": admin or editor", 92);
     }
 
     function runSQL($scfile)
