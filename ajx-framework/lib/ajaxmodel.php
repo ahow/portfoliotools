@@ -168,8 +168,18 @@
         echo json_encode($this->res);
     }
 
+    function checkAccess($model, $option)
+    {  if (!isset($model->$option)) return true;       
+       foreach($model->$option as $group)
+       { if ($this->cfg->inGroup($group)) return true;
+       }
+       $this->error(T('NOT_IN_GROUP').': '.implode(', ',$model->$option),__LINE__);
+       return false;
+    }
+
     function modelDelete($model)
-    {   if (isset($model->delete))
+    {   if (!$this->checkAccess($model,'allow_delete')) return;
+        if (isset($model->delete))
         {   $params = (object)$_POST;
             $db = $this->cfg->db;
             if (isset($model->beforeDelete))
@@ -185,7 +195,8 @@
     }
 
     function modelInsert($model)
-    {   $row = (object)$_POST;
+    {   if (!$this->checkAccess($model,'allow_insert')) return;
+        $row = (object)$_POST;
         $db = $this->cfg->db;
         
         if (isset($model->beforeInsert))
@@ -209,7 +220,8 @@
     }
     
     function modelUpdate($model)
-    {   $row = (object)$_POST;
+    {   if (!$this->checkAccess($model,'allow_update')) return;
+        $row = (object)$_POST;
         $db = $this->cfg->db;
         
         if (!isset($model->primary_key))
