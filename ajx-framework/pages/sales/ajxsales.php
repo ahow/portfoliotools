@@ -72,6 +72,18 @@
        }  
        $this->res->info = T('SAVED');
     }
+    
+    function ajxInsertDivisions()
+    {  $db = $this->cfg->db;
+       $d = (object)$_POST;
+       foreach ($d->rows as $r)
+       {  $db->query("insert into sales_divdetails 
+ (cid,division,syear,me,sic,sales,ebit,assets,capex) values
+ (:cid,:division,:syear,:me,:sic,:sales,:ebit,:assets,:capex)",$r);
+       } 
+       $this->res->info = T('SAVED');
+       echo json_encode($this->res); 
+    }
 
     function runSQL($scfile)
     {   $db = $this->cfg->db;

@@ -2,12 +2,67 @@
 var dialog;
 
 function dlgDivision(selector)
-{
+{   var after_save = null;
+    
+    function onsave(fu)  { after_save = fu; }
+    
     function show()
     {  $(selector+' div.modal').modal();         
     }
+
+    function hide()
+    {  $(selector+' div.modal').modal('hide');
+    }
     
-    return {show:show}
+    function getFloat(s)
+    { if (s=='') return null;
+      if (isNaN(s)) return null;
+      return 1.0*s;
+    }
+
+    function getString(s)
+    { if (s=='') return null;
+      return s;
+    }    
+
+    function getInt(s)
+    { if (s=='') return null;
+      if (isNaN(s)) return null;
+      return 1*s;
+    }  
+
+    function save()
+    {  var res = [];
+       var num = getInt( $(selector+' #num').val() );
+       var me = getString( $(selector+' #me').val() ); 
+       var rows = $(selector+' .w-entry-body tr');
+       var cid = getString( $(selector+' .w-company-name').attr('data-id') );
+       for (var i=0; i<rows.length; i++)
+       { var r = $(rows[i]);
+         var d = {};
+         d.division = num;
+         d.me = me;
+         d.syear = getInt( r.find('#syear').val() );
+         d.sic= getInt( r.find('.w-select-sic').attr('data-id') );
+         d.cid = cid;
+         d.sales = getFloat( r.find('td:eq(2)').html() );
+         d.ebit = getFloat( r.find('td:eq(3)').html() );
+         d.assets = getFloat( r.find('td:eq(4)').html() );
+         d.capex = getFloat( r.find('td:eq(5)').html() );
+         res.push(d);
+       }
+       
+       if (res.length>0)
+       {   ajx('/pages/sales/InsertDivisions', {rows:res}, function(d){                                      
+               if (!d.error) 
+               {  setOk(d.info); 
+                  if (after_save!=null) after_save(d);
+               }
+           });
+       }
+    }
+    
+    return {show:show, hide:hide,  save:save, onsave:onsave}
 }
 
 function companieEditForm(selector)
@@ -379,7 +434,15 @@ $(function(){
                 dlgDiv.show();
             }
         });
+
+        dlgDiv.onsave(function(d){
+            editF.load(selected_row);
+            dlgDiv.hide();
+        });
         
+        $('button.b-save-division').click(function(){        
+            dlgDiv.save();
+        });
         
        views.view('/pages/sales/search','#search_sic3', function(){        
             dsic3 = new searchDialog('#search_sic3', "/pages/sales/Model/sic-search",'Search SIC');
