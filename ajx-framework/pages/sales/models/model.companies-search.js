@@ -6,5 +6,8 @@
   "search":"name like :search or isin like :search or sector like :search or cid like :search",
   "rows_number_limit": 8,
   "select_row": "select * from $table where id=:id",
-  "select_total": "select count(*) from $table $where"
+  "select_total": "select count(*) from $table $where",
+  "allow_update": ["editor","admin"],
+  "allow_insert": ["editor","admin"],
+  "allow_delete": ["editor","admin"]
 }
