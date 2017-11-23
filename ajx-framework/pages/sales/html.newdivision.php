@@ -43,7 +43,7 @@
                                   <input type="text " class="form-control" data-control-type="basic" id="syear" placeholder="syear">
                         </div>  
                     </td>
-                    <td name="sic"><a class="w-select-sic" href="javascript:">Select SIC</a></td>
+                    <td name="sic"><a class="w-select-sic" href="javascript:">[Select SIC...]</a></td>
                     <td name="sales" contenteditable="true"></td>
                     <td name="ebit" contenteditable="true"></td>
                     <td name="assets" contenteditable="true"></td>
