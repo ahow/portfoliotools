@@ -119,7 +119,8 @@ function companieEditForm(selector)
 
         var s = '<table class="table table-striped selectable">';
         s+='<tr>';
-        s+='<th>#</th><th>Division</th><th>SIC</th><th>SIC division</th><th>Major group</th><th>Industry group</th><th>Industry</th>';
+        s+='<th>#</th><th>Division</th><th>SIC</th>'
+        +'<th>Industry</th><th>Major group</th><th>SIC description</th>'; // <th>Industry group</th>
         s+='<th>Sales '+ymax+'</th>';
         for (var y=ymax; y>=ymin; y--) s+='<th class="a-right">%<br>'+y+'</th>';
         s+='</tr>'; 
@@ -140,12 +141,10 @@ function companieEditForm(selector)
            //     s+='<td><input class="form-control" style="width:80px" name="sic" max="9999" type="number" value="'+sic+'" /></td>';
                 // s+='<td><span>'+sic+'</span><button type="button" class="btn btn-default btn-xs">...</button></td>';
                 s+='<td class="w-open-sic"><a href="javascript:">'+sic+'</a></td>';
-                s+='<td>'+divs[i].years[ymax].sic_division+'</td>';
+                s+='<td>'+divs[i].years[ymax].sicname+'</td>';  // Industry
                 s+='<td>'+divs[i].years[ymax].major_group+'</td>';
-                s+='<td>'+divs[i].years[ymax].industry_group+'</td>';
-                s+='<td>'+divs[i].years[ymax].sicname+'</td>';
-             //   s+='<td class="w-sicname" name="readonly" contenteditable="true">'+divs[i].years[ymax].sicname+'</td>';
-              //  s+='<td name="readonly"><input class="w-sicname form-control" value="'+divs[i].years[ymax].sicname+'"></td>';
+                s+='<td>'+divs[i].years[ymax].sic_division+'</td>'; // SIC Division
+                // s+='<td>'+divs[i].years[ymax].industry_group+'</td>';
                 var base = divs[i].years[ymax].sales; 
                 var base_me = divs[i].years[ymax].me;
                 s+='<td contenteditable="true" name="sales" data-old-value="'+base+'">'+(1.0*base).toFixed(2)+'</td>';
