@@ -371,7 +371,10 @@ $(function(){
        
        dlgDiv = new dlgDivision('#newdivision');
        $('button.b-new-div').click(function(){
-            dlgDiv.show();
+            if (selected_row!=null) 
+            {   $('label.w-company-name').html(selected_row.name).attr('data-id', selected_row.id);
+                dlgDiv.show();
+            }
         });
         
         
@@ -383,7 +386,7 @@ $(function(){
             });
             
             $('.w-division a.w-select-sic').click(function(e){
-                dsic3.open(e.target);
+                dsic3.open(e.target);                
             });
         
         });

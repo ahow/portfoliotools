@@ -16,7 +16,7 @@
 
      <!-- Edit form -->   
          <div class="row">           
-                 <div class="col-lg-5"><label>COMPANY Name</label></div>
+                 <div class="col-lg-5"><label class="w-company-name">COMPANY Name</label></div>
                  <div class="col-lg-2"><?=$f->input('num')?></div>
                  <div class="col-lg-5"><?=$f->input('me')?></div>
          </div>
@@ -33,14 +33,14 @@
             </thead>
             <tbody class="w-entry-body">
                 <tr class="entry">
-                    <td class="col-xs-3">
+                    <td class="col-xs-2">
                        <div class="input-group">
                                   <span class="input-group-btn">
                                       <button class="btn btn-success btn-add" type="button">
                                         <span class="glyphicon glyphicon-plus"></span>
                                       </button>
                                   </span>
-                                  <input type="text " class="form-control" data-control-type="basic" id="syear" placeholder="syear">
+                                  <input type="text " class="form-control" data-control-type="basic" id="syear" placeholder="Year">
                         </div>  
                     </td>
                     <td name="sic"><a class="w-select-sic" href="javascript:">[Select SIC...]</a></td>
