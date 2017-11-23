@@ -134,7 +134,7 @@ function companieEditForm(selector)
                 keys[i].division = i;
                 
                 s+='<tr data-id="'+i+'">';
-                s+='<td>'+i+'</td>';
+                s+='<td><button type="button" title="Delete" class="btn btn-danger b-delete-division"><span class="glyphicon glyphicon-remove"></span>&nbsp;'+i+'</button></td>';
                 s+='<td contenteditable="true" name="me" data-old-value="'+divs[i].years[ymax].me+'">'+divs[i].years[ymax].me+'</td>';
            //     s+='<td><input class="form-control" style="width:80px" name="sic" max="9999" type="number" value="'+sic+'" /></td>';
                 // s+='<td><span>'+sic+'</span><button type="button" class="btn btn-default btn-xs">...</button></td>';
@@ -184,20 +184,7 @@ function companieEditForm(selector)
                delete r.year;
                ajx('/pages/sales/Model/editdiv/update', r, function(d){                   
                    td.attr('data-old-value', value);
-                   if (!d.error) setOk(d.info); 
-                   // reload sic data
-                   /*
-                   if (name=='sic')
-                   { 
-                       ajx('/pages/sales/Model/sicgroup/row',{id:value}, function(d){
-                           var tds =  prow.find('td');
-                           $(tds[3]).html(d.row.sic_division);
-                           $(tds[4]).html(d.row.major_group);
-                           $(tds[5]).html(d.row.industry_group);
-                           $(tds[6]).html(d.row.industry);
-                       });
-                   }
-                   */
+                   if (!d.error) setOk(d.info);
                });
             }
             
