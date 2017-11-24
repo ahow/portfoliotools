@@ -1,6 +1,23 @@
 
 var dialog;
 
+function getFloat(s)
+{ if (s=='') return null;
+  if (isNaN(s)) return null;
+  return 1.0*s;
+}
+
+function getString(s)
+{ if (s=='') return null;
+  return s;
+}    
+
+function getInt(s)
+{ if (s=='') return null;
+  if (isNaN(s)) return null;
+  return 1*s;
+} 
+
 function dlgDivision(selector)
 {   var after_save = null;
     
@@ -13,23 +30,6 @@ function dlgDivision(selector)
     function hide()
     {  $(selector+' div.modal').modal('hide');
     }
-    
-    function getFloat(s)
-    { if (s=='') return null;
-      if (isNaN(s)) return null;
-      return 1.0*s;
-    }
-
-    function getString(s)
-    { if (s=='') return null;
-      return s;
-    }    
-
-    function getInt(s)
-    { if (s=='') return null;
-      if (isNaN(s)) return null;
-      return 1*s;
-    }  
 
     function save()
     {  var res = [];
@@ -64,6 +64,87 @@ function dlgDivision(selector)
     
     return {show:show, hide:hide,  save:save, onsave:onsave}
 }
+
+function editDivision(selector)
+{   var after_save = null;
+    var div = null;
+    var afterdraw = null;
+    var cid;
+    
+    function onsave(fu)  { after_save = fu; }
+    function onafterdraw(fu)  { afterdraw = fu; }
+    
+    function draw(d)
+    { var s = '';      
+      for (var i=0; i<d.rows.length; i++)
+      { var r = d.rows[i];
+        s+='<tr>';
+        s+='<td contenteditable="true">'+r.syear+'</td>';
+        s+='<td contenteditable="true">'+r.me+'</td>';
+        s+='<td><a class="w-select-sic" data-id="'+r.sic+'" href="javascript:">'+r.name+'</a></td>';
+        s+='<td contenteditable="true">'+r.sales+'</td>';
+        s+='<td contenteditable="true">'+r.ebit+'</td>';
+        s+='<td contenteditable="true">'+r.assets+'</td>';
+        s+='<td contenteditable="true">'+r.capex+'</td>';
+        s+='</tr>';        
+      }
+      $(selector+' .w-entry-body').html(s);
+      if (afterdraw!=null) afterdraw(d);
+    }
+    
+    function load()
+    {  ajx('/pages/sales/Model/editdivs/load', {cid:div.cid,
+       division:div.division}, function(d){              
+          draw(d);
+          $(selector+' div.modal').modal();  
+       });
+    }
+    
+    function show(company, row)
+    {   div = row;
+        load();
+        cid = company.id;
+        $(selector+' label.w-company-name').html(company.name).attr('data-id', company.id);
+        $(selector+' label .w-division').html(row.division);
+    }
+
+    function hide()
+    {  $(selector+' div.modal').modal('hide');
+    }
+
+    function save()
+    {  var res = [];
+       var num = getInt( $(selector+' #num').val() );
+       var me = getString( $(selector+' #me').val() ); 
+       var rows = $(selector+' .w-entry-body tr');
+       for (var i=0; i<rows.length; i++)
+       { var r = $(rows[i]);
+         var d = {};
+         d.division = div.division;
+         d.syear = getInt( r.find('td:eq(0)').html() );
+         d.me = getString( r.find('td:eq(1)').html() );
+         d.sic= getInt( r.find('.w-select-sic').attr('data-id') );
+         d.cid = cid;
+         d.sales = getFloat( r.find('td:eq(3)').html() );
+         d.ebit = getFloat( r.find('td:eq(4)').html() );
+         d.assets = getFloat( r.find('td:eq(5)').html() );
+         d.capex = getFloat( r.find('td:eq(6)').html() );
+         res.push(d);
+       }
+       console.log(res);
+       if (res.length>0)
+       {   ajx('/pages/sales/UpdateDivisions', {rows:res}, function(d){                                      
+               if (!d.error) 
+               {  setOk(d.info); 
+                  if (after_save!=null) after_save(d);
+               }
+           });
+       }
+    }
+    
+    return {show:show, hide:hide,  save:save, onsave:onsave, onafterdraw:onafterdraw}
+}
+
 
 function companieEditForm(selector)
 {   
@@ -313,12 +394,17 @@ $(function(){
    model.load();
    
    var selected_row = null;
+   var selected_div = null;
 
    var editF = new companieEditForm('#form1');
    compData = new modelFormController('#company-data');
    filterData = new modelFormController('#tabsearch');
    
    var views = new htviewCached();
+
+   editF.click(function(row){
+      selected_div = row;
+   });
 
    editF.ondelete(function(r){
        if (confirm('Delete division #'+r.division+'?'))
@@ -426,11 +512,33 @@ $(function(){
    var dsic;
 
    var dlgDiv = null; 
+   var editDiv = null; 
+   var dsic3; // Search sic dialog
+   
+   $('button.b-edit-div').click(function(){
+        if (selected_div!=null)
+        {  if (editDiv!=null) editDiv.show(selected_row, selected_div);
+           else
+           {   views.view('/pages/sales/editdivisions','#editdivisions', function(){
+                  editDiv = new editDivision('#editdivisions');    
+                  $('#editdivisions .b-save-division').click( function(){
+                      editDiv.save(); 
+                  });
+                  editDiv.onafterdraw(function(){
+                      $('#editdivisions a.w-select-sic').click(function(e){
+                            dsic3.open(e.target);                
+                      }); 
+                  });
+                  editDiv.show(selected_row, selected_div);
+                             
+               });
+           }
+        }
+   });
    
       
    
     views.view('/pages/sales/newdivision','#newdivision', function(){
-       var dsic3;
        
        dlgDiv = new dlgDivision('#newdivision');
        $('button.b-new-div').click(function(){

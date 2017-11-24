@@ -83,7 +83,7 @@
                 <div class="col-lg-6"> 
                     <div class="button-group">
                         <button class="btn btn-success disabled b-new-div">New division</button>
-                        <!-- <button class="btn btn-primary disabled b-edit-div">Edit division</button> -->
+                        <button class="btn btn-primary disabled b-edit-div">Edit division</button>
                     </div>        
                 </div>
             </div>
@@ -95,3 +95,4 @@
 <div id="search_sic2"></div>
 <div id="search_sic3"></div>
 <div id="newdivision"></div>
+<div id="editdivisions"></div>
