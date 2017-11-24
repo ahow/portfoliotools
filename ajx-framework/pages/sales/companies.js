@@ -97,10 +97,11 @@ function companieEditForm(selector)
         for (i=0; i<d.rows.length; i++)
         { var r=d.rows[i];
           var dv = 1*r.number;
-          if (divs[dv]==undefined) divs[dv]={years:{}};
+          if (divs[dv]==undefined) divs[dv]={years:{}, ymax:-1000000};
           var yr = 1*r.syear;
           if (yr<ymin) ymin=yr;
           if (yr>ymax) ymax=yr;
+          if (divs[dv].ymax<yr) divs[dv].ymax = yr;
           if (divs[dv].years[yr]==undefined) divs[dv].years[yr]={};
           if (ytotal[r.syear]==undefined) ytotal[r.syear]=0.0;
           ytotal[yr]+=1.0*r.sales;
@@ -114,8 +115,6 @@ function companieEditForm(selector)
           divs[dv].years[yr].industry_group = r.industry_group;
           divs[dv].years[yr].divdetail_id = r.divdetail_id;
         }
-        
-        // console.log(ytotal);
 
         var s = '<table class="table table-striped selectable">';
         s+='<tr>';
@@ -126,27 +125,27 @@ function companieEditForm(selector)
         s+='</tr>'; 
         
         for (i=1; i<divs.length; i++)
-        {   if (divs[i].years[ymax]!=undefined)
+        {   var ym = divs[i].ymax;
+            if (divs[i].years[ym]!=undefined)
             {
-                var sic = divs[i].years[ymax].sic;
-                
+                var sic = divs[i].years[ym].sic;                
                 keys[i] = {};
-                keys[i].year = ymax;
-                keys[i].cid = divs[i].years[ymax].cid;
+                keys[i].year = ym;
+                keys[i].cid = divs[i].years[ym].cid;
                 keys[i].division = i;
                 
                 s+='<tr data-id="'+i+'">';
                 s+='<td><button type="button" title="Delete" class="btn btn-danger b-delete-division"><span class="glyphicon glyphicon-remove"></span>&nbsp;'+i+'</button></td>';
-                s+='<td contenteditable="true" name="me" data-old-value="'+divs[i].years[ymax].me+'">'+divs[i].years[ymax].me+'</td>';
+                s+='<td contenteditable="true" name="me" data-old-value="'+divs[i].years[ym].me+'">'+divs[i].years[ym].me+'</td>';
            //     s+='<td><input class="form-control" style="width:80px" name="sic" max="9999" type="number" value="'+sic+'" /></td>';
                 // s+='<td><span>'+sic+'</span><button type="button" class="btn btn-default btn-xs">...</button></td>';
                 s+='<td class="w-open-sic"><a href="javascript:">'+sic+'</a></td>';
-                s+='<td>'+divs[i].years[ymax].sicname+'</td>';  // Industry
-                s+='<td>'+divs[i].years[ymax].major_group+'</td>';
-                s+='<td>'+divs[i].years[ymax].sic_division+'</td>'; // SIC Division
+                s+='<td>'+divs[i].years[ym].sicname+'</td>';  // Industry
+                s+='<td>'+divs[i].years[ym].major_group+'</td>';
+                s+='<td>'+divs[i].years[ym].sic_division+'</td>'; // SIC Division
                 // s+='<td>'+divs[i].years[ymax].industry_group+'</td>';
-                var base = divs[i].years[ymax].sales; 
-                var base_me = divs[i].years[ymax].me;
+                var base = divs[i].years[ym].sales; 
+                var base_me = divs[i].years[ym].me;
                 s+='<td contenteditable="true" name="sales" data-old-value="'+base+'">'+(1.0*base).toFixed(2)+'</td>';
                 for (var y=ymax; y>=ymin; y--)
                 {  // if (divs[i].years[y]!=undefined && base!=0.0 && base_me==divs[i].years[y].me)
