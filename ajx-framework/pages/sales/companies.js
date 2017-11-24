@@ -325,8 +325,7 @@ $(function(){
        {   console.log(r);
            ajx('/pages/sales/Model/editdiv/delete', {cid:r.cid, division:r.division}, function(d){                   
                    if (!d.error) 
-                   { setOk(d.info); 
-                     editF.load(selected_row);  
+                   {  editF.load(selected_row);  
                    }                   
            });           
        }
