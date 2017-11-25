@@ -4,7 +4,9 @@
 </ol>
 <?php
     include(__DIR__.'/bsforms.php');
-    $f = new BSformDefault();
+    $f = new BSformDefault();    
+if ($this->allow_edit)
+{
 ?>
 <h2 class="uppertitle"><?=$this->cfg->title?></h2>
 <div id="portfolio-list">
@@ -120,6 +122,6 @@
     }
     
 
-    
+} else $this->cfg->setError(T('ACCESS_DENIED'));
 ?>
 

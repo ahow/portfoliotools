@@ -1,5 +1,5 @@
 <?php
-    $allow_edit =  ($this->cfg->inGroup('admin') || $this->cfg->inGroup('editor')  );
+    $allow_edit =  $this->allow_edit;
 ?>
 <ol class="breadcrumb">
   <li><a href="<?=mkURL('/sales')?>"><?=T('Sales')?></a></li>

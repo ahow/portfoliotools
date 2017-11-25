@@ -19,6 +19,7 @@
         } else $this->cpage=__DIR__."/index.php";
        $this->cfg->addJs('/js', 'formvalidator.js');
        $this->cfg->addJs('/js', 'models.js');
+       
        switch ($this->nav)
        {
            case 'upload':
@@ -165,6 +166,9 @@
             
         if (empty($user) && !$public_page) header('Location: '.mkURL('/login'));
         else if ($nogroup && !$public_page) header('Location: '.mkURL('/sales/deny'));
+        
+        // check permissions
+        $this->allow_edit =  ($this->cfg->inGroup('admin') || $this->cfg->inGroup('editor')  );
      }
      
      function display()

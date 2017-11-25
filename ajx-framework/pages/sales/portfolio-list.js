@@ -1,9 +1,11 @@
-
-
+<?php
+if ($this->allow_edit)
+{
+?>
 
 $(function(){
     var pCSV = new previewCSV('#preview_portfolio','#add_portfolio');
-    var model = new modelListController('.model-list', portfolioTableView);
+    var model = new modelListController('.model-list', portfolioTableView);    
     model.load();
     model.click(function(e, row){ 
         //console.log(row);
@@ -84,3 +86,6 @@ $(function(){
     }
     
 });
+<?php
+}
+?>
