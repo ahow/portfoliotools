@@ -1,7 +1,3 @@
-<?php
-if ($this->allow_edit)
-{
-?>
 
 $(function(){
     var pCSV = new previewCSV('#preview_portfolio','#add_portfolio');
@@ -86,6 +82,3 @@ $(function(){
     }
     
 });
-<?php
-}
-?>
