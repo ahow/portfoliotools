@@ -15,7 +15,7 @@
 
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#tabsearch">Search</a></li>
-  <?php if ($allow_edit) echo '<li id=tbedit" class="disabled"><a data-toggle="tab" href="#tabedit">Edit</a></li>'; ?>
+  <?php if ($allow_edit) echo '<li id="tbedit" class="disabled"><a data-toggle="tab" href="#tabedit">Edit</a></li>'; ?>
 </ul>
 
 <div class="tab-content"  style="padding-top: 15px;">

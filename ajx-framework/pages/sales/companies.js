@@ -446,10 +446,9 @@ $(function(){
         
         compData.loadrow({cid:row.id});
         // compData.setData(row);
-        $('#tbedit').removeClass('disabled');
-        
+        $('#tbedit').removeClass('disabled');                      
        $('button.b-new-div').removeClass('disabled');
-        // console.log(row);
+       console.log('disabled');
    });
    
    // Search
