@@ -1,7 +1,5 @@
 <?php
  /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
- // include('../lib/params.php');
- // include('../lib/phpmailer.php');
 
  class wAjaxModel extends wAjax
  {  var $where_parts;
