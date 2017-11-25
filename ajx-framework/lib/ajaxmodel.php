@@ -230,61 +230,51 @@
         echo json_encode($this->res);
     }
     
+    // $key: array of primary key names 
+    // $row: row to update  
+    function updateRow($model, $key, $row)
+    {  $keys = array();
+       $db = $this->cfg->db;
+       foreach($key as $k)
+       { if (isset($row->$k)) 
+          { $keys[$k] = $row->$k;
+            unset($row->$k);
+          }
+       }
+        
+       if (isset($model->beforeUpdate))
+       {   $method = $model->beforeUpdate;            
+           if (!method_exists($this, $method))
+            return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
+           $this->$method($row,$keys);
+       }
+        
+       $this->res->k = $keys;
+       $this->res->r = $row;
+        
+       $db->updateObject($model->table, $row, $keys);
+        
+       if (isset($model->afterUpdate))
+       {   $method = $model->afterUpdate;            
+           if (!method_exists($this, $method))
+            return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
+           $this->$method($row, $keys);
+       }
+       return true;
+    }
+    
     function modelUpdate($model)
     {   if (!$this->accessAllowed($model,'allow_update')) return;
         $row = (object)$_POST;
-        $db = $this->cfg->db;
         
         if (!isset($model->primary_key))
          return $this->error(T('PRIMARY_KEY_NOT_FOUND').' '.$method,__LINE__);
         
         $key = explode(',', $model->primary_key);
-        $keys = array();
-        foreach($key as $k)
-        { if (isset($row->$k)) 
-          { $keys[$k] = $row->$k;
-            unset($row->$k);
-          }
-        }
-        
-        if (isset($model->beforeUpdate))
-        {   $method = $model->beforeUpdate;            
-            if (!method_exists($this, $method))
-             return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
-            $this->$method($row,$keys);
-        }
-        
-        $this->res->k = $keys;
-        $this->res->r = $row;
-        
-        $db->updateObject($model->table, $row, $keys);
-        
-        $this->res->info = T('Saved');
-        
-        if (isset($model->afterUpdate))
-        {   $method = $model->afterUpdate;            
-            if (!method_exists($this, $method))
-             return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
-            $this->$method($row, $keys);
-        }
+        if ($this->updateRow($model, $key, $row))  $this->res->info = T('Saved');
+       
         echo json_encode($this->res);
     }
-    
-    /* 
-    function ajxSave()
-    {   $db = $this->cfg->db;        
-        $id = $this->cfg->user->user->id;
-        $r = new stdClass();
-        $d = (object)$_POST;
-        $r->email = filter_var($d->email, FILTER_SANITIZE_EMAIL); 
-        $r->phone = filter_var($d->phone, FILTER_SANITIZE_NUMBER_INT); 
-        $r->firstname = filter_var($d->firstname, FILTER_SANITIZE_STRING); 
-        $r->lastname = filter_var($d->lastname, FILTER_SANITIZE_STRING);
-        $db->updateObject('mc_users',$r,array('id'=>$id));        
-        $this->res->info = T('Saved');        
-        echo json_encode($this->res);
-    }
-    */
 
  }
 
