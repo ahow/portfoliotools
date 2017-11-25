@@ -31,6 +31,7 @@
                 case 'delete': $this->modelDelete($mod); break;
                 case 'insert': $this->modelInsert($mod); break;
                 case 'update': $this->modelUpdate($mod); break;
+                case 'updateRows': $this->modelUpdateRows($mod); break;
                 default: return $this->error(T('UNKNOWN_METHOD').' '.$method,__LINE__);
             }
         } else return $this->error(T('MODEL_NAME_IS_ABSENT'),__LINE__);
@@ -273,6 +274,25 @@
         $key = explode(',', $model->primary_key);
         if ($this->updateRow($model, $key, $row))  $this->res->info = T('Saved');
        
+        echo json_encode($this->res);
+    }
+
+    function modelUpdateRows($model)
+    {   if (!$this->accessAllowed($model,'allow_update')) return;
+        $post = (object)$_POST;
+        
+        if (!isset($post->rows))
+         return $this->error(T('ROWS_NOT_FOUND').' '.$method,__LINE__);
+        
+        if (!isset($model->primary_key))
+         return $this->error(T('PRIMARY_KEY_NOT_FOUND').' '.$method,__LINE__);
+        
+        $key = explode(',', $model->primary_key);
+        $errors = 0;
+        foreach($post->rows as $row)
+        {  if (!$this->updateRow($model, $key, (object)$row)) $errors++;
+        }
+        if ($errors==0) $this->res->info = T('Saved');       
         echo json_encode($this->res);
     }
 
