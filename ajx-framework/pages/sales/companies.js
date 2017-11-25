@@ -79,13 +79,13 @@ function editDivision(selector)
       for (var i=0; i<d.rows.length; i++)
       { var r = d.rows[i];
         s+='<tr>';
-        s+='<td contenteditable="true">'+r.syear+'</td>';
-        s+='<td contenteditable="true">'+r.me+'</td>';
-        s+='<td><a class="w-select-sic" data-id="'+r.sic+'" href="javascript:">'+r.name+'</a></td>';
-        s+='<td contenteditable="true">'+r.sales+'</td>';
-        s+='<td contenteditable="true">'+r.ebit+'</td>';
-        s+='<td contenteditable="true">'+r.assets+'</td>';
-        s+='<td contenteditable="true">'+r.capex+'</td>';
+        s+='<td contenteditable="true" data-old="'+r.syear+'">'+r.syear+'</td>';
+        s+='<td contenteditable="true" data-old="'+r.me+'">'+r.me+'</td>';
+        s+='<td><a class="w-select-sic" data-old="'+r.sic+'" data-id="'+r.sic+'" href="javascript:">'+r.name+'</a></td>';
+        s+='<td contenteditable="true" data-old="'+r.sales+'">'+r.sales+'</td>';
+        s+='<td contenteditable="true" data-old="'+r.ebit+'">'+r.ebit+'</td>';
+        s+='<td contenteditable="true" data-old="'+r.assets+'">'+r.assets+'</td>';
+        s+='<td contenteditable="true" data-old="'+r.capex+'">'+r.capex+'</td>';
         s+='</tr>';        
       }
       $(selector+' .w-entry-body').html(s);
@@ -121,14 +121,28 @@ function editDivision(selector)
        { var r = $(rows[i]);
          var d = {};
          d.division = div.division;
-         d.syear = getInt( r.find('td:eq(0)').html() );
-         d.me = getString( r.find('td:eq(1)').html() );
-         d.sic= getInt( r.find('.w-select-sic').attr('data-id') );
+         var e, v;
+         
+         e = r.find('td:eq(0)');    v = e.html();         
+         if (v!=e.attr('data-old')) d.syear = getInt(v);
+        
+         e = r.find('td:eq(1)');    v = e.html();                  
+         if (v!=e.attr('data-old')) d.me = getString(v);
+         
+         e = r.find('.w-select-sic'); v = e.attr('data-id');
+         if (v!=e.attr('data-old')) d.sic = getInt(v);
+                  
          d.cid = cid;
-         d.sales = getFloat( r.find('td:eq(3)').html() );
-         d.ebit = getFloat( r.find('td:eq(4)').html() );
-         d.assets = getFloat( r.find('td:eq(5)').html() );
-         d.capex = getFloat( r.find('td:eq(6)').html() );
+        
+         var tds = [{i:3,n:'sales'}, {i:4,n:'ebit'},
+          {i:5,n:'assets'}, {i:6,n:'capex'}];
+         
+         for (j=0; j<tds.length; j++)
+         { var t = tds[j];
+           e = r.find('td:eq('+t.i+')');    v = e.html();         
+           if (v!=e.attr('data-old')) d[t.n] = getFloat(v);   
+         }
+         
          res.push(d);
        }
        console.log(res);
