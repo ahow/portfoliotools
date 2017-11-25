@@ -132,22 +132,6 @@
     {  $this->res->row = $this->loadSettings('SummaryDescriptions');
        echo json_encode($this->res);
     }
-  
-    /*
-    function ajxUpdateSummaryDescriptions()
-    {  $db = $this->cfg->db;
-       $params = (object)$_POST;
-       if (isset($params->id) && isset($params->rows))
-       {   $qr = $db->query(" select json from sales_portfolio_summaries where id=:id",array('id'=>$params->id));
-           $j = json_decode($db->fetchSingleValue($qr));
-           $j->descriptions = $params->rows;
-           $qr = $db->query("update sales_portfolio_summaries set json=:json where id=:id",array('json'=>json_encode($j), 'id'=>$params->id));
-           $this->res->info = T('SAVED');
-       }
-       echo json_encode($this->res);
-    }
-    */
-    
 
     function ajxLoadPortfolioSummariesSettings()
     {  $this->res->row = $this->loadSettings('PortfolioSummaries');
