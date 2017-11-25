@@ -1,5 +1,9 @@
 
 $(function(){
+   
+    // If  there is no model list
+    if ($('.model-list').length==0) return;
+    
     var pCSV = new previewCSV('#preview_portfolio','#add_portfolio');
     var model = new modelListController('.model-list', portfolioTableView);    
     model.load();
