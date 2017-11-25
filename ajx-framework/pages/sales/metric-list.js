@@ -2,6 +2,10 @@
 
 
 $(function(){
+    
+    // If  there is no model list
+    if ($('.model-list').length==0) return;
+    
     var pCSV = new previewCSV('#preview_metric','#add_metric');
     var model = new modelListController('.model-list', metricTableView);
     model.load();
