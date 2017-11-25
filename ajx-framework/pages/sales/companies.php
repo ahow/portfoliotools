@@ -1,3 +1,6 @@
+<?php
+    $allow_edit =  ($this->cfg->inGroup('admin') || $this->cfg->inGroup('editor')  );
+?>
 <ol class="breadcrumb">
   <li><a href="<?=mkURL('/sales')?>"><?=T('Sales')?></a></li>
   <li class="active" ><?=$this->cfg->title?></li>
@@ -12,7 +15,7 @@
 
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#tabsearch">Search</a></li>
-  <li id="tbedit" class="disabled"><a data-toggle="tab" href="#tabedit">Edit</a></li>
+  <?php if ($allow_edit) echo '<li id=tbedit" class="disabled"><a data-toggle="tab" href="#tabedit">Edit</a></li>'; ?>
 </ul>
 
 <div class="tab-content"  style="padding-top: 15px;">
@@ -55,6 +58,10 @@
         </div>
         
     </div>
+<?php
+    if ($allow_edit)
+    {
+?>
     
     <div class="tab-pane fade" id="tabedit">
 
@@ -90,6 +97,9 @@
         </div>        
     </div>
 
+<?php
+    }
+?>
 </div>
 <div id="search_sic"></div>
 <div id="search_sic2"></div>

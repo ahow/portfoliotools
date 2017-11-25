@@ -80,7 +80,7 @@
               
              <?php
               $cf = $this;
-             if ($cf->inGroup('admin'))
+             if ($cf->inGroup('admin') || $cf->inGroup('editor') )
              {
              ?>
               <li class="dropdown">
@@ -91,7 +91,7 @@
               </li>
              <?php 
              }
-             if ($cf->inGroup('admin') || $cf->inGroup('editor'))
+             if ($cf->inGroup('admin') || $cf->inGroup('editor') || $cf->inGroup('user'))
              {
              ?>                
               <li class="dropdown">
