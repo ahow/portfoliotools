@@ -40,6 +40,7 @@
                 case 'load': $this->modelLoad($mod); break;
                 case 'row': $this->modelRow($mod); break;
                 case 'delete': $this->modelDelete($mod); break;
+                case 'deleteRows': $this->modelDeleteRows($mod); break;
                 case 'insert': $this->modelInsert($mod); break;
                 case 'insertRows': $this->modelInsertRows($mod); break;
                 case 'update': $this->modelUpdate($mod); break;
@@ -201,23 +202,41 @@
        return $r;
     }
 
+    function deleteRow($model, $params)
+    {   $db = $this->cfg->db;
+        if (isset($model->beforeDelete))
+        {  $method = $model->beforeDelete;
+           if (!method_exists($this, $method))
+           return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__); 
+           $this->$method($params);
+        }
+        $sql = $this->SQLVars($model->delete);
+        $db->query($sql, $params);
+        return true;
+    }
+
     function modelDelete($model)
     {   if (!$this->accessAllowed($model,'allow_delete')) return;
         if (isset($model->delete))
         {   $params = (object)$_POST;
-            $db = $this->cfg->db;
-            if (isset($model->beforeDelete))
-            {  $method = $model->beforeDelete;
-               if (!method_exists($this, $method))
-                return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__); 
-               $this->$method($params);
-            }
-            $sql = $this->SQLVars($model->delete);
-            $db->query($sql, $params);
+            $this->deleteRow($model, $params);           
         } else return $this->error(T('DELETE_MODEL_PARAM_NOT_FOUND'),__LINE__);
         echo json_encode($this->res);
     }
 
+    function modelDeleteRows($model)
+    {   if (!$this->accessAllowed($model,'allow_delete')) return;
+        if (isset($model->delete))
+        {   $params = (object)$_POST;            
+             if (!isset($post->rows))
+                return $this->error(T('ROWS_NOT_FOUND').' '.$method,__LINE__);
+             $errors = 0;        
+             foreach($post->rows as $row)
+             {  if ($this->deleteRow($model, (object)$row)!==true) $errors++;
+             }            
+        } else return $this->error(T('DELETE_MODEL_PARAM_NOT_FOUND'),__LINE__);
+        echo json_encode($this->res);
+    }
 
     // $row: row to insert 
     function insertRow($model, $row)
