@@ -8,8 +8,5 @@
   "filter_parts":{
       "cid":"d.cid=:cid",
       "division":"d.division=:division"
-  },
-  "allow_update": ["editor","admin"],
-  "allow_insert": ["editor","admin"],
-  "allow_delete": ["editor","admin"]
+  }
 }

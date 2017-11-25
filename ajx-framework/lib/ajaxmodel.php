@@ -15,7 +15,7 @@
         if (isset($this->seg[3]))
         {   if (!isset($this->seg[4])) return $this->error(T('METHOD_IS_ABSENT'),__LINE__);
             $mname = $this->seg[3];
-            $mfile = $dir."/models/model.$mname.js";
+            $mfile = $dir."/models/model.$mname.js";            
             if (!file_exists($mfile)) return $this->error(T('FILE_NOT_FOUND').' '.$mfile,__LINE__);
             else 
             { $mod=json_decode( file_get_contents($mfile) );
@@ -23,6 +23,19 @@
               return $this->error(T('JSON_ERROR').' '.json_last_error_msg(),__LINE__);
               $this->model = $mod;
             }
+            $f_acl = $dir."/models/default_permissions.js";
+            // set up default permissions for all models in the current path
+            if (file_exists($f_acl))
+            { $acl=json_decode( file_get_contents($f_acl) );
+              if (json_last_error()!=JSON_ERROR_NONE)
+              return $this->error(T('JSON_ERROR').' '.json_last_error_msg(),__LINE__);
+              $anames = array('allow_insert','allow_update', 'allow_delete');
+              foreach ($anames as $n)
+              {  if ((!isset($mod->$n)) && isset($acl->$n)) 
+                    $this->model->$n = $acl->$n;
+              } 
+            }             
+            
             $method = $this->seg[4];
             switch ($method)
             {
