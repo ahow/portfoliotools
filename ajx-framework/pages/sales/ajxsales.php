@@ -14,9 +14,7 @@
     }
     
     function beforeDivisionUpdate(&$row, $keys)
-    {  //  $row->is_modified = 1;
-        // $row->sex = 'M';        
-        if (isset($this->cfg->user) && isset($this->cfg->user->user->id))
+    {   if (isset($this->cfg->user) && isset($this->cfg->user->user->id))
         {  $row->modified_by = $this->cfg->user->user->id;
         }
         $row->modified = date("Y-m-d H:i:s");
