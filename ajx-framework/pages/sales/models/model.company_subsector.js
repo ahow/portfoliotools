@@ -5,8 +5,5 @@
   "default_order":"subsector",
   "search":"subsector like :search",
   "select_row": "select * from $table where id=:id",
-  "select_total": "select count(*) from $table $where",
-  "allow_update": ["editor","admin"],
-  "allow_insert": ["editor","admin"],
-  "allow_delete": ["editor","admin"]
+  "select_total": "select count(*) from $table $where"
 }
