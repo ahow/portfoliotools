@@ -43,6 +43,7 @@
                 case 'row': $this->modelRow($mod); break;
                 case 'delete': $this->modelDelete($mod); break;
                 case 'insert': $this->modelInsert($mod); break;
+                case 'insertRows': $this->modelInsertRows($mod); break;
                 case 'update': $this->modelUpdate($mod); break;
                 case 'updateRows': $this->modelUpdateRows($mod); break;
                 default: return $this->error(T('UNKNOWN_METHOD').' '.$method,__LINE__);
@@ -219,11 +220,11 @@
         echo json_encode($this->res);
     }
 
-    function modelInsert($model)
-    {   if (!$this->accessAllowed($model,'allow_insert')) return;
-        $row = (object)$_POST;
+
+    // $row: row to insert 
+    function insertRow($model, $row)
+    {   $id = false;
         $db = $this->cfg->db;
-        
         if (isset($model->beforeInsert))
         {   $method = $model->beforeInsert;            
             if (!method_exists($this, $method))
@@ -232,15 +233,22 @@
         }
         
         $db->insertObject($model->table,$row);
-        $this->res->id = $db->db->lastInsertId();
-        $this->res->info = T('Saved');
-        
+        $id = $db->db->lastInsertId();        
+                
         if (isset($model->afterInsert))
         {   $method = $model->afterInsert;            
             if (!method_exists($this, $method))
              return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
             $this->$method($row);
-        }
+        } 
+        return $id;
+    }
+
+    function modelInsert($model)
+    {   if (!$this->accessAllowed($model,'allow_insert')) return;
+        $row = (object)$_POST;                
+        $this->res->id = $this->insertRow($model, $row); 
+        if ($this->res->id!==false) $this->res->info = T('Saved');
         echo json_encode($this->res);
     }
     
@@ -309,6 +317,25 @@
         echo json_encode($this->res);
     }
 
+    function modelInsertRows($model)
+    {   if (!$this->accessAllowed($model,'allow_insert')) return;
+        $post = (object)$_POST;
+        
+        if (!isset($post->rows))
+         return $this->error(T('ROWS_NOT_FOUND').' '.$method,__LINE__);
+
+        $errors = 0;        
+        $ids = array();
+        foreach($post->rows as $row)
+        {   $id = $this->insertRow($model, (object)$row);
+            if ($id===false) $errors++;
+            else $ids[]=$id;
+        }
+        $this->res->ids = $ids;
+        if ($errors==0) $this->res->info = T('Saved');       
+        echo json_encode($this->res);
+    }
+    
  }
 
 ?>

@@ -53,7 +53,7 @@ function dlgDivision(selector)
        }
        
        if (res.length>0)
-       {   ajx('/pages/sales/InsertDivisions', {rows:res}, function(d){                                      
+       {   ajx('/pages/sales/Model/editdivs/insertRows', {rows:res}, function(d){                                      
                if (!d.error) 
                {  setOk(d.info); 
                   if (after_save!=null) after_save(d);
