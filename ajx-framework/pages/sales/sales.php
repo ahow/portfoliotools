@@ -154,11 +154,17 @@
      function afterInit()
      {  $user = $this->cfg->user->user;
         $page = '';
-        if (isset($this->seg[1])) $page = $this->seg[1];         
-        if (empty($user) 
-            && $page!='themeA'
-            && $page!='themeB'
-            && $page!='themeC') header('Location: '.mkURL('/login'));        
+        if (isset($this->seg[1])) $page = $this->seg[1];   
+        
+        $nogroup = !($this->cfg->inGroup('admin') 
+         ||  $this->cfg->inGroup('user')
+         ||  $this->cfg->inGroup('editor') );
+        
+        $public_page = ($page=='deny'|| $page=='themeA'|| $page=='themeB' 
+            || $page=='themeC'|| $page=='themeD');
+            
+        if (empty($user) && !$public_page) header('Location: '.mkURL('/login'));
+        else if ($nogroup && !$public_page) header('Location: '.mkURL('/sales/deny'));
      }
      
      function display()
