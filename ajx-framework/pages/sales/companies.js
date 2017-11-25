@@ -442,13 +442,11 @@ $(function(){
 
    model.click(function(e, row){        
         selected_row = row;
-        editF.load(row);
-        
+        editF.load(row);        
         compData.loadrow({cid:row.id});
         // compData.setData(row);
         $('#tbedit').removeClass('disabled');                      
        $('button.b-new-div').removeClass('disabled');
-       console.log('disabled');
    });
    
    // Search
