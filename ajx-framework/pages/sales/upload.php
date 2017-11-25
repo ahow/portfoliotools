@@ -2,6 +2,11 @@
   <li><a href="<?=mkURL('/sales')?>"><?=T('Sales')?></a></li>
   <li class="active" ><?=T('Upload')?></li>
 </ol>
+
+<?php
+if ($this->allow_edit)
+{
+?>
       
 <!-- Email Newsletter Subscription Form -->
 <h2 class="uppertitle"><?=$this->cfg->title?></h2>
@@ -321,6 +326,5 @@
         }
     }
     
-    
-    
+} else $this->cfg->setError(T('ACCESS_DENIED'));    
 ?>
