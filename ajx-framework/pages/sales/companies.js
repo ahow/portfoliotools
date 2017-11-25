@@ -121,16 +121,22 @@ function editDivision(selector)
        { var r = $(rows[i]);
          var d = {};
          d.division = div.division;
-         var e, v;
-         
+         var upd = false;         
+         var e, v;         
          e = r.find('td:eq(0)');    v = e.html();         
-         if (v!=e.attr('data-old')) d.syear = getInt(v);
+         d.syear = getInt(v);
         
          e = r.find('td:eq(1)');    v = e.html();                  
-         if (v!=e.attr('data-old')) d.me = getString(v);
+         if (v!=e.attr('data-old')) 
+         {   d.me = getString(v);
+             upd = true;  
+         }
          
          e = r.find('.w-select-sic'); v = e.attr('data-id');
-         if (v!=e.attr('data-old')) d.sic = getInt(v);
+         if (v!=e.attr('data-old')) 
+         {   d.sic = getInt(v);
+             upd = true;
+         }
                   
          d.cid = cid;
         
@@ -140,16 +146,19 @@ function editDivision(selector)
          for (j=0; j<tds.length; j++)
          { var t = tds[j];
            e = r.find('td:eq('+t.i+')');    v = e.html();         
-           if (v!=e.attr('data-old')) d[t.n] = getFloat(v);   
+           if (v!=e.attr('data-old')) 
+           {   d[t.n] = getFloat(v);
+               upd = true;
+           }
          }
          
-         res.push(d);
+         if (upd) res.push(d);
        }
-       console.log(res);
+    
        if (res.length>0)
-       {   ajx('/pages/sales/UpdateDivisions', {rows:res}, function(d){                                      
+       {   ajx('/pages/sales/Model/editdivs/updateRows', {rows:res}, function(d){                                      
                if (!d.error) 
-               {  setOk(d.info); 
+               {  setOk(d.info);                   
                   if (after_save!=null) after_save(d);
                }
            });
@@ -544,6 +553,10 @@ $(function(){
                       }); 
                   });
                   editDiv.show(selected_row, selected_div);
+                  editDiv.onsave(function(d){
+                    editF.load(selected_row);
+                    editDiv.hide();
+                 });
                              
                });
            }
