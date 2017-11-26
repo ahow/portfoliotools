@@ -122,6 +122,17 @@ function modelEditableListView(selector)
             var id = $(row.target).parents('tr:first').attr('data-id');
             on_mnupdate(d.rows[id]);
        });
+       if (on_mndelete!=null) $(selector+' li.w-remove-rows').click(function(row){
+           var trs =  $(selector+' tbody tr.active');
+           if (trs.length>0)
+           {  var rows = [];
+              for (var i=0; i<trs.length; i++)
+              { var id=$(trs[i]).attr('data-id');
+                rows.push(d.rows[id]);
+              }
+              on_mndelete(rows);
+           }
+       });       
     }
 
     function setUpdateForm(form) {  update_form = form; }    

@@ -165,6 +165,8 @@
        $acl->ins  = $this->checkAccess($this->model,'allow_insert');
        $acl->upd  = $this->checkAccess($this->model,'allow_update');
        $this->res->acl = $acl;
+       
+       if (isset($model->primary_key)) $this->res->pk = explode(',',$model->primary_key);
               
        echo json_encode($this->res);
     }

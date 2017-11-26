@@ -136,6 +136,10 @@ function userlistView()
        $('#useradd-form').modal();
     });  
     
+    usersEdit.onmndelete(function(rows){
+       console.log(rows);
+    }); 
+    
     var users = new modelListController('.model-list', usersEdit.draw);
     var usergroups = new groupsList('#user-groups','usergroups');
     
