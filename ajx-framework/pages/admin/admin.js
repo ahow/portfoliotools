@@ -137,8 +137,16 @@ function userlistView()
     });  
     
     usersEdit.onmndelete(function(rows){
-       console.log(rows);
-    }); 
+       if (confirm('Remove selected user(s)?'))
+       {   var model = $('#useradd-form').attr('data-model');
+           ajx(model+'/deleteRows', rows, function(d){
+             if (!d.error)                  
+             {  users.load();
+                setOk('Deleted!');
+             }
+           });
+       }
+    });
     
     var users = new modelListController('.model-list', usersEdit.draw);
     var usergroups = new groupsList('#user-groups','usergroups');
