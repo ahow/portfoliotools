@@ -167,7 +167,7 @@
           $row->pass = $auth->hashPassword($row->pass);
        }
 
-       function beforeUpdateUser1(&$row)
+       function beforeUpdateUser(&$row)
        {  $auth = $this->cfg->user;
           if (isset($row->pass))
           { if ($row->pass=='') unset($row->pass);
