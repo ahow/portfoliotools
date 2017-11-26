@@ -110,11 +110,9 @@ function redlineErrors()
    
 // form validator
 function formValidator(selector)
-{   var locale = new localeLoader('lang/formvalidator');
-    var hints = {};
+{   var hints = {};
     
-    locale.onload(function(){
-       var T = locale.T;
+    gl_Locales.translate('lang/formvalidator', function(T){        
        hints = {req:T('REQ_VAL'), minlen:T('TOO_SHORT'), 
        email:T('WRONG_EMAIL_FMT'), equalto:T('CNFRM_FIELD'),
        maxlen:T('TOO_LONG'),reqradio:T('NO_OPTIONS_SELECTED'),

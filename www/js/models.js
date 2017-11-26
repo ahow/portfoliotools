@@ -40,7 +40,6 @@ function modelTableView(selector,d,onclick,ondblclick)
 
 function modelEditableListView(selector)
 {   var data = null;
-    var T = null;
     var update_form = null;
     var insert_form = null;
     var on_mnedit = null;
@@ -49,7 +48,7 @@ function modelEditableListView(selector)
     
     function draw(selector,d,onclick,ondblclick)
     {  
-       function drawTranslated()
+       gl_Locales.translate('lang/editablelist', function(T)
        {   var s = '';
            var i;
            data = d;
@@ -140,17 +139,7 @@ function modelEditableListView(selector)
                   on_mndelete(rows);
                }
            }); 
-        }
-        
-        if (T!=null) drawTranslated();
-        else
-        { locale = new localeLoader('lang/editablelist');
-          locale.onload(function(){ 
-              T = locale.T;
-              drawTranslated();
-           });
-        }
-           
+        });           
     }
 
     function setUpdateForm(form) {  update_form = form; }    
