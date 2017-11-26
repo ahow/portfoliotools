@@ -131,10 +131,16 @@ function userlistView()
 
 /* ---------------- User Groups Init    ----------------------*/
     // var users = new tableList('#users-table','users',['name','firstname','lastname','email']);
-    var users = new modelListController('.model-list');
-    var usergroups = new groupsList('#user-groups','usergroups');
+    var usersEdit = new modelEditableListView(); 
+    //usersEdit.setUpdateForm('user-edit');
+    //usersEdit.setInsertForm('user-insert');
     
-    // 
+    usersEdit.oninsert(function(){
+       $('#useradd-form').modal();
+    });
+    
+    var users = new modelListController('.model-list', usersEdit.draw);
+    var usergroups = new groupsList('#user-groups','usergroups');
     
     function init()
     {
@@ -159,10 +165,6 @@ function userlistView()
        $('#btgrsave').click(function(){
            usergroups.save();
           // userForm.save();
-       });
-       
-       $('#btadduser').click(function(){
-           $('#useradd-form').modal();
        });
        
        $('#btdelete').click(function(e){

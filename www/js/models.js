@@ -37,6 +37,100 @@ function modelTableView(selector,d,onclick,ondblclick)
    });
 }
 
+
+function modelEditableListView(selector)
+{   var data = null;
+    var T;
+    var update_form = null;
+    var insert_form = null;
+    var on_mnupdate = null;
+    var on_mninsert = null;
+    
+    
+    var locale = new localeLoader('lang/editablelist');
+    locale.onload(function(){ T = locale.T; });
+    
+    function draw(selector,d,onclick,ondblclick)
+    {  var s = '';
+       var i;
+       data = d;
+       
+       if (d.acl!=undefined)
+       {  if (update_form==null && on_mnupdate==null) d.acl.upd = false;
+          if (insert_form==null && on_mninsert==null) d.acl.ins = false;
+       }
+       
+       if (d.titles!=undefined)
+       {   var h = '<tr><th style="white-space: nowrap;width:1px;">';
+           
+           if (d.acl!=undefined && (d.acl.upd||d.acl.ins||d.acl.del))
+           { 
+           h+='<div class="dropdown">\
+  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">\
+  <span class="glyphicon glyphicon-menu-hamburger"></span></button>\
+  <ul class="dropdown-menu">';
+                if (d.acl.ins) h+='<li class="w-add-row"><a href="javascript:">'
+                    +'<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;'
+                    +T('New')+'</a></li>';
+                if (d.acl.del) h+='<li class="w-remove-rows disabled"><a href="javascript:">'
+                    +'<span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;'
+                    +T('REMOVE_SELECTED')+'</a></li>';
+  h+='</ul>\
+</div>';    
+           }
+           
+           h+='</th>';
+           for (i in d.titles)
+           { h+='<th>'+d.titles[i]+'</th>';               
+           }
+           h+='</tr>';
+           $(selector).find('thead').html(h);
+       }
+       for (i in d.rows)
+       {   var j;
+           var r = d.rows[i];
+           if (r.id!=undefined) s+='<tr data-id="'+i+'">'; else s+='<tr>';
+           
+           // draw edit buttons
+           s+='<td>';
+           if (d.acl!=undefined) 
+           {  if (d.acl.upd) s+='<button type="button" title="'+T('Edit')
+                +'" class="btn btn-primary b-edit-row"><span class="glyphicon glyphicon-edit"></span></button>';
+           }
+           s+='</td>'; // draw buttons
+           
+           for (j in d.columns) s+='<td>'+r[ d.columns[j] ]+'</td>';
+           s+='</tr>';
+       }
+       $(selector).find('tbody').html(s);
+       if (onclick!=null)  $(selector+' tbody tr').click(function(row){
+           if (!ctrlKey) $(row.target).parents('table:first').find('tr').removeClass('active');
+           var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
+           onclick(row, d.rows[id]);
+           $(selector+' li.w-remove-rows').removeClass('disabled');
+       });
+       
+       if (ondblclick!=undefined && ondblclick!=null)  $(selector+' tbody tr').dblclick(function(row){
+           $(row.target).parents('table:first').find('tr').removeClass('active');
+           var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');   
+           ondblclick(row, d.rows[id]);
+       });
+       if (on_mninsert!=null)  $(selector+' li.w-add-row').click(on_mninsert);
+       if (on_mnupdate!=null)  $(selector+' li.b-edit-row').click(function(row){
+            var id = $(row.target).parents('tr:first').attr('data-id');
+            on_mnupdate(d.rows[id]);
+       });
+    }
+
+    function setUpdateForm(form)   {  update_form = form;    }    
+    function setInsertForm(form)  {        insert_form = form;     }
+    function onedit(fu) {    on_mnupdate = fu; }
+    function oninsert(fu) {    on_mninsert = fu; }
+    return { draw:draw, setUpdateForm:setUpdateForm, setInsertForm:setInsertForm,
+        onedit:onedit, oninsert:oninsert }    
+}
+
+
 function modelListController(selector, customView)
 {  var ontotal = null;
    var onclick = null;

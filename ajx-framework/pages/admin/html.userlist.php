@@ -19,7 +19,6 @@
         <div id="user-groups"></div>
         <div class="form-group" style="margin-bottom:10px">
         <button class="btn btn-lg btn-info" id="btgrsave" >Save</button>
-        <button class="btn btn-lg btn-info" id="btadduser" >Add User</button>
         <button class="btn btn-lg btn-danger" id="btdelete"><span class="glyphicon glyphicon-trash"></span>&nbsp;Delete</button>
         </div>
     </fieldset>
@@ -39,10 +38,10 @@
       </div>
       <div class="modal-body">
             <div class="row">
-                <div class="col-lg-12"><?=$f->input('name')?></div>
+                <div class="col-lg-12"><?php $f->validate('req,minlen=2'); echo $f->input('name'); ?></div>
             </div>
             <div class="row">
-                <div class="col-lg-12"><?=$f->input('firstname')?></div>
+                <div class="col-lg-12"><?php $f->validate('req,minlen=2'); echo $f->input('firstname');?></div>
             </div>
             <div class="row">
                 <div class="col-lg-12"><?=$f->input('lastname')?></div>
@@ -54,7 +53,7 @@
                 <div class="col-lg-12"><?=$f->input('phone')?></div>
             </div>           
             <div class="row">
-                <div class="col-lg-12"><?=$f->input('pass','password')?></div>
+                <div class="col-lg-12"><?php $f->validate('req,minlen=2'); echo $f->input('pass','password');?></div>
             </div> 
       </div>
       <div class="modal-footer">
