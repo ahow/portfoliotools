@@ -170,6 +170,7 @@ function userlistView()
        userForm.loaded(function(){
           $('#useradd-form #pass').attr('data-old-value','');
           $('#useradd-form #pass').val('');
+          $('#useradd-form #pass2').val('');
        });
        
        userForm.updated(function(d){

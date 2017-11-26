@@ -47,13 +47,16 @@
                 <div class="col-lg-12"><?=$f->input('lastname')?></div>
             </div>
             <div class="row">
-                <div class="col-lg-12"><?=$f->input('email')?></div>
+                <div class="col-lg-12"><?php $f->validate('email'); echo $f->input('email')?></div>
             </div>
             <div class="row">
                 <div class="col-lg-12"><?=$f->input('phone')?></div>
             </div>           
             <div class="row">
-                <div class="col-lg-12"><?php $f->validate(''); echo $f->input('pass','password');?></div>
+                <div class="col-lg-12"><?php $f->validate('minlen=3'); echo $f->input('pass','password');?></div>
+            </div> 
+            <div class="row">
+                <div class="col-lg-12"><?php $f->validate('minlen=3,equalto=#pass'); echo $f->input('pass2','password');?></div>
             </div> 
             <?=$f->key('id')?>
       </div>
