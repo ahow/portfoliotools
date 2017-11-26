@@ -139,7 +139,7 @@ function userlistView()
     usersEdit.onmndelete(function(rows){
        if (confirm('Remove selected user(s)?'))
        {   var model = $('#useradd-form').attr('data-model');
-           ajx(model+'/deleteRows', rows, function(d){
+           ajx(model+'/deleteRows', {rows:rows}, function(d){
              if (!d.error)                  
              {  users.load();
                 setOk('Deleted!');
