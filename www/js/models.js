@@ -40,7 +40,7 @@ function modelTableView(selector,d,onclick,ondblclick)
 
 function modelEditableListView(selector)
 {   var data = null;
-    var T;
+    var T = function(t){return t;};
     var update_form = null;
     var insert_form = null;
     var on_mnedit = null;
