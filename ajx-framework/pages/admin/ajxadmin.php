@@ -176,7 +176,12 @@
           }
           if (isset($row->pass2)) unset($row->pass2);
        }
-          
+        
+       function beforeDeleteUser($row)
+       { $uid = 1*$row->id;
+         if ($uid==$this->cfg->getUID())
+            throw new Exception(T('CAN_NOT_DELETE_YOURSELF'));
+       }
 
     }
 ?>

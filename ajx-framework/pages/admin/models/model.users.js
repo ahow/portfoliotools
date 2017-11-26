@@ -9,5 +9,6 @@
   "select_row": "select * from $table where id=:id",
   "select_total": "select count(*) from $table $where",
   "beforeInsert": "beforeInsertUser",
-  "beforeUpdate": "beforeUpdateUser"
+  "beforeUpdate": "beforeUpdateUser",
+  "beforeDelete": "beforeDeleteUser"
 }
