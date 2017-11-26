@@ -59,6 +59,7 @@ function modelEditableListView(selector)
        if (d.acl!=undefined)
        {  if (update_form==null && on_mnupdate==null) d.acl.upd = false;
           if (insert_form==null && on_mninsert==null) d.acl.ins = false;
+          if (on_mndelete==null) d.acl.del = false;
        }
        
        if (d.titles!=undefined)
@@ -123,12 +124,16 @@ function modelEditableListView(selector)
        });
     }
 
-    function setUpdateForm(form)   {  update_form = form;    }    
-    function setInsertForm(form)  {        insert_form = form;     }
+    function setUpdateForm(form) {  update_form = form; }    
+    function setInsertForm(form) {  insert_form = form; }
+    
+    // Menu items
     function onmnedit(fu) {    on_mnupdate = fu; }
     function onmninsert(fu) {    on_mninsert = fu; }
+    function onmndelete(fu) {    on_mndelete = fu; }
+    
     return { draw:draw, setUpdateForm:setUpdateForm, setInsertForm:setInsertForm,
-        onmnedit:onmnedit, onmninsert:onmninsert }    
+        onmnedit:onmnedit, onmninsert:onmninsert, onmndelete:onmndelete};
 }
 
 

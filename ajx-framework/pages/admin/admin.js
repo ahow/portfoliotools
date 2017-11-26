@@ -130,14 +130,11 @@ function userlistView()
     }
 
 /* ---------------- User Groups Init    ----------------------*/
-    // var users = new tableList('#users-table','users',['name','firstname','lastname','email']);
     var usersEdit = new modelEditableListView(); 
-    //usersEdit.setUpdateForm('user-edit');
-    //usersEdit.setInsertForm('user-insert');
     
     usersEdit.onmninsert(function(){
        $('#useradd-form').modal();
-    });
+    });  
     
     var users = new modelListController('.model-list', usersEdit.draw);
     var usergroups = new groupsList('#user-groups','usergroups');
