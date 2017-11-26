@@ -68,7 +68,7 @@ function modelEditableListView(selector)
            if (d.acl!=undefined && (d.acl.upd||d.acl.ins||d.acl.del))
            { 
            h+='<div class="dropdown">\
-  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">\
+  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">\
   <span class="glyphicon glyphicon-menu-hamburger"></span></button>\
   <ul class="dropdown-menu">';
                 if (d.acl.ins) h+='<li class="w-add-row"><a href="javascript:">'
