@@ -164,10 +164,17 @@
        
        function beforeInsertUser(&$row)
        {  $auth = $this->cfg->user;
-           
           $row->pass = $auth->hashPassword($row->pass);
        }
-     
+
+       function beforeUpdateUser1(&$row)
+       {  $auth = $this->cfg->user;
+          if (isset($row->pass))
+          { if ($row->pass=='') unset($row->pass);
+            else  $row->pass = $auth->hashPassword($row->pass);
+          }          
+       }
+          
 
     }
 ?>

@@ -139,8 +139,8 @@ function userlistView()
     });  
 
     usersEdit.onmnedit(function(row){
-       console.log(row);
-       //$('#useradd-form').modal();
+       userForm.loadrow({id:row.id});
+       $('#useradd-form').modal();
     });  
     
     usersEdit.onmndelete(function(rows){
@@ -166,6 +166,19 @@ function userlistView()
        });
        
        userForm = new modelFormController('#useradd-form');
+       
+       userForm.loaded(function(){
+          $('#useradd-form #pass').attr('data-old-value','');
+          $('#useradd-form #pass').val('');
+       });
+       
+       userForm.updated(function(d){
+                 if (!d.error) 
+                 {  $('#useradd-form').modal('hide');
+                    users.load();
+                 }
+      });
+       
        var vld = new formValidator('#useradd-form');
         
         users.click(function(id, row){           
@@ -174,9 +187,10 @@ function userlistView()
            var id = row.id;       
            // var id = $(row.target).parents('tr:first').addClass('active').attr('data-id');
            users.current_row = id;
-           usergroups.load(id);
-           usergroups.loaded(function(){ $('#editform').removeClass('hidden').removeClass('disabled-input'); } );
-       });
+           usergroups.load(id);           
+        });
+    
+       usergroups.loaded(function(){ $('#editform').removeClass('hidden').removeClass('disabled-input'); });
        
        $('#btgrsave').click(function(){
            usergroups.save();
@@ -196,14 +210,17 @@ function userlistView()
            }
        });
        
-       $('button.b-useradd').click(function(){
-          if (vld.validate()) userForm.insert(function(d){
-             if (!d.error) 
-             {
-                $('#useradd-form').modal('hide');
-                users.load();
-             }
-          });
+       $('button.b-useradd').click(function(){          
+          if (vld.validate()) 
+          {   var id = $('#useradd-form #id').val();
+              if (id=='') userForm.insert(function(d){
+                 if (!d.error) 
+                 {  $('#useradd-form').modal('hide');
+                    users.load();
+                 }
+              });
+              else userForm.update();
+          }
        });
        
        $('#btsearch').click(function(){

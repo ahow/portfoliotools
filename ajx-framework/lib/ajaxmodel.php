@@ -209,7 +209,9 @@
         if (isset($model->beforeDelete))
         {  $method = $model->beforeDelete;
            if (!method_exists($this, $method))
-           return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__); 
+           { $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__); 
+            die();
+           }
            $this->$method($params);
         }
         $sql = $this->SQLVars($model->delete);
@@ -247,7 +249,9 @@
         if (isset($model->beforeInsert))
         {   $method = $model->beforeInsert;            
             if (!method_exists($this, $method))
-             return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
+            { $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);  
+              die();
+            }                       
             $this->$method($row);
         }
         
@@ -257,7 +261,9 @@
         if (isset($model->afterInsert))
         {   $method = $model->afterInsert;            
             if (!method_exists($this, $method))
-             return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
+            { $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
+              die();
+            }
             $this->$method($row);
         } 
         return $id;
@@ -286,7 +292,9 @@
        if (isset($model->beforeUpdate))
        {   $method = $model->beforeUpdate;            
            if (!method_exists($this, $method))
-            return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
+           { $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
+             die(); 
+           }
            $this->$method($row,$keys);
        }
         
@@ -298,7 +306,9 @@
        if (isset($model->afterUpdate))
        {   $method = $model->afterUpdate;            
            if (!method_exists($this, $method))
-            return $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
+           { $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);                          
+             die();  
+           }
            $this->$method($row, $keys);
        }
        return true;

@@ -318,7 +318,7 @@ function modelFormController(selector)
 			   ctrl.setAttribute('data-old-value', '');
 			 }  
            }
-           if (onloaded!=null) onloaded(d);
+           if (onloaded!=null) onloaded({});
        }
        
        function getData(is_insert)
