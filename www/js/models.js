@@ -43,7 +43,7 @@ function modelEditableListView(selector)
     var T;
     var update_form = null;
     var insert_form = null;
-    var on_mnupdate = null;
+    var on_mnedit = null;
     var on_mninsert = null;
     var on_mndelete = null;
     
@@ -57,7 +57,7 @@ function modelEditableListView(selector)
        data = d;
        
        if (d.acl!=undefined)
-       {  if (update_form==null && on_mnupdate==null) d.acl.upd = false;
+       {  if (update_form==null && on_mnedit==null) d.acl.upd = false;
           if (insert_form==null && on_mninsert==null) d.acl.ins = false;
           if (on_mndelete==null) d.acl.del = false;
        }
@@ -118,9 +118,9 @@ function modelEditableListView(selector)
            ondblclick(row, d.rows[id]);
        });
        if (on_mninsert!=null)  $(selector+' li.w-add-row').click(on_mninsert);
-       if (on_mnupdate!=null)  $(selector+' li.b-edit-row').click(function(row){
+       if (on_mnedit!=null)  $(selector+' .b-edit-row').click(function(row){
             var id = $(row.target).parents('tr:first').attr('data-id');
-            on_mnupdate(d.rows[id]);
+            on_mnedit(d.rows[id]);
        });
        if (on_mndelete!=null) $(selector+' li.w-remove-rows').click(function(row){
            var trs =  $(selector+' tbody tr.active');
@@ -148,7 +148,7 @@ function modelEditableListView(selector)
     function setInsertForm(form) {  insert_form = form; }
     
     // Menu items
-    function onmnedit(fu) {    on_mnupdate = fu; }
+    function onmnedit(fu) {    on_mnedit = fu; }
     function onmninsert(fu) {    on_mninsert = fu; }
     function onmndelete(fu) {    on_mndelete = fu; }
     
