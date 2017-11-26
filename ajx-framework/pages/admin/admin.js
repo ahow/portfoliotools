@@ -135,6 +135,11 @@ function userlistView()
     usersEdit.onmninsert(function(){
        $('#useradd-form').modal();
     });  
+
+    usersEdit.onmnedit(function(row){
+       console.log(row);
+       //$('#useradd-form').modal();
+    });  
     
     usersEdit.onmndelete(function(rows){
        if (confirm('Remove selected user(s)?'))
