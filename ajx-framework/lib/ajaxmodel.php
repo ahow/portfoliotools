@@ -230,10 +230,10 @@
     {   if (!$this->accessAllowed($model,'allow_delete')) return;
         if (isset($model->delete))
         {   $params = (object)$_POST;            
-             if (!isset($post->rows))
+             if (!isset($params->rows))
                 return $this->error(T('ROWS_NOT_FOUND'),__LINE__);
              $errors = 0;        
-             foreach($post->rows as $row)
+             foreach($params->rows as $row)
              {  if ($this->deleteRow($model, (object)$row)!==true) $errors++;
              }            
         } else return $this->error(T('DELETE_MODEL_PARAM_NOT_FOUND'),__LINE__);
