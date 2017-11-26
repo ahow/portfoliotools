@@ -135,7 +135,7 @@ function userlistView()
     //usersEdit.setUpdateForm('user-edit');
     //usersEdit.setInsertForm('user-insert');
     
-    usersEdit.oninsert(function(){
+    usersEdit.onmninsert(function(){
        $('#useradd-form').modal();
     });
     

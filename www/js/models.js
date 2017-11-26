@@ -45,6 +45,7 @@ function modelEditableListView(selector)
     var insert_form = null;
     var on_mnupdate = null;
     var on_mninsert = null;
+    var on_mndelete = null;
     
     
     var locale = new localeLoader('lang/editablelist');
@@ -124,10 +125,10 @@ function modelEditableListView(selector)
 
     function setUpdateForm(form)   {  update_form = form;    }    
     function setInsertForm(form)  {        insert_form = form;     }
-    function onedit(fu) {    on_mnupdate = fu; }
-    function oninsert(fu) {    on_mninsert = fu; }
+    function onmnedit(fu) {    on_mnupdate = fu; }
+    function onmninsert(fu) {    on_mninsert = fu; }
     return { draw:draw, setUpdateForm:setUpdateForm, setInsertForm:setInsertForm,
-        onedit:onedit, oninsert:oninsert }    
+        onmnedit:onmnedit, onmninsert:onmninsert }    
 }
 
 
