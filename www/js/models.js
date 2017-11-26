@@ -124,11 +124,20 @@ function modelEditableListView(selector)
        });
        if (on_mndelete!=null) $(selector+' li.w-remove-rows').click(function(row){
            var trs =  $(selector+' tbody tr.active');
+           if (d.pk==undefined) 
+           { setError('No primary_key option in model!');
+             return;
+           }
            if (trs.length>0)
            {  var rows = [];
               for (var i=0; i<trs.length; i++)
               { var id=$(trs[i]).attr('data-id');
-                rows.push(d.rows[id]);
+                var r = {};
+                for (var j=0; j<d.pk.length; j++)
+                {   var k = d.pk[j];
+                    r[k]=d.rows[id][k];
+                }
+                rows.push(r);
               }
               on_mndelete(rows);
            }
