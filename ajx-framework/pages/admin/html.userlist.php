@@ -19,8 +19,8 @@
         <div id="user-groups"></div>
    </fieldset>
    <div class="form-group" style="margin-bottom:10px">        
-     <button class="btn btn-lg btn-success" id="btnew"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add user</button>
-     <button class="btn btn-lg btn-info hidden" id="btgrsave" >Save</button>
+     <button class="btn btn-lg btn-success" id="btnew"><span class="glyphicon glyphicon-plus"></span>&nbsp;<?=T('ADD_USER')?></button>
+     <button class="btn btn-lg btn-info hidden" id="btgrsave" ><?=T('Save')?></button>
    </div>
 </div>
 <p><b>Users total: <span class="records-total"></span></b></p>
