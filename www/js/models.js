@@ -48,7 +48,7 @@ function modelEditableListView(selector)
     
     function draw(selector,d,onclick,ondblclick)
     {  
-       gl_Locales.translate('lang/editablelist', function(T)
+       gl_Locales.translate('lang/models', function(T)
        {   var s = '';
            var i;
            data = d;
