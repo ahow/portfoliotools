@@ -131,8 +131,10 @@ function userlistView()
 
 /* ---------------- User Groups Init    ----------------------*/
     var usersEdit = new modelEditableListView(); 
+    var userForm = null;
     
     usersEdit.onmninsert(function(){
+       userForm.clearData();
        $('#useradd-form').modal();
     });  
 
@@ -163,7 +165,7 @@ function userlistView()
            $('span.records-total').html(t); 
        });
        
-       var userForm = new modelFormController('#useradd-form');
+       userForm = new modelFormController('#useradd-form');
        var vld = new formValidator('#useradd-form');
         
         users.click(function(id, row){           
