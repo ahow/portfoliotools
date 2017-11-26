@@ -82,6 +82,13 @@
      var $js = array();
      var $css = array();
      
+     function __construct()
+     {  // language auto detection
+        if (!property_exists($this, 'lang'))        
+        { $this->lang = auto_lang('EN');
+        }
+     }
+     
      function setError($msg, $code=-1, $file='', $line=0 )
      {  $e = new stdClass;
         $e->message = $msg;
@@ -123,6 +130,15 @@
      {  if ($this->user!=null && isset($this->user->user->id)) return $this->user->user->id;
         return null;
      }
+  }
+  
+  // Language auto detection
+  function auto_lang($default='EN')
+  {  if (class_exists('Locale'))
+     {  $LANG = Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']); 
+        if (file_exists(SYS_PATH."lang/$LANG.ini")) return $LANG;
+     }
+     return $default;
   }
   
   $_TRANSLATIONS = array();

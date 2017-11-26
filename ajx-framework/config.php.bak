@@ -17,7 +17,7 @@
       public $author = 'Fedotov V.V.';
       public $description = 'Forms';
       public $root_prefix = ''; // Site subdirectory
-      public $lang = 'EN';
+      public $lang = 'EN';  // Comment this line for language auto detection
       public $sef = true; 
       protected $template = 'templates/template_auth.php';
       public $authorizedURL = '/'; // Goto after authorize

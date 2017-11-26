@@ -15,7 +15,8 @@
         <div id="info" style="max-width:500px; padding-top: 20px; padding-bottom: 20px; "></div>
         <button class="btn btn-lg btn-success" id="view">View Contact Information</button>
         <?php
-        
+          //$locale = Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+          //echo $locale;                            
      }
   }
 ?>
