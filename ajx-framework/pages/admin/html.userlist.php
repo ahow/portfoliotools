@@ -23,7 +23,7 @@
      <button class="btn btn-lg btn-info hidden" id="btgrsave" ><?=T('Save')?></button>
    </div>
 </div>
-<p><b>Users total: <span class="records-total"></span></b></p>
+<p><b><?=T('USERS_TOTAL')?>: <span class="records-total"></span></b></p>
 
 
 <!-- Modal -->
@@ -34,7 +34,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">User</h4>
+        <h4 class="modal-title"><?=T('User')?></h4>
       </div>
       <div class="modal-body">
             <div class="row">
@@ -61,8 +61,8 @@
             <?=$f->key('id')?>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-default btn-success b-useradd">Save</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><?=T('Close')?></button>
+        <button type="button" class="btn btn-default btn-success b-useradd"><?=T('Save')?></button>
       </div>
     </div>
 
