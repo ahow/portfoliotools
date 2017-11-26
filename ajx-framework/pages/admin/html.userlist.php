@@ -17,11 +17,11 @@
     <div class="model-pager"></div>
     <fieldset id="editform" class="hidden">
         <div id="user-groups"></div>
-        <div class="form-group" style="margin-bottom:10px">
-        <button class="btn btn-lg btn-info" id="btgrsave" >Save</button>
-        <button class="btn btn-lg btn-danger" id="btdelete"><span class="glyphicon glyphicon-trash"></span>&nbsp;Delete</button>
-        </div>
-    </fieldset>
+   </fieldset>
+   <div class="form-group" style="margin-bottom:10px">        
+     <button class="btn btn-lg btn-success" id="btnew"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add user</button>
+     <button class="btn btn-lg btn-info hidden" id="btgrsave" >Save</button>
+   </div>
 </div>
 <p><b>Users total: <span class="records-total"></span></b></p>
 

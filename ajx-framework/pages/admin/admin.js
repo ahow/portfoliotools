@@ -133,10 +133,13 @@ function userlistView()
     var usersEdit = new modelEditableListView(); 
     var userForm = null;
     
-    usersEdit.onmninsert(function(){
-       userForm.clearData();
+    function addUser()
+    {  userForm.clearData();
        $('#useradd-form').modal();
-    });  
+    }
+    
+    usersEdit.onmninsert(addUser);  
+    $('#btnew').click(addUser);
 
     usersEdit.onmnedit(function(row){
        userForm.loadrow({id:row.id});
@@ -191,10 +194,13 @@ function userlistView()
            usergroups.load(id);           
         });
     
-       usergroups.loaded(function(){ $('#editform').removeClass('hidden').removeClass('disabled-input'); });
+       usergroups.loaded(function(){
+            $('#editform').removeClass('hidden').removeClass('disabled-input'); 
+            $('#btgrsave').removeClass('hidden');
+        });
        
        $('#btgrsave').click(function(){
-           usergroups.save();
+           usergroups.save();           
           // userForm.save();
        });
        
