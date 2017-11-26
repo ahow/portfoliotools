@@ -231,7 +231,7 @@
         if (isset($model->delete))
         {   $params = (object)$_POST;            
              if (!isset($post->rows))
-                return $this->error(T('ROWS_NOT_FOUND').' '.$method,__LINE__);
+                return $this->error(T('ROWS_NOT_FOUND'),__LINE__);
              $errors = 0;        
              foreach($post->rows as $row)
              {  if ($this->deleteRow($model, (object)$row)!==true) $errors++;
