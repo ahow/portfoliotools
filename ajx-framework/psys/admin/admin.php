@@ -7,7 +7,7 @@
         $this->cfg = $cfg;
         $this->cfg->addJs('/js','formvalidator.js');
         $this->cfg->addJs('/js','models.js');
-        $this->cfg->addJs('/html.php/pages/admin','admin.js');
+        $this->cfg->addJs('/html.php/psys/admin','admin.js');
         $this->seg = $seg;
      }
      

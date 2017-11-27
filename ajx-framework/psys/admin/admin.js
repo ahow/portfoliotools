@@ -51,8 +51,8 @@ function tableList(selector, table, columns)
    {   if ($.type(id)!=='object')
        {   var pf = '';
            if (id!=undefined) pf+='/'+id;
-           ajx('/pages/admin/LoadTable/'+table+pf, {}, setData);
-       } else  ajx('/pages/admin/LoadTable/'+table, id, setData);
+           ajx('/psys/admin/LoadTable/'+table+pf, {}, setData);
+       } else  ajx('/psys/admin/LoadTable/'+table, id, setData);
    }
    
    function total(fu){ ontotal = fu;}
@@ -110,7 +110,7 @@ function userlistView()
        {   var pf = '';
            if (id!=undefined) pf+='/'+id;
            user_id = id;
-           ajx('/pages/admin/LoadTable/'+table+pf, {}, setData);       
+           ajx('/psys/admin/LoadTable/'+table+pf, {}, setData);       
        }
        
        function total(fu){ ontotal = fu;}
@@ -121,7 +121,7 @@ function userlistView()
        
        function save()
        {  var r = getData();
-          ajx('/pages/admin/SaveUserGroups', r, function(d){
+          ajx('/psys/admin/SaveUserGroups', r, function(d){
                  if (!d.error) setOk(d.info);
           }); 
        }
@@ -332,13 +332,13 @@ function emailtmplView()
         
        function save()
        {   var r = getData();
-           ajx('/pages/admin/SaveTmpl', r, function(d)
+           ajx('/psys/admin/SaveTmpl', r, function(d)
            { if (!d.error) setOk(d.info);
            });  
        }
       
        function load()
-       {  ajx('/pages/admin/LoadTmpl/'+tmpl, {}, setData);       
+       {  ajx('/psys/admin/LoadTmpl/'+tmpl, {}, setData);       
        }
        
        return {save:save, load:load, setTemplate:setTemplate };
@@ -398,13 +398,13 @@ function emailsettingsView()
       
       function save()
       {  var r = getSettings();
-         ajx('/pages/admin/SaveEmailSettings', r, function(d){
+         ajx('/psys/admin/SaveEmailSettings', r, function(d){
              if (!d.error) setOk(d.info);
          }); 
       }
       
       function load()
-      { ajx('/pages/admin/LoadEmailSettings', {}, setSettings );
+      { ajx('/psys/admin/LoadEmailSettings', {}, setSettings );
       }
       
       return {save:save, load:load};
@@ -441,7 +441,7 @@ function changepassView()
       function save()
       {  var r = getSettings();
           
-         ajx('/pages/admin/SavePassword', r, function(d){
+         ajx('/psys/admin/SavePassword', r, function(d){
              if (!d.error) setOk(d.info);
          }); 
       }
@@ -467,7 +467,7 @@ $(function()
     menu.click(function(it)
     {  var view = it.attr('data-view');
        if (view==undefined) return;
-       views.view('/pages/admin/'+view,'#views', function(){ 
+       views.view('/psys/admin/'+view,'#views', function(){ 
            if (views_init[view]!=undefined && $.type(views_init[view])=='object')
                 views_init[view].init();           
            else 

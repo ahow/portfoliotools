@@ -1,8 +1,6 @@
 <?php
  /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
- // include(SYS_PATH.'lib/params.php');
- // include(SYS_PATH.'lib/phpmailer.php');
-  
+ 
  class ajxprofile extends wAjax
  {  function ajxLoad()
     {   $db = $this->cfg->db;

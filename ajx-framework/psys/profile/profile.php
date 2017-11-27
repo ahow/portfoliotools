@@ -5,13 +5,12 @@
      {  $cfg->title = 'Profile';
         $this->cfg = $cfg;
         $this->cfg->addJs('/js','formvalidator.js');
-        $this->cfg->addJs('/js', 'profile.js');
+        $this->cfg->addJs('/html.php/psys/profile','profile.js');        
         $this->seg = $seg;
      }
      
      function display()
-     { //  echo '<center><h1>'.T($this->cfg->title).'</h1></center>';
-        echo '<div id="profile"></div>';
+     {  echo '<div id="profile"></div>';
      }
      
      function afterInit()

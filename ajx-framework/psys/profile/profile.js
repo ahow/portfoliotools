@@ -24,13 +24,13 @@ function profileView()
       
       function save()
       {  var r = getData();
-         ajx('/pages/profile/Save', r, function(d){
+         ajx('/psys/profile/Save', r, function(d){
              if (!d.error) setOk(d.info);
          }); 
       }
       
       function load()
-      { ajx('/pages/profile/Load', {}, setData );
+      { ajx('/psys/profile/Load', {}, setData );
       }
       
       function loaded(foo){  onloaded=foo;  }
@@ -62,7 +62,7 @@ $(function()
     var profile = new profileView();
     
     
-    views.view('/pages/profile/profile','#profile', function(){
+    views.view('/psys/profile/profile','#profile', function(){
         profile.init(); 
     });
 

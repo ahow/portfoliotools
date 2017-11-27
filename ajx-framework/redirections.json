@@ -1,3 +1,6 @@
-{ "login":{"to":"login","p":"psys"},
-  "about":{"to":"about","p":"psys"}
+{"login":{"to":"login","p":"psys"},
+ "oauth":{"to":"pauth","p":"psys"},
+ "admin":{"to":"admin","p":"psys"},
+ "profile":{"to":"profile","p":"psys"},
+ "setup":{"to":"setup","p":"psys"}
 }

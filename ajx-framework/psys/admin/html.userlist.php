@@ -9,7 +9,7 @@
     <span class="input-group-btn"><button id="btsearch" class="btn btn-default w-search" type="button"><?=T('Search')?></button> </span>
 </div>
 
-<div id="users-list"class="model-list" data-model="/pages/admin/Model/users">
+<div id="users-list"class="model-list" data-model="/psys/admin/Model/users">
     <table class="table table-striped selectable">
             <thead></thead>
             <tbody></tbody>
@@ -27,7 +27,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" role="dialog" id="useradd-form" data-model="/pages/admin/Model/users">
+<div class="modal fade" role="dialog" id="useradd-form" data-model="/psys/admin/Model/users">
   <div class="modal-dialog">
 
     <!-- Modal content-->

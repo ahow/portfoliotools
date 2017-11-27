@@ -8,7 +8,7 @@
         if (isset($seg[1]))
         {   $srv = $seg[1];
             $this->service = $srv;
-            include("../pages/oauth/$srv.php"); 
+            include(SYS_PATH."psys/oauth/$srv.php"); 
         }
      }
      function display()
