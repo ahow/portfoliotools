@@ -14,12 +14,13 @@
 ## Web site framework hierarchy
 * ***ttools*** - _root path_
   * ***ajx-framework*** - _framework_
-     * ***pages*** - _dynamic pages of site_
+     * ***pages*** - _dynamic pages of the site_
         * ***sales*** - Pages of the Themes tools
            * install.sql - Database structure install file
            * update.1.sql - Database update 1
            * update.2.sql - Database update 2
-        * ***setup*** - _DATABASE SETUP PAGE_
+        * ***setup*** - _DATABASE SETUP PAGE
+     * ***psys*** - _dynamic system pages of the site__
      * ***templates*** - _HTML templates of the site_
         * template_auth.php - _THE TEMPLATE FILE ENABLED BY DEFAULT_
      * ***modules*** - _inline modules_
