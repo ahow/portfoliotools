@@ -151,7 +151,7 @@ function userlistView()
        {   var model = $('#useradd-form').attr('data-model');
            ajx(model+'/deleteRows', {rows:rows}, function(d){
              if (!d.error)                  
-             {  users.load();
+             {  users.refresh();
                 setOk('Deleted!');
              }
            });
@@ -160,12 +160,17 @@ function userlistView()
     
     var users = new modelListController('.model-list', usersEdit.draw);
     var usergroups = new groupsList('#user-groups','usergroups');
+    var pager = new modelPagination('.model-list .model-pager');;
     
     function init()
     {
         users.load();
-        users.total(function(t){
+        users.total(function(t, rows_lim){
            $('span.records-total').html(t); 
+           pager.setTotal(t, rows_lim);           
+       });
+       pager.change(function(n){
+         users.load(n);
        });
        
        userForm = new modelFormController('#useradd-form');
@@ -179,7 +184,7 @@ function userlistView()
        userForm.updated(function(d){
                  if (!d.error) 
                  {  $('#useradd-form').modal('hide');
-                    users.load();
+                    users.refresh();
                  }
       });
        
