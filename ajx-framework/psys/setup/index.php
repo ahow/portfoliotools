@@ -61,16 +61,16 @@ function runSQL($db, $scfile)
 }
        
 
-function InstallPages($db, $admin=false)
+function InstallPages($db, $pstart, $admin=false)
 {   // alert(T('PAGES_SETUP'), 'info');    
     $error = false;
     $pnum = 0;
     // Create pages scripts
-    if ($handle = opendir(__DIR__.'/../')) 
+    if ($handle = opendir($pstart)) 
     {
         $blacklist = array('.', '..');
         while (false !== ($file = readdir($handle))) 
-        {   $dir = SYS_PATH."pages/$file";
+        {   $dir = "$pstart/$file";
             if (!in_array($file, $blacklist) && is_dir($dir)) 
             {   $manifest = "$dir/manifest.js";
                 if (file_exists($manifest)) 
@@ -149,7 +149,8 @@ function installSystem($db, $cfg, $create_db = true)
             {  $db->query("drop database $cfg->dbname;");
                alert(T('ERR_IN_SCRIPT_DB_DROPPED'), 'danger');
             } else 
-            {   installPages($db);
+            {   installPages($db,SYS_PATH.'psys');
+                installPages($db,SYS_PATH.'pages');
                 alert(T('DATABASE').' <b>'.$cfg->dbname.'</b> '.T('CREATED'), 'success');
             }
         } catch (Exception $e)
@@ -170,7 +171,8 @@ function installSystem($db, $cfg, $create_db = true)
             {
                 alert( T('DB_CONNECTION_ESTABLISHED') );
                 installSystem($db, $cfg);
-                installPages($db);
+                installPages($db,SYS_PATH.'psys');
+                installPages($db,SYS_PATH.'pages');                
             }
         } catch (Exception $e)
         {  alert(T('CHECK_CONFIG_USER_SETTINGS'), 'danger');
@@ -184,7 +186,8 @@ function installSystem($db, $cfg, $create_db = true)
       {  installSystem($cfg->db->db, $cfg, false);
       }
       $is_admin = $cfg->inGroup('admin');
-      installPages($cfg->db->db, $is_admin);
+      installPages($cfg->db->db, SYS_PATH.'psys', $is_admin);
+      installPages($cfg->db->db, SYS_PATH.'pages', $is_admin);
       $no_connection = false;
    }
    
