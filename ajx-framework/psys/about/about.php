@@ -5,7 +5,7 @@
      {  $cfg->title = 'About';
         $this->path = $path.'/index.php';
         $this->cfg = $cfg;
-       $this->cfg->addJs('/html.php/pages/about','about.js');
+       $this->cfg->addJs('/html.php/psys/about','about.js');
      }
        
      function display()

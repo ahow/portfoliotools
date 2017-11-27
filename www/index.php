@@ -17,7 +17,14 @@
      }
      
      function route()
-     {  $p = '';
+     {  // read redirections
+        $redir=json_decode( file_get_contents(SYS_PATH.'redirections.json') );
+        if (json_last_error()!=JSON_ERROR_NONE)
+        {  $this->setError(T('JSON_ERROR').' in  redirections.json: '.json_last_error_msg(),__LINE__);
+           $redir=null;  
+        }
+               
+        $p = '';
         if (isset($_SERVER['PATH_INFO']))  $p = substr($_SERVER['PATH_INFO'],1);
         else if (isset($_SERVER['REQUEST_URI']))  
         {   $a = explode('?', $_SERVER['REQUEST_URI']);
@@ -28,12 +35,22 @@
         $this->nav = $p;
         $a = explode('/',$p);
         if ($p!='')
-        { $inc = SYS_PATH.'pages/'.$a[0].'/'.$a[0].'.php';
-          $index = SYS_PATH.'pages/'.$a[0].'/index.php';
+        { $pd = 'pages';
+          $a0 = $a[0];
+          if ($redir!=null && property_exists($redir,$a0))
+          {   $r = $redir->$a0;
+              $a0=$r->to;
+              $pd=$r->p;
+          }
+          $pd.='/'.$a0;
+          $inc = SYS_PATH.$pd.'/'.$a0.'.php';
           if (file_exists($inc))
           { include($inc);
-            $this->page = new $a[0]($this, 'pages/'.$a[0] ,$a);
-          } else $this->page = new wPage($this, $index ,$a);
+            $this->page = new $a0($this, $pd, $a);
+          } else 
+          {  $index = SYS_PATH.$pd.'/index.php';
+             $this->page = new wPage($this, $index ,$a);
+          }
         } else
         $this->page = new wPage($this,SYS_PATH.'default.php');
 
