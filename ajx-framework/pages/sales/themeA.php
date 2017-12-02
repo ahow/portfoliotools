@@ -1,6 +1,5 @@
-<div class="col-lg-12">
-  <img class="card-img-top img-fluid w-logo"; style='width: 100%'; src="/images/volcano.jpg" alt="">
-</div>
+<img class="card-img-top img-fluid w-logo"; style='width: 100%'; src="/images/volcano.jpg" alt="">
+
 
   <div class="row">
 
@@ -15,6 +14,7 @@
       </div>
       <!-- /.card -->
 
+    <div class="col-lg-12">
       <div class="card card-outline-secondary my-4">
         <div class="card-header">
           Overview
@@ -85,5 +85,6 @@
         </div>
       </div>
 
+    </div>
     </div>
   </div>
