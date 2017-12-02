@@ -12,6 +12,7 @@
           </div>
           <!-- /.card -->
 
+    <div class="col-lg-12">
           <div class="card card-outline-secondary my-4">
             <div class="card-header">
               Thematic investing
@@ -99,7 +100,7 @@
               </div>
             </div>
           </div>
-
+        </div>
         </div>
       </div>
 
