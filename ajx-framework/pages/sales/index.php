@@ -1,5 +1,5 @@
 <div class="row">
-  <img class="card-img-top img-fluid w-logo"; style='width: 100%'; src="/images/volcano.jpg" alt="">
+  <img class="card-img-top img-fluid w-logo"; style='width: 100%'; padding-top: 50px; src="/images/volcano.jpg" alt="">
 </div>
 
   <div class="row">
