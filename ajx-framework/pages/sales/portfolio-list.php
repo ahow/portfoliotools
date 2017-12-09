@@ -60,7 +60,7 @@ if ($this->allow_edit)
         $clist = (object)$_FILES['add_portfolio'];
        
         if ($clist->error==0)
-        { $tmp = mktempname('../uploads/portfolio-');
+        { $tmp = mktempname(UPLOAD_PATH.'portfolio-');
           if (move_uploaded_file($clist->tmp_name, $tmp))
           {  $f = fopen($tmp,'r');
              $h = fgets($f);
