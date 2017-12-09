@@ -28,11 +28,12 @@
      * ***doc*** - _documentation, need to rework_
      * ***lang*** - _translation files_
        * EN.ini - _global english translation file_
-       * RU.ini - _global russian translation file_
+       * ru_RU.ini - _global russian translation file_
      * ***lib*** - _libraries of functions_
      * **vendor** - _external libraries_
      * default.php - _DEFAUTL SITE PAGE!_
      * composer.json - _Composer settings, requred to install external libraries_
+     * redirections.json - _Page redirections, contains lost of a system pages_
      * composer.lock - _Composer lock file_
      * config.php - _THE CONFIGURATION FILE_
      * config.php.bak - _example of the configuration file_

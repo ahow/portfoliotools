@@ -61,7 +61,7 @@ if ($this->allow_edit)
         $clist = (object)$_FILES['add_metric'];
        
         if ($clist->error==0)
-        { $tmp = mktempname('../uploads/metric-');
+        { $tmp = mktempname(UPLOAD_PATH.'metric-');
           if (move_uploaded_file($clist->tmp_name, $tmp))
           {  $f = fopen($tmp,'r');
              $h = fgets($f);
