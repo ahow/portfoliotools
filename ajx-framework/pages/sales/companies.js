@@ -440,10 +440,16 @@ $(function(){
        }
    });
 
-   model.click(function(e, row){        
+   var form_exists = ($('#form1').length > 0);   
+
+   model.click(function(e, row){ 
         selected_row = row;
-        editF.load(row);        
-        compData.loadrow({cid:row.id});
+
+        if (form_exists)
+        {  editF.load(row);        
+           compData.loadrow({cid:row.id});
+        }
+        
         // compData.setData(row);
         $('#tbedit').removeClass('disabled');                      
        $('button.b-new-div').removeClass('disabled');
