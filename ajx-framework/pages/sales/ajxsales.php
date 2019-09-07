@@ -1723,7 +1723,7 @@ group by 1");
         }
         
         
-        if (count($flds==2))
+        if (count($flds)==2)
         {    $db->query('select max(syear), min(syear) from sales_divdetails into @maxyear, @minyear');
              $flds[]='name';
              $sql = "select ".implode(',',$flds).' from sales_companies ';
