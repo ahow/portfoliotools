@@ -1331,6 +1331,8 @@ join sales_portfolio_data p on t.isin = p.isin and portfolio_id=@pf;";
          
          $r = new stdClass();
          
+
+         
         // If needed company list 
         if ($comp_list)
         {   $qr = $db->query('select c.name, c.subsector, c.cid, t.* from tmp_fin_portfolio_values t join sales_companies c on t.isin=c.isin');
