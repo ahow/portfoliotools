@@ -3,4 +3,7 @@
 /config.php
 /log/*.log
 /uploads/*.*
+.vscode/*.*
+
+
 
