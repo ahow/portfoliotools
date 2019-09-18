@@ -62,7 +62,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><?php echo $this->description ?></a>
+          <a class="navbar-brand" href="/">Home</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             
@@ -83,8 +83,58 @@
              if ($cf->inGroup('admin') || $cf->inGroup('editor') )
              {
              ?>
+              
+              <!--  Portfolio analisys -->
               <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Data menu&nbsp;<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
+                  aria-haspopup="true" aria-expanded="false">Portfolio<br>analisys&nbsp;<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <?php $pfmeasuresMenu->display() ?>
+                  </ul>
+              </li>
+              
+              <!--  Sector analisys -->
+              <ul class="nav navbar-nav">
+                <li><a class="nav-item w-todo" href="/sales/screener">Sector<br>analisys</a></li>
+              </ul>
+              
+              <!--  Screener -->
+              <ul class="nav navbar-nav">
+                <li><a class="nav-item w-todo" href="/sales/screener">Screener</a></li>
+              </ul>
+              
+              <!--  Theme comparison -->
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
+              aria-haspopup="true" aria-expanded="false">Theme<br>comparison&nbsp;<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <?php $themesMenu->display() ?>
+                  </ul>
+              </li>
+              
+              <!--  Company details -->
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" 
+              role="button" aria-haspopup="true" aria-expanded="false">Company<br>details&nbsp;<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <?php $companiesMenu->display() ?>
+                  </ul>
+              </li>  
+
+              <!--  Industry analisys -->
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+               aria-haspopup="true" aria-expanded="false">Industry<br>analisys&nbsp;<span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                     <?php $endmarketsMenu->display() ?>
+                  </ul>
+              </li>
+
+
+              <!--  Edit companies -->
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+               aria-haspopup="true" aria-expanded="false">Edit<br>companies&nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $dataMenu->display() ?>
                   </ul>
@@ -94,35 +144,14 @@
              if ($cf->inGroup('admin') || $cf->inGroup('editor') || $cf->inGroup('user'))
              {
              ?>                
-              <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes analysis&nbsp;<span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                     <?php $themesMenu->display() ?>
-                  </ul>
-              </li>
-              <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Industries&nbsp;<span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                     <?php $endmarketsMenu->display() ?>
-                  </ul>
-              </li>
-              <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Companies&nbsp;<span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                     <?php $companiesMenu->display() ?>
-                  </ul>
-              </li>              
+
+            
              <?php 
              }
              if ($cf->inGroup('admin') || $cf->inGroup('editor')  || $cf->inGroup('user'))
              {
              ?>   
-              <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Portfolio exposures&nbsp;<span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                     <?php $pfmeasuresMenu->display() ?>
-                  </ul>
-              </li>
+              
               
               <?php 
              }
