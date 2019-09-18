@@ -1361,7 +1361,7 @@ join sales_sic s on d.sic=s.id
 join tmp_companie_total_sales ts on t.cid = ts.cid
 join sales_portfolio_data p on t.isin = p.isin and portfolio_id=@pf
 where t.reviewed and d.syear=@year and d.sales is not null
-group by 1,2,3;";
+group by 1,2,3, ts.total;";
         $db->query($sql);
 
         
@@ -1429,7 +1429,7 @@ select
 join sales_divdetails d on c.cid = d.cid and d.syear=@year
 join sales_sic s on d.sic=s.id
 join tmp_subsector_total t on c.subsector=t.subsector
-group by 1;";
+group by 1, t.total;";
        // write_log($sql);       
        if ($debug) write_log($sql);
        $db->query($sql);
