@@ -2,5 +2,6 @@
  "oauth":{"to":"pauth","p":"psys"},
  "admin":{"to":"admin","p":"psys"},
  "profile":{"to":"profile","p":"psys"},
- "setup":{"to":"setup","p":"psys"}
+ "setup":{"to":"setup","p":"psys"},
+ "~":{"to":"sales","p":"pages"}
 }
