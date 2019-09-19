@@ -5,4 +5,9 @@ mysql
 drop database pftools; create database pftools; use pftools; \. pftools.sql; 
 update proc set definer='boss@localhost' where definer='o161750@%';
 
+# enable log
+SET global general_log_file='/tmp/mysql.log'; 
+SET global log_output = 'file';
+SET global general_log = on;
+
 
