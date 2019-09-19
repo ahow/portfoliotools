@@ -85,19 +85,15 @@
              ?>
               
               <!--  Portfolio analisys -->
-              <ul class="nav navbar-nav">
-                <li><a class="nav-item" href="/~/theme-exposures">Portfolio<br>analisys</a></li>
-              </ul>
+              <li><a class="nav-item" href="/~/theme-exposures">Portfolio<br>analisys</a></li>
+              
                             
               <!--  Sector analisys -->
-              <ul class="nav navbar-nav">
-                <li><a class="nav-item w-todo" href="/~/sector-analisys">Sector<br>analisys</a></li>
-              </ul>
+              <li><a class="nav-item w-todo" href="/~/sector-analisys">Sector<br>analisys</a></li>
+              
               
               <!--  Screener -->
-              <ul class="nav navbar-nav">
-                <li><a class="nav-item w-todo" href="/~/screener">Screener</a></li>
-              </ul>
+              <li><a class="nav-item w-todo" href="/~/screener">Screener</a></li>
               
               <!--  Theme comparison -->
               <!--

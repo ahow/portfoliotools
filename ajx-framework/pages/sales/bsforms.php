@@ -152,7 +152,7 @@
         $this->mkTestFilt($name,'text');
          // <label for="comment">'.$label.'</label>
         return '<div class="form-group">
-  <textarea class="form-control" rows="'.$rows.'" id="'.$name.'" "  data-control-type="basic" placeholder="'.$label.'"></textarea>
+  <textarea class="form-control" rows="'.$rows.'" id="'.$name.'" data-control-type="basic" placeholder="'.$label.'"></textarea>
 </div>';
     }
     

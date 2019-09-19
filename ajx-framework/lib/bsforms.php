@@ -154,7 +154,7 @@
          // <label for="comment">'.$label.'</label>
         return '<div class="form-group">
   <textarea class="form-control" rows="'.$rows.'" id="'.$name.'"'.
-  $this->getValid().' "  data-control-type="basic" placeholder="'.$label.'"></textarea>
+  $this->getValid().'  data-control-type="basic" placeholder="'.$label.'"></textarea>
 </div>';
     }
     
