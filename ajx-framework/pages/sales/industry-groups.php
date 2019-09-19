@@ -1,7 +1,6 @@
-<ol class="breadcrumb">
-  <li><a href="<?=mkURL('/sales')?>"><?=T('Sales')?></a></li>
-  <li class="active" ><?=$this->cfg->title?></li>
-</ol>
+<?php
+    $this->displayCrumbs();
+?>
 
 <h2 class="uppertitle"><?=$this->cfg->title?></h2>
 

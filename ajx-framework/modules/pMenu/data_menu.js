@@ -1,5 +1,5 @@
 [
-{"a":"/sales/upload","t":"DATA_UPLOADING"},
-{"a":"/sales/portfolio-list","t":"portfolio-list"},
-{"a":"/sales/metric-list","t":"metric-list"}
+{"a":"/~/upload","t":"DATA_UPLOADING"},
+{"a":"/~/portfolio-list","t":"portfolio-list"},
+{"a":"/~/metric-list","t":"metric-list"}
 ]

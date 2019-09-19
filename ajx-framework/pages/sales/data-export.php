@@ -1,7 +1,6 @@
-<ol class="breadcrumb">
-  <li><a href="<?=mkURL('/sales')?>"><?=T('Sales')?></a></li>
-  <li class="active" ><?=$this->cfg->title?></li>
-</ol>
+<?php
+    $this->displayCrumbs();
+?>
 <div class="row">
     <div class="col-lg-4">
          <a href="/html.php/pages/sales/companies.csv" class="btn btn-info btn-lg">Companies Export (*.csv)</a>

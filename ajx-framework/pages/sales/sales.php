@@ -175,5 +175,14 @@
      {  $user = $this->cfg->user->user;
         if ($this->cpage!='') include($this->cpage);        
      }
+
+     function displayCrumbs()
+     { ?>
+        <ol class="breadcrumb">
+        <li><a href="<?=mkURL('/')?>"><?=T('Home')?></a></li>
+        <li class="active" ><?=$this->cfg->title?></li>
+      </ol>
+       <?php
+     }
   }
 ?>

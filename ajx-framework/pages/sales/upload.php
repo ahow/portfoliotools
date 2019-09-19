@@ -1,9 +1,5 @@
-<ol class="breadcrumb">
-  <li><a href="<?=mkURL('/sales')?>"><?=T('Sales')?></a></li>
-  <li class="active" ><?=T('Upload')?></li>
-</ol>
-
 <?php
+    $this->displayCrumbs();
 if ($this->allow_edit)
 {
 ?>

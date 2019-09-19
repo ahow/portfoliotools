@@ -71,10 +71,10 @@
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Themes&nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                     <li><a href="<?php echo mkURL('/sales/themeA'); ?>">Theme A</a></li>
-                     <li><a href="<?php echo mkURL('/sales/themeB'); ?>">Theme B</a></li>
-                     <li><a href="<?php echo mkURL('/sales/themeC'); ?>">Theme C</a></li>
-                     <li><a href="<?php echo mkURL('/sales/themeD'); ?>">Theme D</a></li>
+                     <li><a href="<?php echo mkURL('/~/themeA'); ?>">Theme A</a></li>
+                     <li><a href="<?php echo mkURL('/~/themeB'); ?>">Theme B</a></li>
+                     <li><a href="<?php echo mkURL('/~/themeC'); ?>">Theme C</a></li>
+                     <li><a href="<?php echo mkURL('/~/themeD'); ?>">Theme D</a></li>
                   </ul>
               </li>
               
@@ -91,12 +91,12 @@
                             
               <!--  Sector analisys -->
               <ul class="nav navbar-nav">
-                <li><a class="nav-item w-todo" href="/sales/screener">Sector<br>analisys</a></li>
+                <li><a class="nav-item w-todo" href="/~/sector-analisys">Sector<br>analisys</a></li>
               </ul>
               
               <!--  Screener -->
               <ul class="nav navbar-nav">
-                <li><a class="nav-item w-todo" href="/sales/screener">Screener</a></li>
+                <li><a class="nav-item w-todo" href="/~/screener">Screener</a></li>
               </ul>
               
               <!--  Theme comparison -->

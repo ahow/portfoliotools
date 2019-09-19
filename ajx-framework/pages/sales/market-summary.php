@@ -1,8 +1,5 @@
-<ol class="breadcrumb">
-  <li><a href="<?=mkURL('/sales')?>"><?=T('Sales')?></a></li>
-  <li class="active" ><?=$this->cfg->title?></li>
-</ol>
 <?php
+    $this->displayCrumbs();
     include(__DIR__.'/bsforms.php');
     $f = new BSformDefault();
 ?>

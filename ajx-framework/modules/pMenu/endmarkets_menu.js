@@ -1,7 +1,7 @@
 [
-{"a":"/sales/subsector","t":"Subsector details"},
-{"a":"/sales/industry-groups","t":"INDUSTRY_GROUPS"},
-{"a":"/sales/sic","t":"INDUSTRY_DETAILS"},
-{"a":"/sales/market-summary","t":"market-summary"},
-{"a":"/sales/industry-analysis","t":"industry-analysis"}
+{"a":"/~/subsector","t":"Subsector details"},
+{"a":"/~/industry-groups","t":"INDUSTRY_GROUPS"},
+{"a":"/~/sic","t":"INDUSTRY_DETAILS"},
+{"a":"/~/market-summary","t":"market-summary"},
+{"a":"/~/industry-analysis","t":"industry-analysis"}
 ]

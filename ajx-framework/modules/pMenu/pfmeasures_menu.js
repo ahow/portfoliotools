@@ -1,5 +1,5 @@
 [
-{"a":"/sales/theme-exposures","t":"theme-exposures"},
-{"a":"/sales/portfolio-metrics","t":"portfolio-metrics","acl":["hidden"]},
-{"a":"/sales/portfolio-summaries","t":"portfolio-summaries","acl":["hidden"]}
+{"a":"/~/theme-exposures","t":"theme-exposures"},
+{"a":"/~/portfolio-metrics","t":"portfolio-metrics","acl":["hidden"]},
+{"a":"/~/portfolio-summaries","t":"portfolio-summaries","acl":["hidden"]}
 ]
