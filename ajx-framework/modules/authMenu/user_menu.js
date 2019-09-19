@@ -1,4 +1,9 @@
 [
 {"a":"/profile","t":"MY_PROFILE"},
-{"a":"/admin","t":"ADMIN_PANEL","acl":["admin"]}
+{"a":"/admin","t":"ADMIN_PANEL","acl":["admin"]},
+{"a":"#","t":"&nbsp;"},
+{"a":"/~/themes-summary","t":"themes-summary","acl":["admin"]},
+{"a":"/~/themes-comparison","t":"themes-comparison","acl":["admin"]},
+{"a":"/~/thematic-industry-comparison","t":"thematic-industry-comparison","acl":["admin"]},
+{"a":"/~/thematic-company-comparison","t":"thematic-company-comparison","acl":["admin"]}
 ]

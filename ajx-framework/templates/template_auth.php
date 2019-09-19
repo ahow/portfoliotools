@@ -11,7 +11,7 @@
   $endmarketsMenu = $this->newMod('pMenu','endmarkets_menu.js');
   $companiesMenu = $this->newMod('pMenu','companies_menu.js');
   $themesMenu = $this->newMod('pMenu','themes_menu.js');
-  $pfmeasuresMenu = $this->newMod('pMenu','pfmeasures_menu.js');
+  // $pfmeasuresMenu = $this->newMod('pMenu','pfmeasures_menu.js');
   $userMenu = $this->newMod('pMenu','user_menu.js');
   // $pRightMenu = $this->newMod('pMenu','main_r_data.js');
 
@@ -85,14 +85,10 @@
              ?>
               
               <!--  Portfolio analisys -->
-              <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
-                  aria-haspopup="true" aria-expanded="false">Portfolio<br>analisys&nbsp;<span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                     <?php $pfmeasuresMenu->display() ?>
-                  </ul>
-              </li>
-              
+              <ul class="nav navbar-nav">
+                <li><a class="nav-item" href="/~/theme-exposures">Portfolio<br>analisys</a></li>
+              </ul>
+                            
               <!--  Sector analisys -->
               <ul class="nav navbar-nav">
                 <li><a class="nav-item w-todo" href="/sales/screener">Sector<br>analisys</a></li>
@@ -104,13 +100,15 @@
               </ul>
               
               <!--  Theme comparison -->
+              <!--
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
               aria-haspopup="true" aria-expanded="false">Theme<br>comparison&nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                     <?php $themesMenu->display() ?>
+                     <?php // $themesMenu->display() ?>
                   </ul>
               </li>
+             -->
               
               <!--  Company details -->
               <li class="dropdown">
@@ -119,7 +117,8 @@
                   <ul class="dropdown-menu">
                      <?php $companiesMenu->display() ?>
                   </ul>
-              </li>  
+              </li> 
+          
 
               <!--  Industry analisys -->
               <li class="dropdown">
@@ -155,9 +154,12 @@
               
               <?php 
              }
-             //   $userMenu->display() ?>
+             //  $userMenu->display();
+              ?>
           </ul>          
-          <?php  $authMenu->display(); ?>
+          <?php  
+              $authMenu->display(); 
+          ?>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
