@@ -21,9 +21,10 @@
       return $pref.'/index.php'.$url;
   }
   
-  function write_log($msg)
+  function write_log($msg, $log_time=true)
   {  $f = fopen(LOG_PATH.'sys.log','a+');
-     fwrite($f, date("Y-m-d H:i:s ").$msg."\n");
+     if ($log_time) fwrite($f, date("Y-m-d H:i:s ").$msg."\n");
+     else fwrite($f, $msg."\n");
      fclose($f);
   }
 

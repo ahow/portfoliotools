@@ -1322,9 +1322,9 @@ into @pfsum;";
         // insert not reviewed values ---
         $sql = "insert into tmp_fin_portfolio_values
 select t.isin, c.reviewed, p.val/@pfsum as adjucted ";
-        foreach($ha as $k=>$v) $sql.=', sv.p'.($k+1).' ';
+        foreach($ha as $k=>$v) $sql.=', sv.p'.($k+1).' '; //  and not c.reviewed
         $sql.="from tmp_cids t
-join sales_companies c on t.cid=c.cid and not c.reviewed
+join sales_companies c on t.cid=c.cid
 join tmp_subsector_values sv on c.subsector = sv.subsector
 join sales_portfolio_data p on t.isin = p.isin and portfolio_id=@pf;";
         $db->query($sql);
@@ -1396,34 +1396,40 @@ from tmp_fin_portfolio_values t";
     {   $db = $this->cfg->db;
         $sql = "select max(d.syear) as maxyear
 from sales_divdetails d";
-        $qr = $db->query($sql);
+        $qr = $db->query($sql, false);
         $yr = $db->fetchSingle($qr);
         $params = (object)$_POST;
         $debug = false;
-        
+
+        if ($debug) write_log(__FILE__.':'.__LINE__." ajxComparePortfolio()");
+        $qr = $db->query($sql);
+
         $sql = "select headers from sales_exposure";
         $qr = $db->query($sql);
         $ha = explode(';', $db->fetchSingleValue($qr));
         
         $db->query("set @year=:year;", array('year'=>$yr->maxyear));
-        if ($debug) write_log("set @year=".$yr->maxyear);
+        if ($debug) write_log("set @year=".$yr->maxyear, false);
         
         // ----- Calc subsector values ---------------------
-        $sql = "CREATE TEMPORARY TABLE tmp_subsector_total (subsector  varchar(100), total double, index(subsector)) ENGINE=MEMORY;";
+        $sql = "CREATE TEMPORARY TABLE tmp_subsector_total (subsector  varchar(100), "
+        ." total double, index(subsector)) ENGINE=MEMORY;";
         $db->query($sql);
+        if ($debug) write_log($sql, false);
         
         $sql = "insert into tmp_subsector_total
 select c.subsector, sum(d.sales)
 from sales_companies c
 join sales_divdetails d on c.cid = d.cid and d.syear=@year
 group by 1;";        
-        $db->query($sql);
+      $db->query($sql);
+      if ($debug) write_log($sql, false);
         
-        $sql = "CREATE TEMPORARY TABLE tmp_subsector_values (subsector  varchar(100), p1 double, p2 double, p3 double, p4 double, index(subsector)) ENGINE=MEMORY;";        
-        $db->query($sql);
-        if ($debug) write_log(__LINE__);
+      $sql = "CREATE TEMPORARY TABLE tmp_subsector_values (subsector  varchar(100), p1 double, p2 double, p3 double, p4 double, index(subsector)) ENGINE=MEMORY;";        
+      $db->query($sql);
+      if ($debug) write_log($sql, false);
         
-        $sql = "insert into tmp_subsector_values
+      $sql = "insert into tmp_subsector_values
 select 
     c.subsector";
     foreach($ha as $k=>$v) $sql.=', sum(d.sales*CSV_DOUBLE(s.exposure,'.($k+1).'))/t.total as p'.($k+1)."\n";
@@ -1432,28 +1438,24 @@ join sales_divdetails d on c.cid = d.cid and d.syear=@year
 join sales_sic s on d.sic=s.id
 join tmp_subsector_total t on c.subsector=t.subsector
 group by 1, t.total;";
-       // write_log($sql);       
-       if ($debug) write_log($sql);
-       $db->query($sql);
-       if ($debug) write_log(__LINE__);
-       
-        
-        
-        $db->query("set @pf=:pf;", array('pf'=>$params->pf1));        
-        $this->res->data1 = $this->getExposuresByPortfolio($ha, true);
-        
-        $db->query("set @pf=:pf;", array('pf'=>$params->pf2));        
-        $this->res->data2 = $this->getExposuresByPortfolio($ha);
-        
-        $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf1));
-        $this->res->name1 = $db->fetchSingleValue($qr);
 
-        $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf2));
-        $this->res->name2 = $db->fetchSingleValue($qr);
+      if ($debug) write_log($sql, false);
+      $db->query($sql);
         
-        $this->res->header = $ha;
-        echo json_encode($this->res); 
+      $db->query("set @pf=:pf;", array('pf'=>$params->pf1));        
+      $this->res->data1 = $this->getExposuresByPortfolio($ha, true);
+        
+      $db->query("set @pf=:pf;", array('pf'=>$params->pf2));        
+      $this->res->data2 = $this->getExposuresByPortfolio($ha);
+        
+      $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf1));
+      $this->res->name1 = $db->fetchSingleValue($qr);
 
+      $qr = $db->query("select portfolio from sales_portfolio where id=:pf", array('pf'=>$params->pf2));
+      $this->res->name2 = $db->fetchSingleValue($qr);
+        
+      $this->res->header = $ha;
+      echo json_encode($this->res); 
 
     }
     
