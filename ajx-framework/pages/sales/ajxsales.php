@@ -2131,6 +2131,32 @@ group by 1');
       $qr = $db->query("select sic, stability as v from tmp_stabilities");
       return $qr->fetchAll(PDO::FETCH_OBJ);     
     }
+
+    function calcByParamThematicIndustryComparison($f)
+    {   switch ($f)
+        {   case 'tsales':
+            case 'roic':
+            case 'pe':
+            case 'evebitda':
+            case 'payout':
+               return $this->calcSicValues($f);
+            break; 
+            case 'top3':
+               return $this->themesIndustryTopN(3);
+            break;
+            case 'top5':
+               return $this->themesIndustryTopN(5);
+            break;
+            case 'stability':
+               return $this->themesIndustryStabilities();
+            break;
+            default:
+              if (($r=$this->themesIndustryGrowth($f))!==false) return $r;
+              else if (($r=$this->themesIndustry3yrGrowth($f))!==false) return $r;
+              else if (($r=$this->themesIndustrySumBySum($f))!==false) return $r;
+        }
+        return array();
+    }
         
     function ajxThematicIndustryComparison()
     {  $params = (object)$_POST;
@@ -2140,35 +2166,9 @@ group by 1');
                 $this->getPostParams('theme_min,theme_max,theme_id'));
        $db->query('select max(syear) from sales_divdetails into @max_year');
        
-       function calcByParam($ctx, $f)
-       {   switch ($f)
-           {   case 'tsales':
-               case 'roic':
-               case 'pe':
-               case 'evebitda':
-               case 'payout':
-                  return $ctx->calcSicValues($f);
-               break; 
-               case 'top3':
-                  return $ctx->themesIndustryTopN(3);
-               break;
-               case 'top5':
-                  return $ctx->themesIndustryTopN(5);
-               break;
-               case 'stability':
-                  return $ctx->themesIndustryStabilities();
-               break;
-               default:
-                 if (($r=$ctx->themesIndustryGrowth($f))!==false) return $r;
-                 else if (($r=$ctx->themesIndustry3yrGrowth($f))!==false) return $r;
-                 else if (($r=$ctx->themesIndustrySumBySum($f))!==false) return $r;
-           }
-           return array();
-       }
-       
        $data = array();
-       $x = calcByParam($this, post('xaxis'));
-       $y = calcByParam($this, post('yaxis'));
+       $x = calcByParamThematicIndustryComparison(post('xaxis'));
+       $y = calcByParamThematicIndustryComparison(post('yaxis'));
                
        foreach($x as $r)
        { $data[$r->sic] = new stdClass();
