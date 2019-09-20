@@ -2,8 +2,11 @@
     $this->displayCrumbs();
     include(__DIR__.'/bsforms.php');
     $f = new BSformDefault();
+    if ($this->smallHeader)
+        echo '<h3>'.$this->cfg->title.'</h3>';
+    else
+        echo '<h2 class="uppertitle">'.$this->cfg->title.'</h2>';         
 ?>
-<h2 class="uppertitle"><?=$this->cfg->title?></h2>
 <div id="theme_exp">
     <div class="row">
         <div class="col-lg-5"><?=$f->modelSelect('portfolio','/pages/sales/Model/portfolio-lookup')?></div>

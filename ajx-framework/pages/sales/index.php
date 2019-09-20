@@ -2,6 +2,17 @@
   <img class="card-img-top img-fluid w-logo"; style='width: 100%'; src="/images/volcano.jpg" alt="">
 </div>
 
+  <div class="row"> 
+    <div class="col-lg-12">
+      <?php
+          require_once(SYS_PATH.'pages/sales/sales.php');
+          $p = new sales($this->cfg, 'sales/theme-exposures', ['sales','theme-exposures']);
+          $p->smallHeader = true;
+          $p->display();
+      ?>
+    </div>  
+  </div>
+
   <div class="row">
 
         <!-- /.col-lg-3 -->

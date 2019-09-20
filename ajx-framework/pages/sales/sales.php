@@ -1,7 +1,8 @@
 <?php
   /* Fedotov Vitaliy (c) Ulan-Ude 2016 | kursruk@yandex.ru */
   class sales extends wPage
-  {  function __construct($cfg, $path, $seg=null)
+  { var $smallHeader = false;
+    function __construct($cfg, $path, $seg=null)
      {  $this->cfg = $cfg;
         $this->includePageLocales(__DIR__);
         $cfg->title = 'Sales';

@@ -1864,40 +1864,39 @@ group by 1");
       return false;       
       
    }
-   
+   function calcByParamAllBySICs($f)
+   {   switch ($f)
+       {   case 'tsales':
+           case 'roic':
+           case 'pe':
+           case 'evebitda':
+           case 'payout':
+           case 'market_cap':
+              return $this->calcAllSicValues($f);
+           break; 
+           case 'top3':
+              return $this->calcAllSicsTopN(3);
+           break;
+           case 'top5':
+              return $this->calcAllSicsTopN(5);
+           break;
+           case 'stability':
+              return $this->calcAllSicsStabilities();
+           break;
+           default:
+             if (($r=$this->allSICsGrowth($f))!==false) return $r;
+             else if (($r=$this->allSICsNyrGrowth($f, 5))!==false) return $r;
+             else if (($r=$this->allSICsNyrGrowth($f, 3))!==false) return $r;
+             else if (($r=$this->allSICsSumBySum($f))!==false) return $r;
+       }
+       return array();
+   }
+
    function allBySICs($prepare=false)
    {   $params = (object)$_POST;
        $db = $this->cfg->db;
        $db->query('select max(syear) from sales_divdetails into @max_year');
-       
-       function calcByParam($ctx, $f)
-       {   switch ($f)
-           {   case 'tsales':
-               case 'roic':
-               case 'pe':
-               case 'evebitda':
-               case 'payout':
-               case 'market_cap':
-                  return $ctx->calcAllSicValues($f);
-               break; 
-               case 'top3':
-                  return $ctx->calcAllSicsTopN(3);
-               break;
-               case 'top5':
-                  return $ctx->calcAllSicsTopN(5);
-               break;
-               case 'stability':
-                  return $ctx->calcAllSicsStabilities();
-               break;
-               default:
-                 if (($r=$ctx->allSICsGrowth($f))!==false) return $r;
-                 else if (($r=$ctx->allSICsNyrGrowth($f, 5))!==false) return $r;
-                 else if (($r=$ctx->allSICsNyrGrowth($f, 3))!==false) return $r;
-                 else if (($r=$ctx->allSICsSumBySum($f))!==false) return $r;
-           }
-           return array();
-       }
-       
+              
        $data = array();
        $x = calcByParam($this, post('xaxis'));
        $y = calcByParam($this, post('yaxis'));
