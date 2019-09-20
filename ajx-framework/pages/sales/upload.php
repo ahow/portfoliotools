@@ -51,6 +51,13 @@ if ($this->allow_edit)
   </div>
   
   <div class="form-group">
+    <label class="col-md-2" for="full_xls">All data from Excel file:</label>
+    <input type="file" class="col-md-4" id="full_xls" name="full_xls">
+    <div class="col-md-3"></div>
+    <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/full_xls.xls">Download *.xls</a>
+  </div>
+
+  <div class="form-group">
     <div id="preview_isin" class="col-md-12"></div>
   </div>
   

@@ -2,7 +2,7 @@
     "require": {
     "lusitanian/oauth": "0.8.9",
     "phpmailer/phpmailer": "~5.2",
-    "tecnick.com/tcpdf": "~6.2"
+    "tecnick.com/tcpdf": "~6.2",
+        "phpoffice/phpspreadsheet": "^1.9"
     }
 }
-
