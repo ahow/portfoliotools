@@ -4,9 +4,10 @@
 
   <div class="row"> 
     <div class="col-lg-12">
+      <h3>Themes comparison</h3>
       <?php
-          require_once(SYS_PATH.'pages/sales/sales.php');
-          $p = new sales($this->cfg, 'sales/theme-exposures', ['sales','theme-exposures']);
+          require_once(SYS_PATH.'pages/sales/sales.php');          
+          $p = new sales($this->cfg, 'sales/themes-comparison', ['sales','themes-comparison']);
           $p->smallHeader = true;
           $p->display();
       ?>
