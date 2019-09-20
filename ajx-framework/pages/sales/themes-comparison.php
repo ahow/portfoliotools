@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="row">
-        <div id="container" style="min-width: 600px; height: 600px; margin: 0 auto"></div>
+        <div id="container" style="display:none; min-width: 600px; height: 600px; margin: 0 auto"></div>
     </div>
 
     <div class="array-list">
