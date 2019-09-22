@@ -219,11 +219,11 @@ if ($this->allow_edit)
       $r->sales_growth = $fld->get($a, 'sales_growth', true);
       $r->roic =  $fld->get($a, 'roic', true);
       $r->pe =  $fld->get($a, 'pe', true); 
-      if ($r->pe==null) $fld->get($a, 'price_to_earnings', true); // alias
+      if ($r->pe==null) $r->pe = $fld->get($a, 'price_to_earnings', true); // alias      
       $r->EBITDA_growth = $fld->get($a, 'ebitda_growth', true);
       $r->ROE = $fld->get($a, 'roe', true);                
       $r->evebitda = $fld->get($a, 'evebitda', true);
-      if ($r->evebitda==null) $fld->get($a, 'ev_to_ebitda', true); //alias
+      if ($r->evebitda==null) $r->evebitda=$fld->get($a, 'ev_to_ebitda', true); //alias
        
       //  [sustainex] => 23 [reviewed ] => 24 )
       $r->yield =  $fld->get($a, 'yield', true);
@@ -235,7 +235,7 @@ if ($this->allow_edit)
       $r->sustain_ex = $fld->get($a, 'sustainex', true);
       $r->payout = $fld->get($a, 'payout', true);  //  Obsolete, should be removed
       $r->reviewed= $fld->get($a, 'reviewed', true);  
-
+      
     }
 
     if (isset($_FILES['company_list']))

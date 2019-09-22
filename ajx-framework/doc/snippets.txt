@@ -9,3 +9,5 @@ update proc set definer='boss@localhost' where definer='o161750@%';
 SET global general_log_file='/tmp/mysql.log'; 
 SET global log_output = 'file';
 SET global general_log = on;
+
+select * from sales_companies;
