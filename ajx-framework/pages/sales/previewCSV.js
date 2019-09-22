@@ -68,9 +68,12 @@ function previewCSV(selector, fileInput)
       }
       
     $(fileInput).change( function (){
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = function (e) {
-            renderTable(selector, e.target.result.substr(0,1024) );
+          let fn = $(fileInput).val();
+          let ext = fn.substring(fn.length-4).toLowerCase();
+          // Render only CSV tables
+          if (ext=='.csv') renderTable(selector, e.target.result.substr(0,1024) );
         };        
         reader.readAsText(this.files[0]);
      });

@@ -1,4 +1,7 @@
 <?php
+   use PhpOffice\PhpSpreadsheet\IOFactory;
+   require SYS_PATH.'/vendor/autoload.php';
+
     $this->displayCrumbs();
 if ($this->allow_edit)
 {
@@ -179,70 +182,140 @@ if ($this->allow_edit)
       else return $v;
     }
     
+    class CSVField 
+    {  var $ks;
+       function __construct($header)
+       { $this->ks = [];
+         foreach ($header as $k=>$v) {                
+            $this->ks[ preg_replace('/[\ ]+/','_', strtolower($v) ) ] = $k;
+         }          
+       }
+
+       function get($a, $name, $is_nullable = false)
+       {  if (!isset($this->ks[$name])) return null;
+          if (isset($a[$this->ks[$name]])) 
+          {
+            $v = trim( $a[$this->ks[$name]] );
+            if ($is_nullable && $v=='') return null;
+            return $v;
+          }          
+          return null;
+       }
+       
+    }
+
+    function setCompanyListRow(&$r, $fld,  $a)
+    { $r->cid = $fld->get($a, 'cid');
+      $r->name = $fld->get($a, 'name');
+      $r->industry_group = $fld->get($a, 'industry_group');
+      $r->industry = $fld->get($a, 'industry');
+      $r->sector = $fld->get($a, 'sector');
+      $r->subsector = $fld->get($a, 'subsector');
+      $r->country = $fld->get($a, 'country');
+      $r->isin = $fld->get($a, 'isin');
+      $r->region = $fld->get($a, 'region');
+      $r->sales = $fld->get($a, 'sales', true);                
+      $r->market_cap = $fld->get($a, 'market_cap', true);
+      $r->sales_growth = $fld->get($a, 'sales_growth', true);
+      $r->roic =  $fld->get($a, 'roic', true);
+      $r->pe =  $fld->get($a, 'pe', true); 
+      if ($r->pe==null) $fld->get($a, 'price_to_earnings', true); // alias
+      $r->EBITDA_growth = $fld->get($a, 'ebitda_growth', true);
+      $r->ROE = $fld->get($a, 'roe', true);                
+      $r->evebitda = $fld->get($a, 'evebitda', true);
+      if ($r->evebitda==null) $fld->get($a, 'ev_to_ebitda', true); //alias
+       
+      //  [sustainex] => 23 [reviewed ] => 24 )
+      $r->yield =  $fld->get($a, 'yield', true);
+      $r->price_to_book = $fld->get($a, 'price_to_book', true);
+      $r->reinvestment = $fld->get($a, 'reinvestment', true);
+      $r->research_and_development = $fld->get($a, 'research_and_development', true);
+      $r->net_debt_to_ebitda  = $fld->get($a, 'net_debt_to_ebitda', true);
+      $r->CAPE = $fld->get($a, 'cape', true);
+      $r->sustain_ex = $fld->get($a, 'sustainex', true);
+      $r->payout = $fld->get($a, 'payout', true);  //  Obsolete, should be removed
+      $r->reviewed= $fld->get($a, 'reviewed', true);  
+
+    }
+
     if (isset($_FILES['company_list']))
     {
         $clist = (object)$_FILES['company_list'];
-        $tmp = mktempname(UPLOAD_PATH.'company-');
+        $ext = strtolower( substr($clist->name, -4) );
+        if ($ext{0}!=='.') $ext='.'.$ext;
+        $tmp = mktempname(UPLOAD_PATH.'company-').$ext;
         if ($clist->error==0)
         { if (move_uploaded_file($clist->tmp_name, $tmp))
-          {  $f = fopen($tmp,'r');
-             $h = fgets($f);
-             $a = explode(';',$h);
-             $spl='';
-             if (count($a)>1) $spl=';'; 
-             else
-             {  $a = explode(',',$h);
-                if (count($a)>0) $spl=',';
-             }
+          {  $db = $this->cfg->db;
 
-            // echo "splitter: $spl<br>";
-             
-             $n_col = count($a);
-             if ($n_col<16 || $n_col>17)
-             {  fclose($f);
-                unlink($tmp);
-                echo "<div class=\"alert alert-danger\">Wrong Company format!  ($n_col)</div>";
-                echo ($h);
-                print_r($a);
-                die();
+             if ($ext=='.csv')
+             {
+               $f = fopen($tmp,'r');
+               $h = fgets($f);
+               $a = explode(';',$h);
+               $spl='';
+               // Delimeter auto detection 
+               if (count($a)>1) $spl=';'; 
+               else
+               {  $a = explode(',',$h);
+                  if (count($a)>0) $spl=',';
+               }
+  
+               $fld = new CSVField($a);
+               // echo "splitter: $spl<br>";
+               
+               $n_col = count($a);
+               if ($n_col<16 || ($n_col>17 && $n_col!=25))
+               {  fclose($f);
+                  unlink($tmp);
+                  echo "<div class=\"alert alert-danger\">Wrong Company format!  ($n_col)</div>";
+                  // echo ($h);
+                  print_r($a);
+                  die();
+               }
+               
+               if ($clear) $db->query('delete from sales_companies');
+                            
+               while ($a = fgetcsv($f,0,$spl) )
+               { $r = new stdClass();
+                 setCompanyListRow($r, $fld, $a);              
+                 try
+                 { $db->insertObject('sales_companies',$r);
+                 } catch(Exception $e)
+                 { echo $e->getMessage();
+                 }
+               }
+               fclose($f); 
+               unlink($tmp);
+               echo "<div class=\"alert alert-success\">Company list uploaded!</div>";
+             } else 
+             if ($ext=='.xlsx')
+             { 
+               $inputFileType = 'Xlsx';               ;
+               $sheetname = 'CompanyList';
+               $reader = IOFactory::createReader($inputFileType);
+               $reader->setLoadSheetsOnly($sheetname);
+               $reader->setReadDataOnly(true);
+               $spreadsheet = $reader->load($tmp);               
+               $loadedSheetNames = $spreadsheet->getSheetNames();
+               if (count($loadedSheetNames)>0)
+               {  if ($clear) $db->query('delete from sales_companies');
+                  $data = $spreadsheet->getSheetByName($sheetname)->toArray();
+                  $fld = new CSVField($data[0]);
+                  for ($i=1; $i<count($data); $i++){
+                     $a = $data[$i];
+                     $r = new stdClass();
+                     setCompanyListRow($r, $fld, $a);              
+                     try
+                     { $db->insertObject('sales_companies',$r);
+                     } catch(Exception $e)
+                     { echo $e->getMessage();
+                     }
+                  }                  
+               }
+               unlink($tmp);
+               echo "<div class=\"alert alert-success\">Company list uploaded!</div>";
              }
-             
-             $db = $this->cfg->db;
-             
-             if ($clear) 
-             {  $db->query('delete from sales_companies');
-             }
-             
-             while ($a = fgetcsv($f,0,$spl) )
-             {  $r = new stdClass();
-                $r->cid = trim( $a[0] );
-                $r->name = trim ($a[1] );
-                $r->industry_group = trim ($a[2] );
-                $r->industry = trim ($a[3] );
-                $r->sector = trim ($a[4] );
-                $r->subsector = trim ($a[5] );
-                $r->country = trim ($a[6] );
-                $r->isin = trim ($a[7] );
-                $r->region = trim ($a[8] );
-                $r->sales = nullable($a[9] );
-                $r->market_cap = nullable($a[10] );
-                $r->sales_growth = nullable($a[11] );
-                $r->roic = nullable ($a[12] );
-                $r->pe = nullable ($a[13] );
-                $r->evebitda = nullable ($a[14] );
-                $r->payout = nullable ($a[15] );
-                if (isset($a[16]) && ($a[16]==1 || $a[16]=='true') ) $r->reviewed=1;
-                
-                try
-                { $db->insertObject('sales_companies',$r);
-                } catch(Exception $e)
-                { // echo $e->getMessage();
-                }
-
-             }
-             fclose($f); 
-             unlink($tmp);
-             echo "<div class=\"alert alert-success\">Company list uploaded!</div>";
           }
     
         }

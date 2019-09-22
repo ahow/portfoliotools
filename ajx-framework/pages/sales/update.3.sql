@@ -1,0 +1,9 @@
+alter table sales_companies add EBITDA_growth double;
+alter table sales_companies add ROE double;
+alter table sales_companies add yeld double;
+alter table sales_companies add price_to_book double;
+alter table sales_companies add reinvestment double;
+alter table sales_companies add research_and_development double;
+alter table sales_companies add net_debt_to_EBITDA double;
+alter table sales_companies add CAPE double;
+alter table sales_companies add sustain_ex double;
