@@ -98,7 +98,7 @@
      send_message(++$msg_num, $res);
      $fid = date('YmdHis').'.'.rand(1,10000);
      $fn = LOG_PATH.'errlog-'.$fid;
-     $fe = fopen($fn, 'w+');
+      $fe = fopen($fn, 'w+');
      $res->errors = 0;
      
      while ($a = fgetcsv($f,0,$spl) )
