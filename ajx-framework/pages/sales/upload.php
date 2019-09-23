@@ -242,7 +242,7 @@ if ($this->allow_edit)
     {
         $clist = (object)$_FILES['company_list'];
         $ext = strtolower( substr($clist->name, -4) );
-        if ($ext{0}!=='.') $ext='.'.$ext;
+        if (strlen($ext)>0 && $ext{0}!=='.') $ext='.'.$ext;
         $tmp = mktempname(UPLOAD_PATH.'company-').$ext;
         if ($clist->error==0)
         { if (move_uploaded_file($clist->tmp_name, $tmp))
