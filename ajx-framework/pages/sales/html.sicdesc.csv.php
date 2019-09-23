@@ -13,7 +13,9 @@
       $exph = trim($db->fetchSingleValue($qr));
       
       $h = array('DIVISION','MAJOR GROUP','INDUSTRY GROUP CODE','INDUSTRY GROUP NAME','SIC CODE','SIC NAME','SIC DESCRIPTION');
-      $h = array_merge($h, explode(';',$exph) );
+      $hc = explode(';',$exph);
+      foreach($hc as $k=>$v) $hc[$k] = trim($v,'"'); // remove quotes
+      $h = array_merge($h, $hc );
       
       $qr=$db->query('select 
 ig.division, ig.major_group,  ig.id, ig.industry_group, s.id, s.name, s.description, s.exposure 
@@ -24,8 +26,7 @@ ig.division, ig.major_group,  ig.id, ig.industry_group, s.id, s.name, s.descript
       while ($r=$qr->fetch(PDO::FETCH_NUM))
       {   $exp = trim($r[7]);
           unset($r[7]);
-          $hc = explode(';',$exp);
-          foreach($hc as $k=>$v) $hc[$k] = trim($v,'"'); // remove quotes
+          $hc = explode(';',$exp);          
           $r = array_merge($r, $hc) ;
           fputcsv($fp, $r, $delim);
       }
