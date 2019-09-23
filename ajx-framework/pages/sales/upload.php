@@ -128,10 +128,12 @@ if ($this->allow_edit)
              }
              
              $ha = array_slice($a,7);
-             if (trim($ha[count($ha)-1])=='') array_pop($ha); // remove last empty element
-             $db->query('update sales_exposure set headers=:headers',
-             array( 'headers'=>implode(';',$ha) ) );
-             
+             if (trim($ha[count($ha)-1])=='') array_pop($ha); // remove last empty element             
+             foreach($ha as $k=>$v) {
+                $ha[$k] = trim( trim($v) ,'"');                
+             }
+             $db->query('update sales_exposure set headers=:headers',             
+             array( 'headers'=>trim( implode(';',$ha),'"') ));             
              while ($a = fgetcsv($f,0,$spl) )
              {  $r = new stdClass();
                 $r->division = $a[0];
