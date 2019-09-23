@@ -24,7 +24,9 @@ ig.division, ig.major_group,  ig.id, ig.industry_group, s.id, s.name, s.descript
       while ($r=$qr->fetch(PDO::FETCH_NUM))
       {   $exp = trim($r[7]);
           unset($r[7]);
-          $r = array_merge($r, explode(';',$exp) ) ;
+          $hc = explode(';',$exp);
+          foreach($hc as $k=>$v) $hc[$k] = trim($v,'"'); // remove quotes
+          $r = array_merge($r, $hc) ;
           fputcsv($fp, $r, $delim);
       }
       fclose($fp);

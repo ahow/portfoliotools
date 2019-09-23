@@ -1,6 +1,7 @@
 # copy database
 ssh u98456815@access796846285.webspace-data.io "mysqldump --routines -h db5000166692.hosting-data.io -u dbu373157 -p dbs161750" > pftools.sql
 PftFor212!_pw_
+mysql  -h db5000166692.hosting-data.io -u dbu373157 -p dbs161750
 mysql
 drop database pftools; create database pftools; use pftools; \. pftools.sql; 
 update proc set definer='boss@localhost' where definer='o161750@%';
