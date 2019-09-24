@@ -51,14 +51,24 @@ if ($this->allow_edit)
     <input type="file" class="col-md-4" id="isin_matching" name="isin_matching">
     <div class="col-md-3"></div>
     <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/isin-matching.csv">Download ISIN matching</a>
+   </div>
+
+     
+  <div class="form-group">
+    <label class="col-md-2" for="company_theme">Company theme metrics:</label>
+    <input type="file" class="col-md-4" id="company_theme" name="company_theme">
+    <div class="col-md-3"></div>
+    <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/company-theme-metrics.xls">Download *.xls</a>
   </div>
   
+  <!--
   <div class="form-group">
     <label class="col-md-2" for="full_xls">All data from Excel file:</label>
     <input type="file" class="col-md-4" id="full_xls" name="full_xls">
     <div class="col-md-3"></div>
     <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/full_xls.xls">Download *.xls</a>
   </div>
+   -->
 
   <div class="form-group">
     <div id="preview_isin" class="col-md-12"></div>
@@ -239,12 +249,17 @@ if ($this->allow_edit)
       $r->reviewed= $fld->get($a, 'reviewed', true);  
       
     }
+    
+    function getFileExtention($file)
+    { $ext = strtolower( substr($file, -4) );
+      if (strlen($ext)>0 && $ext{0}!=='.') $ext='.'.$ext;
+      return $ext;
+    }
 
     if (isset($_FILES['company_list']))
     {
         $clist = (object)$_FILES['company_list'];
-        $ext = strtolower( substr($clist->name, -4) );
-        if (strlen($ext)>0 && $ext{0}!=='.') $ext='.'.$ext;
+        $ext = getFileExtention($clist->name);        
         $tmp = mktempname(UPLOAD_PATH.'company-').$ext;
         if ($clist->error==0)
         { if (move_uploaded_file($clist->tmp_name, $tmp))
@@ -335,6 +350,32 @@ if ($this->allow_edit)
           {  // echo "<div class=\"alert alert-success\">Division details file uploaded! Import started!</div>";
              ?>
             <div class="progress" id="pb_details" data-path="/html.php/pages/sales/uploaddetails?clear=<?=$clear?>&amp;tmp=<?=urlencode($tmp)?>">
+                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
+            </div>
+            
+             <?php
+             // Auto start importing
+             
+          } 
+    
+        } 
+        /*else 
+        { // echo "<div class=\"alert alert-danger\">Upload Error! Please, check php.ini uploading limits.</div>";
+        }
+        */
+    }
+
+    if (isset($_FILES['company_theme']))
+    {
+        $clist = (object)$_FILES['company_theme'];  
+        $ext = getFileExtention($clist->name);      
+        $tmp = mktempname(UPLOAD_PATH.'company-theme-').$ext;
+        if ($clist->error==0)
+        { if (move_uploaded_file($clist->tmp_name, $tmp))
+          {  // echo "<div class=\"alert alert-success\">Company theme metrics details file uploaded! Import started!</div>";
+             ?>
+            <div class="progress" id="pb_company_theme" data-path="/html.php/pages/sales/upload-company-theme?clear=<?=$clear?>&amp;tmp=<?=urlencode($tmp)?>">
                 <div class="progress-bar progress-bar-striped active" role="progressbar"
                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
             </div>
