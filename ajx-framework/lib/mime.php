@@ -11,6 +11,7 @@ function exttoMIME($ext)
 "zip" => "application/zip",
 "doc" => "application/msword",
 "xls" => "application/vnd.ms-excel",
+"xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 "ods" => "application/vnd.oasis.opendocument.spreadsheet",
 "ppt" => "application/vnd.ms-powerpoint",
 "gif" => "image/gif",
