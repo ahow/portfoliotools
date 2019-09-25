@@ -174,7 +174,7 @@ $('.bs-model-select').each(function(i,e){
         {   var r = d.xdata[i];
             csv+='"'+r.name.replace("\n",'\\n').replace('"','\"')+'",'+r.x+','+r.y+"\n";
         }
-        download(csv,'industry_analisys.csv');
+        download(csv,'industry_analysis.csv');
      });
     
     $('.b-print').click(print);

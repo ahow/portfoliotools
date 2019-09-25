@@ -84,12 +84,12 @@
              {
              ?>
               
-              <!--  Portfolio analisys -->
-              <li><a class="nav-item" href="/~/theme-exposures">Portfolio<br>analisys</a></li>
+              <!--  Portfolio analysis -->
+              <li><a class="nav-item" href="/~/theme-exposures">Portfolio<br>analysis</a></li>
               
                             
-              <!--  Sector analisys -->
-              <li><a class="nav-item w-todo" href="/~/sector-analisys">Sector<br>analisys</a></li>
+              <!--  Sector analysis -->
+              <li><a class="nav-item w-todo" href="/~/sector-analysis">Sector<br>analysis</a></li>
               
               
               <!--  Screener -->
@@ -116,10 +116,10 @@
               </li> 
           
 
-              <!--  Industry analisys -->
+              <!--  Industry analysis -->
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-               aria-haspopup="true" aria-expanded="false">Industry<br>analisys&nbsp;<span class="caret"></span></a>
+               aria-haspopup="true" aria-expanded="false">Industry<br>analysis&nbsp;<span class="caret"></span></a>
                   <ul class="dropdown-menu">
                      <?php $endmarketsMenu->display() ?>
                   </ul>
