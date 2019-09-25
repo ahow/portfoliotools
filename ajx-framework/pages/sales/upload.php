@@ -58,7 +58,7 @@ if ($this->allow_edit)
     <label class="col-md-2" for="company_theme">Company theme metrics:</label>
     <input type="file" class="col-md-4" id="company_theme" name="company_theme">
     <div class="col-md-3"></div>
-    <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/company-theme-metrics.xlsx">Download *.xls</a>
+    <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/company-theme-metrics.xlsx">Download *.xlsx</a>
   </div>
   
   <!--

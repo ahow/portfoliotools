@@ -1,0 +1,13 @@
+{
+    "sqltools.connections": [
+        {
+            "database": "mysql",
+            "dialect": "MySQL",
+            "name": "pftools",
+            "password": ",jcc",
+            "port": 3306,
+            "server": "localhost",
+            "username": "boss"
+        }
+    ]
+}

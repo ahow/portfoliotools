@@ -7,7 +7,7 @@ require SYS_PATH.'/vendor/autoload.php';
 
 //$id = get('id');
 function setRowValues($sheet, $row, $a)
-{  foreach($a as $col=>$v) $sheet->setCellValueByColumnAndRow($col, $row, $v);
+{  foreach($a as $col=>$v) $sheet->setCellValueByColumnAndRow($col+1, $row, $v);
 }
  
 if ($this->inGroup('admin') || $this->inGroup('editor'))
@@ -42,8 +42,8 @@ order by ct.cid, t.id');
 
     $spreadsheet->setActiveSheetIndex(0)->setTitle('CompanyThemeMetrics');
     $sheet= $spreadsheet->getActiveSheet();
-    $sheet->getColumnDimension('A')->setWidth(35);
-    $sheet->getColumnDimension('B')->setWidth(16);
+    $sheet->getColumnDimension('B')->setWidth(35);
+    $sheet->getColumnDimension('C')->setWidth(16);
     $sheet->getStyle("1:1")->getFont()->setBold( true );
 
     $cid = null;
