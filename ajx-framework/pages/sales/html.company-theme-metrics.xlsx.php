@@ -6,6 +6,9 @@ require SYS_PATH.'lib/mime.php';
 require SYS_PATH.'/vendor/autoload.php';
 
 //$id = get('id');
+function setRowValues($sheet, $row, $a)
+{  foreach($a as $col=>$v) $sheet->setCellValueByColumnAndRow($col, $row, $v);
+}
  
 if ($this->inGroup('admin') || $this->inGroup('editor'))
 {
@@ -41,10 +44,7 @@ order by ct.cid, t.id');
     $sheet= $spreadsheet->getActiveSheet();
     $sheet->getColumnDimension('A')->setWidth(35);
     $sheet->getColumnDimension('B')->setWidth(16);
-
-    function setRowValues($sheet, $row, $a)
-    {  foreach($a as $col=>$v) $sheet->setCellValueByColumnAndRow($col, $row, $v);
-    }
+    $sheet->getStyle("1:1")->getFont()->setBold( true );
 
     $cid = null;
     $a = ['CID','NAME','ISIN'];
