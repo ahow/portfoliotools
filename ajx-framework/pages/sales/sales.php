@@ -49,6 +49,13 @@
                $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
                $this->cfg->addJs('/html.php/pages/sales','lookup.js');
                $this->cfg->addJs('/html.php/pages/sales','market-summary.js'); 
+           break;   
+           case 'sector-analysis':
+                $this->cfg->addJs('https://code.highcharts.com','highcharts.js');
+                $this->cfg->addJs('https://code.highcharts.com','highcharts-more.js');
+                $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
+                $this->cfg->addJs('/html.php/pages/sales','lookup.js');
+                $this->cfg->addJs('/html.php/pages/sales','sector-analysis.js');
            break;                      
            case 'themes-summary':
                $this->cfg->addJs('/js','bootstrap-slider.js');

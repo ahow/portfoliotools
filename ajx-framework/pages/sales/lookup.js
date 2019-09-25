@@ -31,15 +31,15 @@ function lookupInput(selector, model, opt)
 }
 
 function searchDialog(selector, datamodel, title)
-{  var selected = null;
-   var onselect = null;
-   var openTarget = null;
-   var pager = null;
+{  let selected = null;
+   let onselect = null;
+   let openTarget = null;
+   let pager = null;
    
    $(selector+' div.model-list').attr('data-model', datamodel);
    $(selector+' .modal-title').html(title);
     
-   var model = new modelListController(selector+' .model-list');
+   let model = new modelListController(selector+' .model-list');
    model.load();
    model.click(function(e,row){
         selected = row;
@@ -89,7 +89,12 @@ function searchDialog(selector, datamodel, title)
              $(selector+' .model-search input').focus();
            }, 300);
    }
+
+   function getModel()
+   {
+        return model;
+   }
    
    
-   return {select:select, open:open}
+   return {select:select, open:open, getModel:getModel}
 }
