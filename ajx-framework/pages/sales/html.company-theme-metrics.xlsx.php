@@ -5,7 +5,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 require SYS_PATH.'lib/mime.php';
 require SYS_PATH.'/vendor/autoload.php';
 
-//$id = get('id');
 function setRowValues($sheet, $row, $a)
 {  foreach($a as $col=>$v) $sheet->setCellValueByColumnAndRow($col+1, $row, $v);
 }
@@ -70,24 +69,6 @@ order by ct.cid, t.id');
 
     $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
     $writer->save('php://output');
-
-    // print_r($theams);
-
-    
-      
-
-      /*
-      $qr=$db->query('select portfolio from sales_portfolio where id=:id', array('id'=>$id) );
-      $h[] = trim($db->fetchSingleValue($qr));
- 
-      $qr=$db->query('select isin,val from sales_portfolio_data where portfolio_id=:id', array('id'=>$id) ); 
-      $fp = fopen('php://output', 'w');
-      fputcsv($fp, $h, $delim);
-      while ($r=$qr->fetch(PDO::FETCH_NUM))
-      { fputcsv($fp, $r, $delim);
-      }
-      fclose($fp);
-      */
 
 } else  header("HTTP/1.0 404 Not Found");
 ?>
