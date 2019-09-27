@@ -3,6 +3,7 @@
  class BSformDefault
 {   var $fa;
     var $jfilt;
+    var $labeled = true;    
     
     function __construct()
     { $this->fa = array();
@@ -47,9 +48,9 @@
        
        $this->mkTestFilt($name,$type,$size);
        $this->fa[] = "$name VARCHAR($size)";
-       
-       return ' <div class="form-group">
-            <label for="'.$name.'">'.$label.'</label>
+       $tlabel = '';
+       if ($this->labeled) $label = '<label for="'.$name.'">'.$label.'</label>';
+       return ' <div class="form-group">'.$tlabel.'
             <input type="'.$type.'" class="form-control" data-control-type="basic" id="'.$name.'" placeholder="'.$label.'">
           </div>';
     }
@@ -72,7 +73,9 @@
     {  $label = T($name);
        $this->fa[] = $name."_min $type";
        $this->fa[] = $name."_max $type";
-       return '<div class="form-group"><label for="'.$name.'">'.$label.'</label><div>
+       $tlabel = '';
+       if ($this->labeled) $tlabel = '<label for="'.$name.'">'.$label.'</label>';
+       return '<div class="form-group">'.$tlabel.'<div>
        <b style="padding-right: 10px;">'.$min.'</b><input id="'.$name.'" type="text" 
        class="span2 bs-range" value="" data-control-type="range" data-slider-min="'.$min.'" 
        data-slider-max="'.$max.'" data-slider-step="'.$step.'" 

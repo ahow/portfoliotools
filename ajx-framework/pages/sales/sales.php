@@ -66,7 +66,13 @@
                $this->cfg->addJs('https://code.highcharts.com/modules','exporting.js');
                $this->cfg->addJs('/html.php/pages/sales','lookup.js');
                $this->cfg->addJs('/html.php/pages/sales','themes-summary.js');
-           break;                      
+           break;   
+           case 'screener':                 
+                $this->cfg->addJs('/js','bootstrap-slider.js');
+                $this->cfg->addCSS('/css','bootstrap-slider.css');
+                $this->cfg->addCSS('/html.php/pages/sales','screener.css');
+                $this->cfg->addJs('/html.php/pages/sales','screener.js');
+           break;
            case 'portfolio-list':
                $this->cfg->addJs('/html.php/pages/sales','previewCSV.js');
                $this->cfg->addJs('/html.php/pages/sales','portfolio-list.js'); 

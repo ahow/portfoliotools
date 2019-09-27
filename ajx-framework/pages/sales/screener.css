@@ -1,0 +1,6 @@
+.w-themes { margin-bottom: 10pt }
+#screener { margin-bottom: 70pt; }
+.w-themes div label {  padding-top: 5pt }
+.w-themes > div { margin-left: 30pt }
+.w-themes > div:last-child { margin-right: 30pt }
+
