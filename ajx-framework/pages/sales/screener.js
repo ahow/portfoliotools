@@ -1,5 +1,29 @@
+
 $(function(){
+   
    $("input.bs-range").slider({});
+
+   function getControlValues()
+   {
+      let themes = $('.w-themes');
+      let tdata = []
+      for (let i=0; i<themes.length; i++)
+      {  let e = themes[i]
+         let inputs = $(e).find('input')
+         tdata.push( {theme_id:$(e).attr('data-id'), 
+            range:$(inputs[0]).val(), weight: $(inputs[1]).val() } )      
+      }
+
+      let sels = $('.w-selectors');
+      let sdata = []
+      for (let i=0; i<sels.length; i++)
+      {  let e = sels[i]
+         let r = { field: $(e).find('select').val(), range: $(e).find('input').val() }
+         if (r.field!='') sdata.push( r )
+      }
+
+      return { themes:tdata, fields:sdata }
+   }
 
 
    function modelCompaniesView(selector,d,onclick,ondblclick)
@@ -70,6 +94,10 @@ $(function(){
        });       
    });
 
+   $('.bt-view').click(function(){
+      model.setParam('__filter', getControlValues())      
+   });
+
    // Search
    $('#tabsearch .model-list .model-search button.b-search').click(function(){
          var s = $('.model-list .model-search input').val().trim();
@@ -90,7 +118,6 @@ $(function(){
    // enable pager
    pager = new modelPagination('.model-list .model-pager');
   
-   let rows_lim = 7;
 
    model.total(function(total, rows_lim){
       pager.setTotal(total, rows_lim);

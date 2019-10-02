@@ -88,16 +88,26 @@
     function modelTotal($params)
     {  $db = $this->cfg->db;
        if ( isset($this->model->select_total) )
-       {  $qr = $db->query( $this->SQLVars($this->model->select_total), $params);
+       {  $qr = $db->query( $this->SQLVars($this->model->select_total), $this->getQueryParams() );
           $this->res->total =  $db->fetchSingleValue($qr);
           return $this->res->total;
        }
        return null;
     }
+
+    function getQueryParams() 
+    {
+        $prm = new stdClass();
+        foreach ($_POST as $k->$v)
+        {   // sckip special fields
+            if (strpos($k,'__')!=0) $prm->$k=$v;
+        }
+        return $prm;
+    }
+
       
     function modelLoad($model)
-    {  $db = $this->cfg->db;
-
+    {  $db = $this->cfg->db;      
        $params = (object)$_POST;
        if (isset($params->search) && isset($this->model->search) )
        {    $this->where_parts[] = '('.$this->model->search.')';
@@ -156,9 +166,9 @@
        
        if ( isset($this->model->primary_keys) )
        $this->res->primary_keys = explode(',', $this->model->primary_keys);
-       
+
        if ( isset($this->model->select) )
-       {  $qr = $db->query( $this->SQLVars($this->model->select), $params );
+       {  $qr = $db->query( $this->SQLVars($this->model->select), $this->getQueryParams());
           $this->res->rows =  $qr->fetchAll(PDO::FETCH_OBJ);
        }
        

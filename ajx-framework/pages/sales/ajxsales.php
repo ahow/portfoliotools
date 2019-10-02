@@ -14,8 +14,10 @@
     }
 
     function onCustomFilterCompanies()
-    { $d = (object)$_POST;
-      if (!isset($d->cst_filter)) return '';
+    { if (!isset($_POST['__filter'])) return '';
+      $d = (object)$_POST['__filter'];
+      unset($_POST['__filter']);
+      if (!isset($d->__filter)) return '';
       return 'cid in 
       ( select 
               t.cid 

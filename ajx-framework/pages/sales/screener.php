@@ -36,7 +36,7 @@
     'research_and_development', 'net_debt_to_EBITDA', 'CAPE', 'sustain_ex'];
 
     $selector = '<select class="form-control">';
-    foreach($item_list as $v) $selector.='<option id="'.$v.'">'.T($v).'</option>';
+    foreach($item_list as $v) $selector.='<option value="'.$v.'">'.T($v).'</option>';
     $selector .= '</select>';
 ?>  
         </div>
@@ -46,7 +46,7 @@
     for ($i=1; $i<=5; $i++)
     {
 ?>
-    <form class="form-inline w-h-controls row">
+    <form class="form-inline w-h-controls w-selectors row">
     <div class="form-group">
         <?=$selector?>          
     </div>
@@ -61,6 +61,8 @@
 ?>
         </div>
     </div>
+
+    <button class="btn btn-primary bt-view" type="button">View</button>
 
     <div class="model-list" data-model="/pages/sales/Model/companies">
         <table class="table table-striped selectable">
