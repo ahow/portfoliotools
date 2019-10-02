@@ -8,6 +8,7 @@
   "beforeUpdate":"beforeUpdateCompany",
   "select_row": "select * from $table where cid=:cid",
   "select_total": "select count(*) from $table $where",
+  "onCustomFilter":"onCustomFilterCompanies",
   "filter_parts":{
       "fregion":"region=:fregion",
       "sic":"sic=:sic",

@@ -113,6 +113,15 @@
        if (isset($this->model->permanent_filter))
        {   $this->where_parts[] = $this->model->permanent_filter;
        }
+
+       if (isset($model->onCustomFilter))
+       {  $method = $model->onCustomFilter;
+          if (!method_exists($this, $method))
+          { $this->error(T('METHOD_NOT_FOUND').' '.$method,__LINE__);
+            die();
+          }
+          $this->where_parts[] = $this->$method();
+       }
        
        if (isset($params->order))
        {  $this->order_parts = array();

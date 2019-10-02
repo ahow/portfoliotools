@@ -12,6 +12,19 @@
         return $this->error(T("ERR_NOT_AUTHORIZED"), true);
         $this->processModel(__DIR__);
     }
+
+    function onCustomFilterCompanies()
+    { $d = (object)$_POST;
+      if (!isset($d->cst_filter)) return '';
+      return 'cid in 
+      ( select 
+              t.cid 
+        from sales_company_theams t
+        where 
+          (t.theam_id = 1 and t.theam_value between -2 and 7)
+          or (t.theam_id = 2 and t.theam_value between -2 and 2)
+      )';
+    }
     
     function beforeDivisionUpdate(&$row, $keys)
     {   if (isset($this->cfg->user) && isset($this->cfg->user->user->id))
