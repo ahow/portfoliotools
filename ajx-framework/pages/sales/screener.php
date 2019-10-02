@@ -62,7 +62,7 @@
         </div>
     </div>
 
-    <button class="btn btn-primary bt-view" type="button">View</button>
+    <button class="pull-right btn btn-primary bt-view" style="margin-right:40pt" type="button">View</button>
 
     <div class="model-list" data-model="/pages/sales/Model/companies">
         <table class="table table-striped selectable">
