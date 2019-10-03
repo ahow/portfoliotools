@@ -64,7 +64,7 @@
 
     <button class="pull-right btn btn-primary bt-view" style="margin-right:40pt" type="button">View</button>
 
-    <div class="model-list" data-model="/pages/sales/Model/companies">
+    <div class="array-list">
         <table class="table table-striped selectable">
             <thead></thead>
             <tbody></tbody>

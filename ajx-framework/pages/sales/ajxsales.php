@@ -86,7 +86,7 @@
        $this->res->info = T('SAVED');
     }
 
-    function runSQL($scfile)
+    function loadSQLQueries($scfile)
     {   $db = $this->cfg->db;
         $f = fopen($scfile,'r');
         $delim = ';'; 
@@ -116,13 +116,12 @@
                     $uncom = substr($uncom, $p+$ds);                    
                   }
                }
-               $sql.=$uncom;               
+               $sql.=$uncom."\n";
             }
         }
         fclose($f);
 
-        $this->res->queries = $a;
-        $this->res->cfg = $this->cfg;
+        return $a;
     }
        
  
@@ -1985,6 +1984,32 @@ join tmp_total_subsector_sales t on c.subsector=t.subsector
 where d.syear=$year and d.sales>0
 group by 1,2,t.tsum");
 
+   }
+
+   function ajxScreener()
+   {  $p = (object)$_POST;
+      // $this->res->rows = [ (object)['name'=>'Company 1'] ];
+      $queries = $this->loadSQLQueries(__DIR__.'/sql/screener.sql');
+      $db = $this->cfg->db;      
+      foreach ($queries as $sql)
+      {  if (strpos($sql, 'insert into tmp_theam_weights')!==false)
+         { $a = [];
+           foreach ($p->themes as $t)
+           { $aa = [ $t['theme_id'] ];
+             if ($t['weight']=='') $aa[] = 0;
+             else $aa[] =  $t['weight'];
+             $aa = array_merge($aa, explode(',',$t['range']));
+             $a[] = '('.implode(',', $aa).')';
+           }
+           $sql .= implode(',', $a);
+           $this->res->sq = $sql;
+         }
+         $qr = $db->query($sql);
+      }
+      $rows=[];
+      while ($r = $db->fetchSingle($qr)) $rows[] = $r;
+      $this->res->rows = $rows;
+      echo json_encode($this->res);
    }
 
    function allBySubsector()
