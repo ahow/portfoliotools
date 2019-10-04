@@ -27,24 +27,23 @@ $(function(){
 
 
    const alist = new arrayListTable('.array-list');
+   alist.setRowsOnPage(7);
    // const alist. = new alist.ListController('.alist.-list', alist.CompaniesView);
 
    function loadData(prm)
-   {
+   {  let w_total = 0;
+      prm.themes.forEach(e=>{ w_total+=1*e.weight })
+      if (w_total==0) prm.themes.forEach(e=>{ e.weight=1 })
       ajx('/pages/sales/Screener', prm ,function(d){
       
      
          last_data = d;
          var link = "<?php echo mkURL('/sales/sic'); ?>";
          // if (prm.alist.!=1) link = "<?php echo mkURL('/sales/companies'); ?>";
-          
-         alist.setHeader([
-                 {title:"Name",f:'name', ondraw:function(v, r){ 
-                     return '<a target="_blank" href="'+link+'/'+r.cid+'">'+v+'</a>';
-                 }},
-                 {title:'Weight theme exposure', f:'weight_theme_exp'},
-               ]
-         );
+         if (d.header && d.header[0]) d.header[0].ondraw = function(v,r) {
+            return '<a target="_blank" href="'+link+'/'+r.cid+'">'+v+'</a>';
+         }
+         alist.setHeader(d.header);
          alist.setData(d.rows);
       })
    

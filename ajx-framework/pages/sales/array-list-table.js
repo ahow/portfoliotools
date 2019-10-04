@@ -47,6 +47,11 @@ function arrayListTable(selector, _header)
        if (_header!=undefined) setHeader(_header);
        drawPage(1);
    }
+
+   function setRowsOnPage(n)
+   {
+      rows_onpage = n;
+   }
    
    function drawPage(p)
    {  var s = '';      
@@ -69,5 +74,5 @@ function arrayListTable(selector, _header)
       $(selector+' .table tbody').html(s);
    }
    
-   return {setData:setData, setHeader:setHeader }
+   return {setData:setData, setHeader:setHeader, setRowsOnPage:setRowsOnPage }
 }

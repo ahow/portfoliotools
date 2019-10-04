@@ -69,7 +69,7 @@
             <thead></thead>
             <tbody></tbody>
         </table>
-        <div class="model-pager"></div>
+        <div class="list-pager"></div>
     </div>
     
 </div>

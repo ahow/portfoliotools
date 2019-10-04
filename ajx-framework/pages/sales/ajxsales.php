@@ -1993,12 +1993,14 @@ group by 1,2,t.tsum");
       $db = $this->cfg->db;      
       foreach ($queries as $sql)
       {  if (strpos($sql, 'insert into tmp_theam_weights')!==false)
-         { $a = [];
+         { $a = [];           
            foreach ($p->themes as $t)
-           { $aa = [ $t['theme_id'] ];
-             if ($t['weight']=='') $aa[] = 0;
-             else $aa[] =  $t['weight'];
-             $aa = array_merge($aa, explode(',',$t['range']));
+           { $t = (object)$t;
+             $aa = [ $t->theme_id ];
+             if ($t->weight=='') $aa[] = 0;
+
+             else $aa[] =  $t->weight;
+             $aa = array_merge( $aa, explode(',',$t->range) );
              $a[] = '('.implode(',', $aa).')';
            }
            $sql .= implode(',', $a);
@@ -2007,8 +2009,33 @@ group by 1,2,t.tsum");
          $qr = $db->query($sql);
       }
       $rows=[];
-      while ($r = $db->fetchSingle($qr)) $rows[] = $r;
+      $cid= null;
+      $row = new stdClass;
+      while ($r = $db->fetchSingle($qr))      
+      { if ($cid==null) $cid = $r->cid;
+        if ($cid!=$r->cid)
+        {  $rows[] = $row;
+           $cid = $r->cid;           
+           $row = new stdClass;
+        } 
+        $row->cid = $r->cid;
+        $row->name = $r->name;
+        $row->weight_theme_exp = $r->weight_theme_exp;
+        $fn = 'theam_'.$r->theam_id;
+        $row->$fn = $r->theam_value;
+      }
+      $rows[] = $row;
       $this->res->rows = $rows;
+
+      $this->includePageLocales(__DIR__);
+      $qr = $db->query('select * from sales_theams order by id');
+      $header=[
+                  (object)['title'=>T('name'), 'f'=>'name'],
+                  (object)['title'=>T('weight_theme_exp'), 'f'=>'weight_theme_exp']
+      ];
+      while ($r=$db->fetchSingle($qr)) $header[] = (object)['title'=>T($r->theam),
+       'f'=>'theam_'.$r->id];
+      $this->res->header = $header;
       echo json_encode($this->res);
    }
 
