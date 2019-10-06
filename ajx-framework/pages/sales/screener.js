@@ -21,7 +21,7 @@ $(function(){
          let r = { field: $(e).find('select').val(), range: $(e).find('input').val() }
          if (r.field!='') sdata.push( r )
       }
-
+      console.log({ themes:tdata, fields:sdata });
       return { themes:tdata, fields:sdata }
    }
 

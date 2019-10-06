@@ -27,9 +27,30 @@ join tmp_theam_weights  w on w.theam_id= t.theam_id
 where t.theam_id in (1,2,3)
 group by c.cid;
 
+-- to normalize values
+select
+    100/max(sales),
+    100/max(market_cap),
+    100/max(sales_growth),
+    100/max(roic),
+    100/max(pe),
+    100/max(evebitda),
+    100/max(EBITDA_growth),
+    100/max(ROE),
+    100/max(price_to_book),
+    100/max(reinvestment),
+    100/max(research_and_development),
+    100/max(net_debt_to_EBITDA),
+    100/max(CAPE),
+    100/max(sustain_ex),
+    100/max(yield) 
+from sales_companies 
+into @sales, @market_cap, @sales_growth, @roic, @pe, @evebitda,
+@EBITDA_growth, @ROE, @price_to_book, @reinvestment, @research_and_development,
+@net_debt_to_EBITDA, @CAPE, @sustain_ex, @yield;
+
 -- Final query
-select 
-    c.cid, c.name, e.weight_theme_exp, t.theam_id, t.theam_value
+select c.cid, c.name, e.weight_theme_exp, t.theam_id, t.theam_value $columns
 from sales_companies c
 join (
 select 
@@ -43,4 +64,5 @@ group by c.cid
 having count(*)=4
 ) as sc on c.cid=sc.cid
 join tmp_weight_theme_exps e on c.cid = e.cid
-join sales_company_theams  t on c.cid = t.cid;
+join sales_company_theams  t on c.cid = t.cid
+$where;

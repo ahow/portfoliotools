@@ -1988,9 +1988,12 @@ group by 1,2,t.tsum");
 
    function ajxScreener()
    {  $p = (object)$_POST;
+      $this->includePageLocales(__DIR__);
       // $this->res->rows = [ (object)['name'=>'Company 1'] ];
       $queries = $this->loadSQLQueries(__DIR__.'/sql/screener.sql');
-      $db = $this->cfg->db;      
+      $db = $this->cfg->db; 
+      $fhdr = [];  // field header
+      $whr = [];
       foreach ($queries as $sql)
       {  if (strpos($sql, 'insert into tmp_theam_weights')!==false)
          { $a = [];           
@@ -2002,9 +2005,29 @@ group by 1,2,t.tsum");
              else $aa[] =  $t->weight;
              $aa = array_merge( $aa, explode(',',$t->range) );
              $a[] = '('.implode(',', $aa).')';
-           }
+           }          
            $sql .= implode(',', $a);
-           $this->res->sq = $sql;
+         }
+         if (strpos($sql, '$columns')!==false)
+         { $columns = '';
+           $where = '';
+           if (isset($p->fields))           
+           foreach ($p->fields as $f) 
+           {
+              $f = (object)$f;
+              $fn = $f->field;
+              $columns.=",round(c.$fn*@$fn) as $fn ";
+              $fhdr[] = (object)['f'=>$f->field, 'title'=>T($fn)];
+              $min = 0;
+              $max =100;
+              list($min, $max) = explode(',', $f->range);
+              $whr[] = " round(c.$fn*@$fn) between $min and $max ";
+
+           }
+           if (count($whr)>0)  $where = ' where '.implode(' and ', $whr);
+           $sql = str_replace('$columns', $columns, $sql);
+           $sql = str_replace('$where', $where, $sql);
+           $this->res->s = $sql;
          }
          $qr = $db->query($sql);
       }
@@ -2017,17 +2040,14 @@ group by 1,2,t.tsum");
         {  $rows[] = $row;
            $cid = $r->cid;           
            $row = new stdClass;
-        } 
-        $row->cid = $r->cid;
-        $row->name = $r->name;
-        $row->weight_theme_exp = $r->weight_theme_exp;
+        }
+        foreach ((array)$r as $k=>$v) $row->$k = $r->$k;        
         $fn = 'theam_'.$r->theam_id;
         $row->$fn = $r->theam_value;
       }
-      $rows[] = $row;
+      if (!empty(get_object_vars($row))) $rows[] = $row;
       $this->res->rows = $rows;
 
-      $this->includePageLocales(__DIR__);
       $qr = $db->query('select * from sales_theams order by id');
       $header=[
                   (object)['title'=>T('name'), 'f'=>'name'],
@@ -2035,6 +2055,7 @@ group by 1,2,t.tsum");
       ];
       while ($r=$db->fetchSingle($qr)) $header[] = (object)['title'=>T($r->theam),
        'f'=>'theam_'.$r->id];
+      $header = array_merge($header, $fhdr);
       $this->res->header = $header;
       echo json_encode($this->res);
    }

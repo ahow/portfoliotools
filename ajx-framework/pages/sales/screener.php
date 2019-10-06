@@ -32,7 +32,7 @@
     }
 
     $item_list = ['', 'market_cap','sales_growth','EBITDA_growth','ROIC','ROE',
-    'price_to_earnings','ev_to_ebitda', 'yield', 'price_to_book', 'reinvestment',
+    'pe','evebitda', 'yield', 'price_to_book', 'reinvestment',
     'research_and_development', 'net_debt_to_EBITDA', 'CAPE', 'sustain_ex'];
 
     $selector = '<select class="form-control">';
@@ -51,9 +51,9 @@
         <?=$selector?>          
     </div>
     <div class="form-group w-slider">
-        <b class="w-lbl-left">-10</b>
-        <input id="range<?=($i)?>" type="text" class="span2 bs-range" value="" data-control-type="range" data-slider-min="-10" data-slider-max="10" data-slider-step="1" data-slider-value="[-10,10]">
-        <b class="w-lbl-right">10</b>
+        <b class="w-lbl-left">0%</b>
+        <input id="range<?=($i)?>" type="text" class="span2 bs-range" value="" data-control-type="range" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="[0,100]">
+        <b class="w-lbl-right">100%</b>
     </div>        
     </form>
 <?php
