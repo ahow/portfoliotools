@@ -36,7 +36,10 @@
     'research_and_development', 'net_debt_to_EBITDA', 'CAPE', 'sustain_ex','overall_theme_exp'];
 
     $selector = '<select class="form-control">';
-    foreach($item_list as $v) $selector.='<option value="'.$v.'">'.T($v).'</option>';
+    foreach($item_list as $v) 
+    {   if ($v=='') $selector.='<option value="">&nbsp;</option>';
+        else $selector.='<option value="'.$v.'">'.T($v).'</option>';
+    }
     $selector .= '</select>';
 ?>  
         </div>
