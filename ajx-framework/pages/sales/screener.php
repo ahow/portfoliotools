@@ -33,7 +33,7 @@
 
     $item_list = ['', 'market_cap','sales_growth','EBITDA_growth','ROIC','ROE',
     'pe','evebitda', 'yield', 'price_to_book', 'reinvestment',
-    'research_and_development', 'net_debt_to_EBITDA', 'CAPE', 'sustain_ex'];
+    'research_and_development', 'net_debt_to_EBITDA', 'CAPE', 'sustain_ex','overall_theme_exp'];
 
     $selector = '<select class="form-control">';
     foreach($item_list as $v) $selector.='<option value="'.$v.'">'.T($v).'</option>';
@@ -43,7 +43,7 @@
         <div class="col-lg-6">
 
 <?php
-    for ($i=1; $i<=5; $i++)
+    for ($i=1; $i<=10; $i++)
     {
 ?>
     <form class="form-inline w-h-controls w-selectors row">

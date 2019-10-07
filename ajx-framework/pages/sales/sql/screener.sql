@@ -20,7 +20,7 @@ into @sum_weights;
 create temporary table tmp_weight_theme_exps
 select 
     c.cid, sum(t.theam_value*w.weight)/@sum_weights
-         as weight_theme_exp
+         as overall_theme_exp
 from sales_companies c
 join sales_company_theams  t on c.cid = t.cid
 join tmp_theam_weights  w on w.theam_id= t.theam_id
@@ -49,8 +49,11 @@ into @sales, @market_cap, @sales_growth, @roic, @pe, @evebitda,
 @EBITDA_growth, @ROE, @price_to_book, @reinvestment, @research_and_development,
 @net_debt_to_EBITDA, @CAPE, @sustain_ex, @yield;
 
+select 100/max(overall_theme_exp) 
+from tmp_weight_theme_exps into @overall_theme_exp;
+
 -- Final query
-select c.cid, c.name, e.weight_theme_exp, t.theam_id, t.theam_value $columns
+select c.cid, c.name, e.overall_theme_exp, t.theam_id, t.theam_value $columns
 from sales_companies c
 join (
 select 

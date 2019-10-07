@@ -2016,13 +2016,21 @@ group by 1,2,t.tsum");
            {
               $f = (object)$f;
               $fn = $f->field;
-              $columns.=",round(c.$fn*@$fn) as $fn ";
-              $fhdr[] = (object)['f'=>$f->field, 'title'=>T($fn)];
+              if ($fn=='overall_theme_exp')
+              { $columns.=",round(e.$fn*@$fn) as $fn"."_proc ";
+                $fhdr[] = (object)['f'=>$fn.'_proc', 'title'=>T($fn.'_proc')];
+              } else
+              {
+                $columns.=",round(c.$fn*@$fn) as $fn ";
+                $fhdr[] = (object)['f'=>$f->field, 'title'=>T($fn)];  
+              }
               $min = 0;
               $max =100;
               list($min, $max) = explode(',', $f->range);
-              $whr[] = " round(c.$fn*@$fn) between $min and $max ";
-
+              if ($fn=='overall_theme_exp')
+                $whr[] = " round(e.$fn*@$fn) between $min and $max ";
+              else
+                $whr[] = " round(c.$fn*@$fn) between $min and $max ";
            }
            if (count($whr)>0)  $where = ' where '.implode(' and ', $whr);
            $sql = str_replace('$columns', $columns, $sql);
@@ -2051,7 +2059,7 @@ group by 1,2,t.tsum");
       $qr = $db->query('select * from sales_theams order by id');
       $header=[
                   (object)['title'=>T('name'), 'f'=>'name'],
-                  (object)['title'=>T('weight_theme_exp'), 'f'=>'weight_theme_exp']
+                  (object)['title'=>T('overall_theme_exp'), 'f'=>'overall_theme_exp']
       ];
       while ($r=$db->fetchSingle($qr)) $header[] = (object)['title'=>T($r->theam),
        'f'=>'theam_'.$r->id];
