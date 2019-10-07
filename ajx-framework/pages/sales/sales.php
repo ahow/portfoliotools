@@ -72,6 +72,7 @@
                 $this->cfg->addCSS('/css','bootstrap-slider.css');
                 $this->cfg->addCSS('/html.php/pages/sales','screener.css');
                 $this->cfg->addJs('/html.php/pages/sales','array-list-table.js');
+                $this->cfg->addJs('/html.php/pages/sales','download.js');
                 $this->cfg->addJs('/html.php/pages/sales','screener.js');
            break;
            case 'portfolio-list':

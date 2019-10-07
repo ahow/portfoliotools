@@ -29,6 +29,8 @@ $(function(){
    const alist = new arrayListTable('.array-list');
    alist.setRowsOnPage(7);
    // const alist. = new alist.ListController('.alist.-list', alist.CompaniesView);
+   let last_data = null
+   let last_header = null;
 
    function loadData(prm)
    {  let w_total = 0;
@@ -37,7 +39,9 @@ $(function(){
       ajx('/pages/sales/Screener', prm ,function(d){
       
      
-         last_data = d;
+         last_data = d.rows;
+         last_header = d.header;
+
          var link = "<?php echo mkURL('/sales/sic'); ?>";
          // if (prm.alist.!=1) link = "<?php echo mkURL('/sales/companies'); ?>";
          if (d.header && d.header[0]) d.header[0].ondraw = function(v,r) {
@@ -69,19 +73,29 @@ $(function(){
       if (d.keyCode==13)  $('.alist.-list .alist.-search button.b-search').trigger('click');
    });
   
-   // enable pager
-   /*
-   pager = new alist.Pagination('.alist.-list .alist.-pager');
-  
+   function mkCell(s) 
+   {  return '"'+s.replace("\n",'\\n').replace('<br>','\\n').replace('"','\"')+'"'
+   }
 
-   alist..total(function(total, rows_lim){
-      pager.setTotal(total, rows_lim);
-      $('#tbedit').addClass('disabled');
-   })
-   
-   pager.change(function(n){
-      alist..load(n);
-   });
-   */
+   $('.b-csv').click(function(){
+      console.log(last_header);
+      console.log(last_data);
+
+      if (last_header==null) return;
+
+      let csv = '';
+      let a = [];
+      for (let i=0; i<last_header.length; i++) a.push( mkCell( last_header[i].title ) );
+      csv += a.join(',')+"\n";
+
+      for (let j=0; j<last_data.length; j++)
+      {  a = [];
+         r = last_data[j];
+         for (let i=0; i<last_header.length; i++) a.push( mkCell( r[last_header[i].f] ) )
+         csv += a.join(',')+"\n"
+      }
+
+      download(csv,'screener.csv');      
+   });      
 
 });

@@ -65,7 +65,10 @@
         </div>
     </div>
 
-    <button class="pull-right btn btn-primary bt-view" style="margin-right:40pt" type="button">View</button>
+    <div class="btn-group pull-right" style="margin:20pt;">
+        <button class="btn btn-default b-csv">Download .CSV</button>
+        <button class="btn btn-primary bt-view">View</button>
+    </div>    
 
     <div class="array-list">
         <table class="table table-striped selectable">
