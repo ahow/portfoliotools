@@ -20,7 +20,7 @@ drop procedure if exists select_companies_by_theme_range;
 drop procedure if exists get_all_sics_stabilities;
 
 delimiter $$
--- This procedure must be loaded after uploading of divdetails
+-- This procedure must be called after uploading of divdetails
 create procedure update_sales_totals()
 begin
     DECLARE max_year INT;

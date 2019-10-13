@@ -1,10 +1,27 @@
+
+create temporary table  tmp_empty_theams engine=Memory as 
+select c.cid, t.id
+from sales_companies c
+join sales_theams t
+left outer join sales_company_theams tt on tt.cid=c.cid and t.id=tt.theam_id
+where tt.cid is null;
+
+
+select 
+   *
+from tmp_empty_theams et
+join sales_sic_companies_totals t on et.cid=t.cid
+join sales_divdetails d on d.sic = 
+;
+
+
 create temporary table tmp_theam_weights
 (  theam_id integer not null,
    weight double precision,
    min_value integer,
    max_value integer,
    primary key (theam_id)
-);
+) engine=Memory;
 
 insert into tmp_theam_weights values ; --placeholder
 --insert into tmp_theam_weights values
@@ -17,7 +34,8 @@ insert into tmp_theam_weights values ; --placeholder
 select sum(weight) from tmp_theam_weights
 into @sum_weights;
 
-create temporary table tmp_weight_theme_exps
+create temporary table tmp_weight_theme_exps engine=Memory
+as
 select 
     c.cid, sum(t.theam_value*w.weight)/@sum_weights
          as overall_theme_exp
