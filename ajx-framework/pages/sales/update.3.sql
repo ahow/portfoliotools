@@ -24,4 +24,13 @@ CREATE TABLE sales_company_theams
      on delete cascade on update cascade
 ) DEFAULT CHARSET=utf8;
 
-
+CREATE TABLE sales_sic_theams
+( sic_id integer not null,
+  theam_id integer not null,
+  theam_value double precision not null,
+  primary key (sic_id),
+  foreign key (theam_id) references sales_theams(id)
+     on delete cascade on update cascade,
+  foreign key (sic_id) references sales_sic(id)
+     on delete cascade on update cascade
+) DEFAULT CHARSET=utf8;

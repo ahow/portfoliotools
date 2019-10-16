@@ -158,14 +158,7 @@ if ($this->allow_edit)
                 $sic->description  = $a[6];
                 $sic->industry_group_id = $group_id;
                 $sic->exposure  = implode(';', array_slice($a,7) );
-                
-                /*
-                $sic->climate_change = $a[7];
-                $sic->demographics = $a[8];
-                $sic->regulation = $a[9];
-                $sic->another_theme = $a[10];
-                */
-                
+                                
                 try
                 { if ($r->id!='') $db->insertObject('sales_industry_groups',$r);
                 } catch(Exception $e)
@@ -259,7 +252,7 @@ if ($this->allow_edit)
     if (isset($_FILES['company_list']))
     {
         $clist = (object)$_FILES['company_list'];
-        $ext = getFileExtention($clist->name);        
+        $ext = getFileExtention($clist->name);
         $tmp = mktempname(UPLOAD_PATH.'company-').$ext;
         if ($clist->error==0)
         { if (move_uploaded_file($clist->tmp_name, $tmp))
