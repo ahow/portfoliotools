@@ -7,13 +7,20 @@ left outer join sales_company_theams tt on tt.cid=c.cid and t.id=tt.theam_id
 where tt.cid is null;
 
 
-select 
-   *
-from tmp_empty_theams et
-join sales_sic_companies_totals t on et.cid=t.cid
-join sales_divdetails d on d.sic = 
-;
+set @syear = 2015;
 
+create temporary table tmp_missed_theme_values engine Memory as
+select 
+   t.cid, tm.theam_id, sum(d.sales/t.sales*tm.theam_value) as theam_value
+from tmp_empty_theams et
+join sales_companies_totals t on et.cid=t.cid
+join sales_divdetails d on d.cid = et.cid and d.syear=@syear
+join sales_sic_theams tm on tm.sic_id = d.sic and et.id=tm.theam_id
+group by t.cid, tm.theam_id;
+
+-- because MySQL can't open temporary table twice in the query
+create temporary table tmp_missed_theme_values2 engine Memory as
+select * from tmp_missed_theme_values;
 
 create temporary table tmp_theam_weights
 (  theam_id integer not null,
@@ -40,7 +47,9 @@ select
     c.cid, sum(t.theam_value*w.weight)/@sum_weights
          as overall_theme_exp
 from sales_companies c
-join sales_company_theams  t on c.cid = t.cid
+join ( select * from tmp_missed_theme_values 
+       union select * from sales_company_theams 
+     ) as t on c.cid = t.cid
 join tmp_theam_weights  w on w.theam_id= t.theam_id
 where t.theam_id in (1,2,3)
 group by c.cid;
@@ -77,7 +86,9 @@ join (
 select 
     c.cid, count(*)
 from sales_companies c
-join sales_company_theams  t on c.cid = t.cid
+join (select * from tmp_missed_theme_values 
+       union select * from sales_company_theams 
+     ) as  t on c.cid = t.cid
 join tmp_theam_weights  w on w.theam_id= t.theam_id 
                     and t.theam_value>=w.min_value 
                     and t.theam_value<=w.max_value
@@ -85,5 +96,7 @@ group by c.cid
 having count(*)=4
 ) as sc on c.cid=sc.cid
 join tmp_weight_theme_exps e on c.cid = e.cid
-join sales_company_theams  t on c.cid = t.cid
+join (select * from tmp_missed_theme_values2 
+       union select * from sales_company_theams 
+     ) as t on c.cid = t.cid
 $where;
