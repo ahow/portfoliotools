@@ -138,9 +138,26 @@ if ($this->allow_edit)
              }
              
              $ha = array_slice($a,7);
+             $theams = [];
              if (trim($ha[count($ha)-1])=='') array_pop($ha); // remove last empty element             
-             foreach($ha as $k=>$v) {
-                $ha[$k] = trim( trim($v) ,'"');                
+             foreach($ha as $k=>$v) 
+             {
+                $theam = trim( trim($v) ,'"');
+                $ha[$k] = $theam;
+
+                // Fill theams values               
+                $qr=$db->query('select id, theam from sales_theams where theam=:theam',
+                        ['theam'=>$theam]);
+                $r = $db->fetchSingle($qr);          
+                if (!empty($r)) 
+                        $theams[]=$r;
+                else {
+                    $db->query('insert into sales_theams (theam) values (:theam) '
+                    ,['theam'=>$theam]);
+                    $db->db->lastInsertId();
+                    $r = (object)['id'=>$db->db->lastInsertId(), 'theam'=>$theam];
+                    $theams[]=$r;
+                }                
              }
              $db->query('update sales_exposure set headers=:headers',             
              array( 'headers'=>trim( implode(';',$ha),'"') ));             
@@ -157,8 +174,9 @@ if ($this->allow_edit)
                 $sic->name = $a[5];
                 $sic->description  = $a[6];
                 $sic->industry_group_id = $group_id;
-                $sic->exposure  = implode(';', array_slice($a,7) );
-                                
+                $exp = array_slice($a,7);
+                $sic->exposure  = implode(';', $exp);
+                                                
                 try
                 { if ($r->id!='') $db->insertObject('sales_industry_groups',$r);
                 } catch(Exception $e)
@@ -166,7 +184,14 @@ if ($this->allow_edit)
                 }
 
                 try
-                {  $db->insertObject('sales_sic',$sic);
+                {  $db->insertObject('sales_sic',$sic);                                      
+                   foreach($exp as $n=>$ev)
+                   {  $t = $theams[$n];                      
+                      $obj = (object)['sic_id'=>$sic->id,
+                      'theam_id'=>$t->id, 'theam_value'=>$ev ];
+                      $db->insertObject('sales_sic_theams', $obj);                    
+                   }
+
                 } catch(Exception $e)
                 { // echo $e->getMessage();
                 }
