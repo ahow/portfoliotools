@@ -20,8 +20,7 @@ $(function(){
       {  let e = sels[i]
          let r = { field: $(e).find('select').val(), range: $(e).find('input').val() }
          if (r.field!='') sdata.push( r )
-      }
-      console.log({ themes:tdata, fields:sdata });
+      }      
       return { themes:tdata, fields:sdata }
    }
 
@@ -46,6 +45,14 @@ $(function(){
          // if (prm.alist.!=1) link = "<?php echo mkURL('/sales/companies'); ?>";
          if (d.header && d.header[0]) d.header[0].ondraw = function(v,r) {
             return '<a target="_blank" href="'+link+'/'+r.cid+'">'+v+'</a>';
+         }
+         for (let i=0; i<d.header.length; i++)
+         {  if (d.header[i].f.substr(0,5)=='theam')
+            {  d.header[i].ondraw = function(v,r) {
+                  if ((''+v).indexOf('.')!=-1) return (1.0*v).toFixed(1);
+                  return v;
+               }
+            }
          }
          alist.setHeader(d.header);
          alist.setData(d.rows);
