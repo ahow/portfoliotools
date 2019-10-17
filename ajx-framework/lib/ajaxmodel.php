@@ -98,7 +98,7 @@
     function getQueryParams() 
     {
         $prm = new stdClass();
-        foreach ($_POST as $k->$v)
+        foreach ($_POST as $k=>$v)
         {   // sckip special fields
             if (strpos($k,'__')!=0) $prm->$k=$v;
         }
@@ -338,7 +338,7 @@
         $row = (object)$_POST;
         
         if (!isset($model->primary_key))
-         return $this->error(T('PRIMARY_KEY_NOT_FOUND').' '.$method,__LINE__);
+         return $this->error(T('PRIMARY_KEY_NOT_FOUND').' ',__LINE__);
         
         $key = explode(',', $model->primary_key);
         if ($this->updateRow($model, $key, $row))  $this->res->info = T('Saved');
@@ -351,10 +351,10 @@
         $post = (object)$_POST;
         
         if (!isset($post->rows))
-         return $this->error(T('ROWS_NOT_FOUND').' '.$method,__LINE__);
+         return $this->error(T('ROWS_NOT_FOUND'),__LINE__);
         
         if (!isset($model->primary_key))
-         return $this->error(T('PRIMARY_KEY_NOT_FOUND').' '.$method,__LINE__);
+         return $this->error(T('PRIMARY_KEY_NOT_FOUND'),__LINE__);
         
         $key = explode(',', $model->primary_key);
         $errors = 0;
@@ -370,7 +370,7 @@
         $post = (object)$_POST;
         
         if (!isset($post->rows))
-         return $this->error(T('ROWS_NOT_FOUND').' '.$method,__LINE__);
+         return $this->error(T('ROWS_NOT_FOUND'),__LINE__);
 
         $errors = 0;        
         $ids = array();

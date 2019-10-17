@@ -93,7 +93,7 @@
               
               
               <!--  Screener -->
-              <li><a class="nav-item w-todo" href="/~/screener">Screener</a></li>
+              <li><a class="nav-item" href="/~/screener">Screener</a></li>
               
               <!--  Theme comparison -->
               <!--
