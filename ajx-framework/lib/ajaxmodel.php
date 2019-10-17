@@ -96,11 +96,10 @@
     }
 
     function getQueryParams() 
-    {
-        $prm = new stdClass();
-        foreach ($_POST as $k=>$v)
-        {   // sckip special fields
-            if (strpos($k,'__')!=0) $prm->$k=$v;
+    {   $prm = new stdClass();        
+        foreach ($_POST as $k => $v)
+        {   // skip special fields
+            if (strpos($k,'__')!==0) $prm->$k = $v;
         }
         return $prm;
     }
