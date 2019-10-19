@@ -163,6 +163,9 @@
                $this->cfg->addJs('/html.php/pages/sales','array-list-table.js');
                $this->cfg->addJs('/html.php/pages/sales','thematic-company-comparison.js');
            break;
+           case 'theme-weight':
+                $this->cfg->addJs('/html.php/pages/sales','theme-weight.js');                
+           break;
            default: $this->cfg->addJs('/html.php/pages/sales','inittable.js');               
        }
 

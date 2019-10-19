@@ -11,6 +11,8 @@ alter table sales_companies add sustain_ex double;
 CREATE TABLE sales_theams
 ( id integer NOT NULL auto_increment,
   theam varchar(255) NOT NULL,
+  company_weight smallint,
+  SIC_weight smallint,
   unique(theam),
   primary key (id)
 ) DEFAULT CHARSET=utf8;

@@ -2427,6 +2427,16 @@ group by 1');
         $this->res->rows = $a;
         echo json_encode($this->res);
     }
+
+    function ajxSaveThemeWeight()
+    { $db = $this->cfg->db;
+      $rows = post('rows', null);
+      foreach ($rows as $r)
+      { $db->query('update sales_theams set SIC_weight=:sw, company_weight=:cw where id=:id', $r);
+      }
+      $this->res->info = T('Saved');
+      echo json_encode($this->res);
+    }
  
  }
 
