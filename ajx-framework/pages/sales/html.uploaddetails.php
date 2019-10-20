@@ -1,14 +1,24 @@
 <?php
+   use PhpOffice\PhpSpreadsheet\IOFactory;
+   require SYS_PATH.'/vendor/autoload.php';
+
     header('Content-Type: text/event-stream');
     header('Cache-Control: no-cache'); 
     ob_start();
     $msg_num = 0;
+    $db = $this->cfg->db;
     
     function send_message($id, $d) 
     {   echo "id: $id" . PHP_EOL;
         echo "data: " . json_encode($d) . PHP_EOL;
         echo PHP_EOL;
         if (ob_get_level() > 0) ob_flush();        
+    }
+
+    function getFileExtention($file)
+    { $ext = strtolower( substr($file, -4) );
+      if (strlen($ext)>0 && $ext{0}!=='.') $ext='.'.$ext;
+      return $ext;
     }
      
      $res = new stdClass();
@@ -17,10 +27,17 @@
 
      $clear = get('clear',false);
 
+     $cid = '';
+     $fid = '';
+     
+     $lines = 0;
+     $uploaded = 0;
+
+
      if (isset($_GET['tmp']))
      {  $tmp = $_GET['tmp'];
      } else
-     {  $res->errmsg = 'File name missed in ?tmp= !';
+     {  $res->errmsg = 'File name missed in tmp= !';
         send_message('ERROR', $res);
         die();
      }
@@ -30,41 +47,61 @@
         send_message('ERROR', $res);
         die();
      }
-     
-     $f = fopen($tmp,'r');
-     $total_lines = 0;
-     while(fgets($f)) $total_lines++;
-     fclose($f);
-     
-     $res->total = $total_lines;
-     send_message(++$msg_num, $res);
-     unset($res->total);
-    
-     $f = fopen($tmp,'r');
-     $h = fgets($f);
-     $a = explode(';',$h);
-     $spl='';
-     if (count($a)>1) $spl=';'; 
-     else
-     {  $a = explode(',',$h);
-        if (count($a)>0) $spl=',';
-     }
 
-     $res->stage = 'file opened';
-     send_message(++$msg_num, $res);
-    
-     $ncol = count($a);
-     // Support for old and new format
-     // if ( $ncol<7 || ( (($ncol-4) % 3)!=0 && (($ncol-3) % 3)!=0) )
-     if ( $ncol<9 || (($ncol-3) % 6)!=0 )
-     {  fclose($f);
-        unlink($tmp);
-        $res->errmsg = 'Wrong Division details format! ('."$ncol)";
-        send_message('ERROR', $res);
-        die();
-     }
-     
-     $db = $this->db;
+     $total_lines = 0;     
+     $res->total = $total_lines;
+
+     $ext = getFileExtention($tmp);
+
+     if ($ext=='.csv')
+     {
+         $f = fopen($tmp,'r');
+         while(fgets($f)) $total_lines++;
+         fclose($f);
+         
+         $res->total = $total_lines;
+         send_message(++$msg_num, $res);
+         unset($res->total);
+      
+         $f = fopen($tmp,'r');
+         $h = fgets($f);
+         $a = explode(';',$h);
+         $spl='';
+         if (count($a)>1) $spl=';'; 
+         else
+         {  $a = explode(',',$h);
+            if (count($a)>0) $spl=',';
+         } 
+
+         $res->stage = 'file opened';
+         send_message(++$msg_num, $res);
+        
+         $ncol = count($a);
+         // Support for old and new format
+         // if ( $ncol<7 || ( (($ncol-4) % 3)!=0 && (($ncol-3) % 3)!=0) )
+         if ( $ncol<9 || (($ncol-3) % 6)!=0 )
+         {  fclose($f);
+            unlink($tmp);
+            $res->errmsg = 'Wrong Division details format! ('."$ncol)";
+            send_message('ERROR', $res);
+            die();
+         } 
+
+      } else 
+      {  $sheetname = 'DivisionDetails';
+         $reader = IOFactory::createReader('Xlsx');
+         $reader->setLoadSheetsOnly($sheetname);
+         $reader->setReadDataOnly(true);
+         $spreadsheet = $reader->load($tmp);               
+         $loadedSheetNames = $spreadsheet->getSheetNames();
+         $data = [];
+         if (count($loadedSheetNames)>0)
+         {  if ($clear) $db->query('delete from sales_companies');
+            $data = $spreadsheet->getSheetByName($sheetname)->toArray();
+            $res->total = count($data);
+            send_message(++$msg_num, $res);
+         }
+      }
      
      $qr = $db->query('select count(*) from sales_sic');
      if ($db->fetchSingleValue($qr)==0)
@@ -73,21 +110,17 @@
         die();
      }
 
-     $res->stage = 'db set';
-     send_message(++$msg_num, $res);
+      $res->stage = 'db set';
+      send_message(++$msg_num, $res);
      
-     // Remember fo the years values
-     $years = array();
+      // Remember fo the years values
+      $years = array();
+      
+      if ($ncol>0)
+      for ($i=3; $i<$ncol; $i+=3)
+      {  $years[$i]= filter_var($a[$i], FILTER_SANITIZE_NUMBER_INT);
+      }
      
-     for ($i=3; $i<$ncol; $i+=3)
-     {  $years[$i]= filter_var($a[$i], FILTER_SANITIZE_NUMBER_INT);
-     }
-     
-     
-     $cid = '';
-     
-     $lines = 0;
-     $uploaded = 0;
      
       if ($clear) 
       {  $db->query('delete from sales_divdetails');
@@ -98,9 +131,10 @@
      send_message(++$msg_num, $res);
      $fid = date('YmdHis').'.'.rand(1,10000);
      $fn = LOG_PATH.'errlog-'.$fid;
-      $fe = fopen($fn, 'w+');
+     $fe = fopen($fn, 'w+');
      $res->errors = 0;
      
+     if ($ext=='.csv')
      while ($a = fgetcsv($f,0,$spl) )
      {  $division = trim( $a[0] );
         $cid = trim( $a[1] );
@@ -176,6 +210,6 @@
      $res->stage = 'Import finished!';
      send_message('CLOSE', $res);
      unlink($tmp);
-     fclose($f); 
+     if (isset($f)) fclose($f); 
    
 ?>

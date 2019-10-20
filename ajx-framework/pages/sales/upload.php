@@ -362,12 +362,12 @@ if ($this->allow_edit)
     if (isset($_FILES['division_details']))
     {
         $clist = (object)$_FILES['division_details'];        
-        $tmp = mktempname(UPLOAD_PATH.'divdetails-');
+        $tmp = mktempname(UPLOAD_PATH.'divdetails-').getFileExtention($clist->name);
         if ($clist->error==0)
         { if (move_uploaded_file($clist->tmp_name, $tmp))
           {  // echo "<div class=\"alert alert-success\">Division details file uploaded! Import started!</div>";
              ?>
-            <div class="progress" id="pb_details" data-path="/html.php/pages/sales/uploaddetails?clear=<?=$clear?>&amp;tmp=<?=urlencode($tmp)?>">
+            <div class="progress" id="pb_details" data-path="/ajax.php/pages/sales/uploaddetails?clear=<?=$clear?>&amp;tmp=<?=urlencode($tmp)?>">
                 <div class="progress-bar progress-bar-striped active" role="progressbar"
                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%</div>
             </div>

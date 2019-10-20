@@ -2437,6 +2437,11 @@ group by 1');
       $this->res->info = T('Saved');
       echo json_encode($this->res);
     }
+
+    function ajxUploadDetails()
+    {
+      require 'html.uploaddetails.php';
+    }
  
  }
 
