@@ -1,5 +1,5 @@
 <?php
-
+// obsolete should be removed
 include(SYS_PATH.'lib/mime.php');
 
 if ($this->inGroup('admin') || $this->inGroup('editor'))

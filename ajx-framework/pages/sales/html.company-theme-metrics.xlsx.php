@@ -3,7 +3,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 require SYS_PATH.'lib/mime.php';
-require SYS_PATH.'/vendor/autoload.php';
+require SYS_PATH.'vendor/autoload.php';
 
 function setRowValues($sheet, $row, $a)
 {  foreach($a as $col=>$v) $sheet->setCellValueByColumnAndRow($col+1, $row, $v);

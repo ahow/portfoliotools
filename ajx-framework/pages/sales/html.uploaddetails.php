@@ -1,6 +1,6 @@
 <?php
    use PhpOffice\PhpSpreadsheet\IOFactory;
-   require SYS_PATH.'/vendor/autoload.php';
+   require SYS_PATH.'vendor/autoload.php';
 
     header('Content-Type: text/event-stream');
     header('Cache-Control: no-cache'); 

@@ -39,7 +39,7 @@ if ($this->allow_edit)
     <label class="col-md-2" for="division_details">Division Details:</label>
     <input type="file" id="division_details" class="col-md-4" name="division_details">
     <div class="col-md-3"></div>
-    <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/datadetails.csv">Download division details</a>
+    <a class="btn btn-primary col-md-3" href="/html.php/pages/sales/datadetails.xlsx">Download division details *.xlsx</a>
   </div>
   
   <div class="form-group">
