@@ -53,6 +53,8 @@
 
      $ext = getFileExtention($tmp);
 
+     $ncols = explode(",",'division,cid,company_name,me,sic,sales,ebit,assets,capex');     
+
      if ($ext=='.csv')
      {
          $f = fopen($tmp,'r');
@@ -95,11 +97,45 @@
          $spreadsheet = $reader->load($tmp);               
          $loadedSheetNames = $spreadsheet->getSheetNames();
          $data = [];
+         $syear = date("Y"); // get current year
+         $n=0;
          if (count($loadedSheetNames)>0)
-         {  if ($clear) $db->query('delete from sales_companies');
+         {  
+            if ($clear) $db->query('delete from sales_divdetails where syear=:syear',
+               ['syear'=>$syear]);            
             $data = $spreadsheet->getSheetByName($sheetname)->toArray();
-            $res->total = count($data);
+            $total_lines = count($data);
+            $res->total = $total_lines;
             send_message(++$msg_num, $res);
+            try
+            {
+               foreach($data as $av)
+               {  $r = [];
+                  $r['syear'] = $syear;
+                  foreach ($av as $k=>$v)
+                  {  if (isset($ncols[$k])) $r[ $ncols[$k] ] = $v;
+                  }
+                  unset($r['company_name']);
+                  if ($n>0 && trim($r['me'])!=='') {
+                     $db->insertObject('sales_divdetails',$r);
+                     // send_message(++$msg_num, $r);          
+                  }
+                  if (($n % 100) == 0)
+                  {  $res->proc = number_format(($n/$total_lines)*100, 2, '.', '');
+                     send_message(++$msg_num, $res);
+                  }
+                  $n++;
+               }
+            } catch(Exception $e)
+            {  $res->errmsg = $e->getMessage();               
+               send_message(++$msg_num, $r);
+               send_message('ERROR', $res);
+               exit(0);
+            }
+            $res->proc = 100.0;
+            send_message(++$msg_num, $res);
+            send_message('CLOSE', $res);
+            exit(0);            
          }
       }
      
