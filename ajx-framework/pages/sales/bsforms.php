@@ -49,7 +49,7 @@
        $this->mkTestFilt($name,$type,$size);
        $this->fa[] = "$name VARCHAR($size)";
        $tlabel = '';
-       if ($this->labeled) $label = '<label for="'.$name.'">'.$label.'</label>';
+       if ($this->labeled) $tlabel = '<label for="'.$name.'">'.$label.'</label>';
        return ' <div class="form-group">'.$tlabel.'
             <input type="'.$type.'" class="form-control" data-control-type="basic" id="'.$name.'" placeholder="'.$label.'">
           </div>';
