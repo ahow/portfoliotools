@@ -320,20 +320,7 @@ function companieEditForm(selector)
     {   if (row!=undefined) cid = row.id;
         ajx('/pages/sales/Form1',{ cid:cid, year:$('#form1 #year').val() }, draw );
     }
-    
-    var cyear = new Date().getFullYear()-1;
-    // remove control from updates
-    $(selector+' #year').val(cyear).attr('data-control-type',null);
         
-    $(selector+' #year').change( function(){        
-        if (cid!=null)
-        {  var year_timer = setTimeout(function(){
-                if (year_timer!=null) clearTimeout(year_timer);
-                load();
-            }, 750);
-        }
-    });
-    
     function getCID(){ return cid }
 
     return {click:click, draw:draw, getrow:getrow, load:load, ondelete:ondelete, getCID:getCID}

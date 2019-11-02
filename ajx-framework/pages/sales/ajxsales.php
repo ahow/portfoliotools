@@ -296,9 +296,15 @@
         echo json_encode($this->res);
     }
     
+    function getCurrentYear()
+    {
+        return 2019;
+    }
+
     function ajxForm1()
     {   $db = $this->cfg->db;
         $params = (object)$_POST;
+        $params->year = $this->getCurrentYear();
         $qr = $db->query('select d.cid, d.division as number, ig.division as sic_division,
          ig.major_group, d.syear, d.me, d.sic, d.sales,sic.name as sicname, ig.industry_group
          from sales_divdetails d        
@@ -680,8 +686,8 @@ where d.sic=:sic and d.syear=:max_year $region $wsize";
    function ajxMarketSummarySic()
    {  // Min Size not used now
       $db = $this->cfg->db;
-      $db->query('call select_single_sic(:sic)', $this->getPostParams('sic') );
-      $db->query('select max(syear) from sales_divdetails into @max_year');
+      $db->query('call select_single_sic(:sic)', $this->getPostParams('sic') );      
+      $db->query('set @max_year = :year', ['year'=>$this->getCurrentYear() ]);
       $qr = $db->query('call summary_by_sics(@max_year,:sic,:region);', $this->getPostParams('sic,region') );
       $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
       $qr->closeCursor();        
@@ -1163,8 +1169,7 @@ group by r.syear", $this->getPostParams('region'));
    function ajxThemesSummary()
    {  $params = (object)$_POST;
       $db = $this->cfg->db;
-      $db->query('select max(syear) from sales_divdetails into @max_year');
-      
+      $db->query('set @max_year = :year', ['year'=>$this->getCurrentYear() ]);
       $db->query('call select_sics_by_theme_range(@max_year,:theme_id,:theme_min,:theme_max,:region)', 
         $this->getPostParams('theme_min,theme_max,theme_id,region'));
         
@@ -1234,7 +1239,7 @@ group by 1,2",
       $db = $this->cfg->db;
       
       // select sics of the subsector
-      $db->query('select max(syear) from sales_divdetails into @max_year');
+      $db->query('set @max_year = :year', ['year'=>$this->getCurrentYear() ]);
       $db->query('DROP TABLE IF EXISTS tmp_selected_sics');
       $db->query('CREATE TEMPORARY TABLE IF NOT EXISTS tmp_selected_sics (sic integer NOT NULL)');
       $db->query("insert into tmp_selected_sics
@@ -1742,7 +1747,8 @@ group by 1");
         
         
         if (count($flds)==2)
-        {    $db->query('select max(syear), min(syear) from sales_divdetails into @maxyear, @minyear');
+        {    $db->query('select :year, min(syear) from sales_divdetails into @maxyear, @minyear',
+               ['year'=>$this->getCurrentYear() ]);          
              $flds[]='name';
              $sql = "select ".implode(',',$flds).' from sales_companies ';
              if (count($wh)>0) $sql.=' where '.implode(' and ', $wh);
@@ -1909,7 +1915,7 @@ group by 1");
    function allBySICs($prepare=false)
    {   $params = (object)$_POST;
        $db = $this->cfg->db;
-       $db->query('select max(syear) from sales_divdetails into @max_year');
+       $db->query('set @max_year = :year', ['year'=>$this->getCurrentYear() ]);
               
        $data = array();
        $x = calcByParam($this, post('xaxis'));
@@ -2111,7 +2117,7 @@ group by 1');
     function ajxThemesComparison()
     { $params = (object)$_POST;
       $db = $this->cfg->db;
-      $db->query('select max(syear) from sales_divdetails into @max_year');
+      $db->query('set @max_year = :year', ['year'=>$this->getCurrentYear() ]);
       // count number of theams
       $qr = $db->query('select headers from sales_exposure');
       $h = $db->fetchSingleValue($qr);
@@ -2260,7 +2266,7 @@ group by 1');
        
        $db->query('call select_sics_by_themes(:theme_id,:theme_min,:theme_max)', 
                 $this->getPostParams('theme_min,theme_max,theme_id'));
-       $db->query('select max(syear) from sales_divdetails into @max_year');
+        $db->query('set @max_year = :year', ['year'=>$this->getCurrentYear() ]);
        
        $data = array();
        $x = calcByParamThematicIndustryComparison(post('xaxis'));
@@ -2325,7 +2331,7 @@ group by 1');
     {  $params = (object)$_POST;
        $db = $this->cfg->db;
        
-       $db->query('select max(syear) from sales_divdetails into @max_year');
+       $db->query('set @max_year = :year', ['year'=>$this->getCurrentYear() ]);
        
        $db->query('call select_companies_by_theme_range(@max_year, :theme_id,:theme_min,:theme_max,:region)', 
                 $this->getPostParams('theme_min,theme_max,theme_id,region'));
@@ -2405,7 +2411,7 @@ group by 1');
     
     function ajxGetMaxYear()
     {   $db = $this->cfg->db;
-        $qr = $db->query('select max(syear) as maxyear from sales_divdetails');
+        $db->query('set @max_year = :year', ['year'=>$this->getCurrentYear() ]);
         $this->res->maxyear = $db->fetchSingleValue($qr); 
         echo json_encode($this->res); 
     }

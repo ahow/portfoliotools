@@ -68,8 +68,7 @@
            <div id="company-data" data-model="/pages/sales/Model/companies">
                 <div class="row">
                     <div class="col-lg-6"><?=$f->input('name')?></div>
-                    <div class="col-lg-4"><?=$f->input('isin')?></div>
-                    <div class="col-lg-2"><?=$f->input('year','number')?></div>
+                    <div class="col-lg-4"><?=$f->input('isin')?></div>                    
                 </div>
                 <div class="row">
                     <div class="col-lg-6"><?=$f->input('sector')?></div>
