@@ -5,7 +5,7 @@
 ?>
 <div id="mranking">
     <div class="row">        
-        <div class="col-lg-4"><?=$f->range('theme_range',-2,2)?></div>
+        <div class="col-lg-4"><?=$f->range('theme_range',-10,10)?></div>
         <div class="col-lg-4"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
         <div class="col-lg-4"></div>
     </div>
