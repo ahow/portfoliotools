@@ -2411,7 +2411,7 @@ group by 1');
     
     function ajxGetMaxYear()
     {   $db = $this->cfg->db;
-        $db->query('set @max_year = :year', ['year'=>$this->getCurrentYear() ]);
+        $qr = $db->query('set @max_year = :year', ['year'=>$this->getCurrentYear() ]);
         $this->res->maxyear = $db->fetchSingleValue($qr); 
         echo json_encode($this->res); 
     }
@@ -2447,6 +2447,53 @@ group by 1');
     function ajxUploadDetails()
     {
       require 'html.uploaddetails.php';
+    }
+
+    function ajxSectorAnalysis()
+    { $db = $this->cfg->db;
+      $p = (object)$_POST;
+      $wh  = [];
+      $wp = [];
+
+      if ($p->region!='' &&  $p->region!='Global')
+      {
+        $wh[] = 'region=:region';
+        $wp['region'] = $p->region;
+      }
+      
+      if ($p->sector!='')
+      {
+        $wh[] = 'sector = :sector';
+        $wp['sector'] = $p->sector;
+      }
+
+      if ($p->subsector!='')
+      {
+        $wh[] = 'subsector = :subsector';
+        $wp['subsector'] = $p->subsector;
+      }
+
+      if ($p->sic!='')
+      {
+        $wh[] = 'cid in (select distinct cid from sales_divdetails where sic=:sic)';
+        $wp['sic'] = $p->sic;
+      }
+
+
+      $whr = '';
+      if (!empty($wh)) $whr = ' where '.implode(' and ', $wh);
+
+      $sql = 'select cid, name, sector, subsector, isin, region, sales from sales_companies '.$whr;
+      $this->res->sql = $sql;
+      $this->res->p = $wp;
+      $qr = $db->query($sql, $wp);      
+      $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
+      $this->res->header = [ 
+        (object)[ 'title'=>'Company', 'f'=>'name' ],
+        (object)[ 'title'=>'Sector', 'f'=>'sector' ],
+        (object)[ 'title'=>'Sector', 'f'=>'subsector' ]
+      ];
+      echo json_encode($this->res);
     }
  
  }

@@ -9,50 +9,6 @@ $(function(){
       return n.toFixed(decimals);
     }
     
-    function drawSummary(d)
-    {  var selector='#summary';
-       var s = '<table class="table table-striped">';
-        total = 0.0;
-        s+='<tr><th>Subsector</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
-        for (var i=0; i<d.rows.length; i++)
-        {   var r = d.rows[i];
-            if (r!=undefined)
-            {   s+='<tr><td>'+r.name+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
-                +toFloat(r.top3sum, 0)+'</td><td>'
-                +toFloat(r.top5sum, 0)+'</td><td>'
-                +toFloat(r.stability,1)+'</td><td>'+toFloat(r.asales_growth,1)+'</td><td>'
-                +toFloat(r.aroic,1)+'</td><td>'+toFloat(r.ape,1)+'</td><td>'
-                +toFloat(r.aevebitda,1)+'</td><td>'+toFloat(r.apayout,1)+'</td><td>'
-                +toFloat(r.previewed,0)+'</td></tr>';
-            }
-        }
-        s+='</table>';
-        $(selector).html(s);
-    }
-
-   
-
-    function drawSIC(d)
-    {  $('div.p-chart').css('display','');
-       var selector='#summary';
-       var s = '<table class="table table-striped">';
-        total = 0.0;
-        s+='<tr><th>SIC</th><th>Total<br>sales</th><th>% top 3</th><th>% top 5</th><th>Stability</th><th>Sales<br>growth</th><th>ROIC</th><th>PE</th><th>EVBIDTA</th><th>Payout</th><th>% reviewed</th></tr>';
-        for (var i=0; i<d.rows.length; i++)
-        {   var r = d.rows[i];
-            if (r!=undefined)
-            {   s+='<tr><td>'+r.name+'</td><td>'+toFloat(r.tsales,1)+'</td><td>'
-                +toFloat(r.top3sum, 0)+'</td><td>'
-                +toFloat(r.top5sum, 0)+'</td><td>'
-                +toFloat(r.stability, 1)+'</td><td>'+toFloat(r.asales_growth,1)+'</td><td>'
-                +toFloat(r.aroic,1)+'</td><td>'+toFloat(r.ape,1)+'</td><td>'
-                +toFloat(r.aevebitda,1)+'</td><td>'+toFloat(r.apayout,1)+'</td><td>'
-                +toFloat(r.previewed,0)+'</td></tr>';
-            }
-        }
-        s+='</table>';
-        $(selector).html(s);
-    }
         
     $('.bs-model-select').each(function(i,e){
         var sel = $(e);
@@ -72,28 +28,28 @@ $(function(){
     let dsic, dsubsec, dsector, last_sic = null;
     let views = new htviewCached();
     
-    function drawDebug(d)
-    {   if (d.dbg!=undefined)
-        { $('#debug').html('<pre>'+d.dbg+'</pre>')
-        }
-    }
+    let arrayList = new arrayListTable('.array-list');
+    // arrayList.setHeader([
+    //     {title:"Name",f:'name', ondraw:function(v, r){ 
+    //         return '<a target="_blank" href="'+link+'/'+r.id+'">'+v+'</a>';
+    //     }},
+    //     {title:d.xtitle, f:'x'},
+    //     {title:d.ytitle, f:'y'}]
+    // );
     
-    function loadSubsector(sub)
-    {  ajx('/pages/sales/MarketSummarySubsector',{subsector:sub, region:$('#region').val(),
-            min_size:$('#minsize').val()
-        },function(d){
-               drawSummary(d);
-               drawDebug(d);
-       });
-    }
 
-    function loadSIC(sic)
-    {  ajx('/pages/sales/MarketSummarySic',{sic:sic, region:$('#region').val(),
-            min_size:$('#minsize').val()
-        },function(d){
-               drawSIC(d);
-               drawDebug(d);
-       });
+    function reloadData()
+    {   let p = {};
+        p.region = $('#region').val();   
+        p.sector = $('#sector').val();     
+        p.subsector = $('#subsector').val(); 
+        p.sic = last_sic;
+        console.log(p);
+        ajx('/pages/sales/SectorAnalysis',p, function(d){            
+            arrayList.setHeader(d.header);
+            arrayList.setData(d.rows);            
+            //   drawSummary(d);         
+        });
     }
         
     views.view('/pages/sales/search','#search_sic', function(){        
@@ -102,40 +58,56 @@ $(function(){
             $('#sic_code input').val(sr.name);
             $('#subsec input').val('');
             last_sic = sr.id;
-            loadSIC(last_sic);
+            reloadData();
         });
         
-        $('#sic_code button').click(function(){
+        $('#sic_code .w-open-modal').click(function(){
             dsic.open();
         });
+
+        $('#sic_code .w-bclear').click(function(){
+            last_sic = null;
+            $('#sic_code input').val('');
+            reloadData();
+        });
+        
     });
 
     views.view('/pages/sales/search','#search_subsec', function(){        
         dsubsec = new searchDialog('#search_subsec', "/pages/sales/Model/subsector",'Search Subsector');
         dsubsec.select(function(sr, target){
-            $('#subsec input').val(sr.subsector);            
-            $('#sic_code input').val('');
-            loadSubsector(sr.id);
+            $('#subsec input').val(sr.subsector); 
+            $('#sic_code input').val('');            
+            reloadData();
+            // loadSubsector(sr.id);
         });
         
-        $('#subsec button').click(function(){            
+        $('#subsec .w-open-modal').click(function(){            
             dsubsec.open();            
+        });
+
+        $('#subsec .w-bclear').click(function(){                        
+            $('#subsec input').val('');
+            reloadData();          
         });
     });
     
     views.view('/pages/sales/search','#search_sector', function(){        
         dsector = new searchDialog('#search_sector', "/pages/sales/Model/sector",'Search Sector');
-        dsector.select(function(sr, target){            
-            // $('#sector input').val(sr.sector);            
+        dsector.select(function(sr, target){                        
             $('#sector_id input').val(sr.sector);
             const model = dsubsec.getModel();
-            model.setParam('sector',sr.sector);
-            // model.refresh();
-           //  loadSubsector(sr.id);
+            // model.setParam('sector',sr.sector);            
+            reloadData();
         });
         
-        $('#sector_id button').click(function(){                        
+        $('#sector_id .w-open-modal').click(function(){                        
             dsector.open();            
+        });
+
+        $('#sector_id .w-bclear').click(function(){                        
+            $('#sector_id input').val('');
+            reloadData();          
         });
     });
     
@@ -143,8 +115,7 @@ $(function(){
     $('#year').val(new Date().getFullYear()-1);
     
     $('#region').click(function(){
-        if ($('#subsec input').val()!='') loadSubsector( $('#subsec input').val() );
-        if (last_sic!=null &&  $('#sic_code input').val()!='') loadSIC( last_sic );
+        reloadData();        
     });
     
     $('#minsize').click(function(){
@@ -223,68 +194,118 @@ $(function(){
     
     /* ------------------ Chart ---------------------------*/
     
-     function drawChart(d)
-    {   Highcharts.chart('chart', {
-            chart: {
-                zoomType: 'xy'
-            },
-            title: {
-                text: d.title
-            },
-            xAxis: [{
-                categories: d.categories,
-                crosshair: true
-           }],
-            yAxis: [{ // Primary yAxis
-                title: {
-                    text: d.nameL,
-                },
-                opposite: false
+    //  function drawChart(d)
+    // {   Highcharts.chart('chart', {
+    //         chart: {
+    //             zoomType: 'xy'
+    //         },
+    //         title: {
+    //             text: d.title
+    //         },
+    //         xAxis: [{
+    //             categories: d.categories,
+    //             crosshair: true
+    //        }],
+    //         yAxis: [{ // Primary yAxis
+    //             title: {
+    //                 text: d.nameL,
+    //             },
+    //             opposite: false
 
-            }, 
-            { // Secondary yAxis
-                gridLineWidth: 0,
-                title: {
-                    text: d.nameR
-                },
-                labels: {
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    }
-                },
-                opposite: true
-            }],
-            tooltip: {
-                shared: true
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'left',
-                x: 80,
-                verticalAlign: 'top',
-                y: 55,
-                floating: true,
-                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-            },
-            series: [{
-                name: d.nameL,
-                type: 'spline',
-                yAxis: 0,
-                data: d.data[0],
-                marker: {
-                    enabled: true
+    //         }, 
+    //         { // Secondary yAxis
+    //             gridLineWidth: 0,
+    //             title: {
+    //                 text: d.nameR
+    //             },
+    //             labels: {
+    //                 style: {
+    //                     color: Highcharts.getOptions().colors[1]
+    //                 }
+    //             },
+    //             opposite: true
+    //         }],
+    //         tooltip: {
+    //             shared: true
+    //         },
+    //         legend: {
+    //             layout: 'vertical',
+    //             align: 'left',
+    //             x: 80,
+    //             verticalAlign: 'top',
+    //             y: 55,
+    //             floating: true,
+    //             backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+    //         },
+    //         series: [{
+    //             name: d.nameL,
+    //             type: 'spline',
+    //             yAxis: 0,
+    //             data: d.data[0],
+    //             marker: {
+    //                 enabled: true
+    //             }
+    //         }, {
+    //             name: d.nameR,
+    //             type: 'spline',
+    //             yAxis: 1,
+    //             data: d.data[1],
+    //             marker: {
+    //                 enabled: true
+    //             }
+    //         }]
+    //     });
+    // }
+
+    function reloadChartData()
+    {   var pf1 = $('#portfolio').val();
+        var pf2 = $('#comparison').val();
+        // if (pf2!=pf1 && pf2!=null)
+        if (pf2!=null)
+        {   $('#portfolio').attr('disabled', true)
+            $('#comparison').attr('disabled', true)
+            ajx('/pages/sales/ComparePortfolio',{pf1:pf1, pf2:pf2},function(d){
+                list_companies.setData(d);
+                // console.log(d) 
+                // chart.setData(d.header, d.data1.data, d.data2.data);
+                for (var i=0; i<d.data1.data.length; i++)
+                {  d.data1.data[i] = 1.0*d.data1.data[i];
+                   d.data2.data[i] = 1.0*d.data2.data[i];
                 }
-            }, {
-                name: d.nameR,
-                type: 'spline',
-                yAxis: 1,
-                data: d.data[1],
-                marker: {
-                    enabled: true
-                }
-            }]
-        });
+                var params = {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Theme exposures'
+                    },
+                    xAxis: {
+                        categories: d.header
+                    },
+                    yAxis: {
+                        title: {text:'Exposure (positive or negative)'}
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: d.name1,
+                        data: d.data1.data
+                    }, {
+                        name: d.name2,
+                        data: d.data2.data
+                    }]
+                };
+                // console.log(params);
+                Highcharts.chart('container', params);
+                
+                $('#portfolio').attr('disabled', false);
+                $('#comparison').attr('disabled', false);
+                $('.b-print').attr('disabled', false);
+            } );
+        }
     }
+    
    
     var sic_totals = null;
 
@@ -490,4 +511,31 @@ $(function(){
        
     });
     
+
+
+    // var model = new modelListController('.model-list');
+    // model.morder = 0;
+    
+    // model.loaded(function(d){
+        
+    //    //  model.setParam('order', null);
+            
+              
+    // });
+
+    // model.load();
+
+    // // enable pager
+    // pager = new modelPagination('.model-list .model-pager');
+    
+    // model.total(function(total, rows_lim){
+    //     pager.setTotal(total, rows_lim);
+    //         $('#tbedit').addClass('disabled');
+    // })
+    
+    // pager.change(function(n){
+    //     model.load(n);
+    // });
+ 
+ 
 });

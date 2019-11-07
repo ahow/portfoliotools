@@ -32,13 +32,15 @@
     </div></div>';
     }
 
-    function search3dot($id,$name)
+    function search3dot($id,$name, $clear=false)
     {  $label = T($name);
+       $bclear = '';
+       if ($clear) $bclear = '<button class="btn btn-default w-bclear" type="button">X</button>';
        return '<div class="form-group"><label for="'.$name.'">'.$label.'</label>
        <div class="input-group form-lookup" data-control-type="data" id="'.$id.'" data-value="">
         <input type="text" class="form-control" data-control-type="basic" id="'.$name.'" data-toggle="tooltip" data-placement="top" title="'.$label.'" placeholder="'.$label.'">
         <span class="input-group-btn">
-            <button class="btn btn-default" type="button">...</button> 
+            <button class="btn btn-default w-open-modal" type="button">...</button>'.$bclear.'
         </span>
     </div></div>';
     }

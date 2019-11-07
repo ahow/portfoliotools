@@ -5,13 +5,13 @@
 ?>
 <div id="mranking">
     <div class="row">
-        <div class="col-lg-6"><?=$f->search3dot('sector_id','sector')?></div>
+        <div class="col-lg-6"><?=$f->search3dot('sector_id','sector',true)?></div>
         <div class="col-lg-6"><?=$f->modelSelect('region','/pages/sales/Model/regions')?></div>
         <!-- <div class="col-lg-2"><?=$f->input('minsize','number')?></div> -->
     </div>
     <div class="row">
-        <div class="col-lg-6"><?=$f->search3dot('subsec','subsector')?></div>
-        <div class="col-lg-6"><?=$f->search3dot('sic_code','sic')?></div>
+        <div class="col-lg-6"><?=$f->search3dot('subsec','subsector',true)?></div>
+        <div class="col-lg-6"><?=$f->search3dot('sic_code','sic',true)?></div>
 
     </div>
     
@@ -70,6 +70,16 @@ Capex intensity (capex/assets)*/
     </table>
     <div class="list-pager"></div>
 </div>
+
+<!--
+<div class="model-list" data-model="/pages/sales/Model/companies">
+    <table class="table table-striped selectable">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+    <div class="model-pager"></div>
+</div>
+-->
 
 <div id="search_sic"></div>
 <div id="search_subsec"></div>
