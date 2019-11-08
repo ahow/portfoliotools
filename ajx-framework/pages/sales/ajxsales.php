@@ -2484,15 +2484,32 @@ group by 1');
       if (!empty($wh)) $whr = ' where '.implode(' and ', $wh);
 
       $sql = 'select cid, name, sector, subsector, isin, region, sales from sales_companies '.$whr;
-      $this->res->sql = $sql;
-      $this->res->p = $wp;
-      $qr = $db->query($sql, $wp);      
+      $qr = $db->query($sql, $wp);
       $this->res->rows = $qr->fetchAll(PDO::FETCH_OBJ);
       $this->res->header = [ 
         (object)[ 'title'=>'Company', 'f'=>'name' ],
         (object)[ 'title'=>'Sector', 'f'=>'sector' ],
         (object)[ 'title'=>'Sector', 'f'=>'subsector' ]
       ];
+
+      $sql = 'create temporary table tmp_sector_anlysis engine=Memory '
+      .' as select cid from sales_companies '.$whr;
+      $qr = $db->query($sql, $wp);
+      
+      $db->query('set @syear = :year', ['year'=>$this->getCurrentYear() ]);
+      $queries = $this->loadSQLQueries(__DIR__.'/sql/sector-analysis.sql');
+
+      foreach ($queries as $sql)
+      { $qr = $db->query($sql);
+      }
+
+      $sql = 'select c.theam_id, c.theam_value, t.theam '
+      .' from tmp_themes_chart c'
+      .' join sales_theams t on c.theam_id=t.id';
+
+      $qr = $db->query($sql);
+      $this->res->chart = $qr->fetchAll(PDO::FETCH_OBJ);
+
       echo json_encode($this->res);
     }
  
