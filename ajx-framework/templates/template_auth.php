@@ -88,8 +88,8 @@
               <li><a class="nav-item" href="/~/theme-exposures">Portfolio<br>analysis</a></li>
               
                             
-              <!--  Sector analysis -->
-              <li><a class="nav-item w-todo" href="/~/sector-analysis">Sector<br>analysis</a></li>
+              <!--  Sector analysis  class: w-todo -->
+              <li><a class="nav-item" href="/~/sector-analysis">Sector<br>analysis</a></li>
               
               
               <!--  Screener -->
