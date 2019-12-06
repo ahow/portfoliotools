@@ -11,8 +11,7 @@
     </div>
     <div class="row">
         <div class="col-lg-6"><?=$f->search3dot('subsec','subsector',true)?></div>
-        <div class="col-lg-6"><?=$f->search3dot('sic_code','sic',true)?></div>
-
+        <!-- <div class="col-lg-6"><?=$f->search3dot('sic_code','sic',true)?></div> -->
     </div>
     
     <div class="row" id="summary">
