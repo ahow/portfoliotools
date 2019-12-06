@@ -197,7 +197,8 @@
      }
 
      function displayCrumbs()
-     { ?>
+     {  return; // Do not display bread crumbs
+       ?>
         <ol class="breadcrumb">
         <li><a href="<?=mkURL('/')?>"><?=T('Home')?></a></li>
         <li class="active" ><?=$this->cfg->title?></li>
