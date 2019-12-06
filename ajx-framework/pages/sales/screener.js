@@ -47,8 +47,9 @@ $(function(){
             return '<a target="_blank" href="'+link+'/'+r.cid+'">'+v+'</a>';
          }
          for (let i=0; i<d.header.length; i++)
-         {  if (d.header[i].f.substr(0,5)=='theam')
-            {  d.header[i].ondraw = function(v,r) {
+         {  let hd = d.header[i]
+            if (hd.f.substr(0,5)=='theam' || hd.f=='overall_theme_exp')
+            {  hd.ondraw = function(v,r) {
                   if ((''+v).indexOf('.')!=-1) return (1.0*v).toFixed(1);
                   return v;
                }
